@@ -13,7 +13,7 @@ import SettingsMenuNotes from '../settings/settings-menu-notes';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Badge } from '@/components/ui/badge';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { debounceEvent, getNotesTitle } from "@/lib/helpers"
+import { debounceEvent, getNotesTitle } from "@/lib/utils/helpers"
 import { useAppDispatch, useAppSelector } from '@/hooks/use-redux';
 import { RootState } from '@/lib/redux/store';
 import clsx from 'clsx';
@@ -32,7 +32,7 @@ const NoteList = () => {
         return {
             id: v4(),
             title: 'Untitle',
-            content: '',
+            content: 'Hello saya adalah conotes',
             createdAt: currentItem,
             lastUpdated: currentItem,
             tags: [],
@@ -92,7 +92,7 @@ const NoteList = () => {
                     <span className="text-xl font-bold">{LabelText.NOTES}</span>
                     <div className='flex items-center gap-3'>
                         <ButtonMenu action={handleNewNote} side="bottom" variant={'ghost'} size={'icon'} label={LabelText.CREATE_NEW_NOTE}>
-                            <NoteAdd24Regular />
+                            <NoteAdd24Regular className='size-9' />
                         </ButtonMenu>
                         <ButtonMenu side="bottom" variant={'ghost'} size={'icon'} label={LabelText.FILTER}>
                             <Filter24Regular />

@@ -6,7 +6,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { getDocumentName } from "@/lib/helpers";
+import { getDocumentName } from "@/lib/utils/helpers";
 import { Home24Regular } from "@fluentui/react-icons";
 import React from "react";
 

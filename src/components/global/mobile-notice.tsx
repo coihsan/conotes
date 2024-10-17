@@ -41,7 +41,7 @@ const MobileNotice: React.FC = () => {
                         <p className="text-red-600 dark:text-red-500 my-4">This message appears because you are using a mobile / tablet device</p>
                     </DialogDescription>
                 </DialogHeader>
-                <div className="pt-5">
+                <div>
                     <div className="text-sm text-muted-foreground text-center">Copy this link</div>
                     <div className="flex items-center gap-1 max-w-72 w-full mx-auto pt-3">
                         <Input placeholder="https://conotes.vercel.app" readOnly />

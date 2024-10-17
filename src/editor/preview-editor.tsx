@@ -10,6 +10,7 @@ import HeaderEditor from "./header-editor"
 import BreadcrumbNotes from "@/components/global/breadcrumb-notes"
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux"
 import { getNotesContentByID } from "@/lib/redux/thunk"
+import { updateNote } from "@/lib/redux/slice/notes"
 
 const PreviewEditor = () => {
     const { noteId } = useParams()
@@ -17,34 +18,31 @@ const PreviewEditor = () => {
     
     const dispatch = useAppDispatch();
     const activeNoteContent = useAppSelector((state) => state.notes.activeNoteId);
+    const getNotesData = useAppSelector((state) => state.notes.notes);
+    const getNotesForCrumbs = getNotesData.find((note) => noteId === note.id)?.title || ''
 
-    const notesLive = useLiveQuery(async () => await db.notes.toArray())
-    const notesMap = notesLive?.find((note) => noteId === note.id)
-    const contentLive = notesMap ? notesMap?.title : 'null'
+    const handleUpdateNotes = (newContent :  string) => {
+        dispatch(updateNote({id: noteId, content: newContent}))
+        console.log('update notes')
+    }
 
     useEffect(() => {
         if (noteId) {
-          dispatch(getNotesContentByID(noteId));
-        }
-      }, [noteId, dispatch]);
-
-    useEffect(() => {
-        if (contentLive) {
+          dispatch(getNotesContentByID(noteId)).then(() => {
             setLoading(false);
+            console.log('getNotesContentByID:', getNotesForCrumbs);
+          });
         }
-    }, [contentLive, notesMap]);
+      }, [noteId, dispatch, activeNoteContent]);
 
-    if (loading) {
-        return <Loading />;
-    }
 
     return (
         <div className="h-full w-full border rounded-r-2xl bg-zinc-100 dark:bg-zinc-500/10 overflow-hidden">
             <div className="flex items-center justify-between w-full py-1 px-3 border-b-[1px]">
-                <BreadcrumbNotes params={contentLive} />
+                <BreadcrumbNotes params={getNotesForCrumbs} />
                 <HeaderEditor />
             </div>
-            <NoteEditor contentNotes={activeNoteContent} />
+            <NoteEditor onUpdate={handleUpdateNotes} contentNotes={activeNoteContent} />
         </div>
     )
 }

@@ -13,6 +13,19 @@ export default {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+			creek: {
+				"50": "#f6f4ef",
+				"100": "#eae6dd",
+				"200": "#d7d1bf",
+				"300": "#beb698",
+				"400": "#a59c76",
+				"500": "#8c835b",
+				"600": "#6c6644",
+				"700": "#545037",
+				"800": "#45422f",
+				"900": "#3c3a2b",
+				"950": "#1f1e14"
+			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
@@ -52,7 +65,7 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
   		},
   		keyframes: {
   			'accordion-down': {

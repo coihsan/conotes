@@ -10,7 +10,7 @@ import { useLiveQuery } from "dexie-react-hooks"
 import { db } from "@/lib/db"
 import { useEffect } from "react"
 import { toast } from "sonner"
-import { updateNotesThunk } from "@/lib/redux/thunk"
+import { updateNoteContent } from "@/lib/redux/thunk"
 
 const HeaderEditor: React.FC = () => {
     const { noteId } = useParams();
@@ -28,7 +28,7 @@ const HeaderEditor: React.FC = () => {
             console.log('this save')
             toast('Saved sucessfully')
         } catch (error) {
-            
+            console.log(error)
         }
     }
 

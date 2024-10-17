@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { useDispatch } from 'react-redux'
-import { debounceEvent } from '@/lib/helpers';
+import { debounceEvent } from '@/lib/utils/helpers';
 import SearchBar from '@/components/global/search-bar';
 import { Separator } from '@/components/ui/separator';
 import { LabelText } from '@/lib/label-text';

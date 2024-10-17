@@ -1,35 +1,41 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import type { RootState } from '../store';
-import { useAppDispatch } from '../../../hooks/use-redux';
 import { NoteItem } from '@/lib/types';
 import { db } from '@/lib/db';
-import { addNote, setActiveNoteContent, setNotes, updateNote } from '../slice/notes';
-import { v4 as uuid } from 'uuid';
+import { addNote, setNotes, updateNote } from '../slice/notes';
+import type { RootState, AppDispatch } from '../store'
 
 export const createAppAsyncThunk = createAsyncThunk.withTypes<{
   state: RootState
-  dispatch: typeof useAppDispatch
+  dispatch: AppDispatch
 }>()
 
-export const updateNotesThunk = createAsyncThunk(
-  'notes/updateNotes',
-  async (note: NoteItem, { dispatch }) => {
+export const getNotes = createAppAsyncThunk(
+  'notes/getNotes',
+  async (_, { dispatch }) => {
     try {
-      const existingNote = await db.notes.get(note.id);
-      if (existingNote) {
-        await db.notes.put({ ...existingNote, content: note.content });
-        dispatch(updateNote(note));
-      } else {
-        console.error(`Note ${note.id} not found.`);
-      }
+      const notes = await db.notes.toArray();
+      dispatch(setNotes(notes));
     } catch (error) {
-      console.error('Failed to update note', error);
+      console.error('Failed to fetch notes', error);
       throw error;
     }
   }
 );
 
-export const createNewNotesThunk = createAsyncThunk(
+export const updateNoteContent = createAppAsyncThunk(
+  'notes/updateNoteContent',
+  async ({ id, content }: { id: string; content: string }, { dispatch }) => {
+    try {
+      await db.notes.update(id, { content });
+      dispatch(updateNote({ id, content }));
+    } catch (error) {
+      console.error('Error updating note content:', error);
+      throw error;
+    }
+  }
+);
+
+export const createNewNotesThunk = createAppAsyncThunk(
   'notes/createNewNotes',
   async (note: NoteItem, { dispatch }) => {
     try {
@@ -42,7 +48,7 @@ export const createNewNotesThunk = createAsyncThunk(
   }
 );
 
-export const getAllNotes = createAsyncThunk(
+export const getAllNotes = createAppAsyncThunk(
   'notes/getAllNotes',
   async (_, { dispatch }) => {
     try {
@@ -56,24 +62,25 @@ export const getAllNotes = createAsyncThunk(
   }
 );
 
-export const getNotesContentByID = createAsyncThunk(
+export const getNotesContentByID = createAppAsyncThunk(
   'notes/getNotesContentByID',
-  async (id: string, { dispatch }) => {
+  async (noteId: string, { dispatch }) => {
     try {
-     const note: NoteItem | undefined = await db.notes.get(id);
+      const note = await db.notes.get(noteId);
       if (note) {
-       dispatch(setActiveNoteContent(note.content));
+        dispatch(updateNote(note));
+        return note;
       } else {
-        console.error('Note not found');
+        throw new Error('Note not found');
       }
     } catch (error) {
-      console.error('Failed to fetch note by ID', error);
+      console.error('Error fetching note content:', error);
       throw error;
     }
   }
 );
 
-export const saveNotes = createAsyncThunk(
+export const saveNotes = createAppAsyncThunk(
   'notes/saveNotes',
   async(note : NoteItem, { dispatch }) => {
     try {

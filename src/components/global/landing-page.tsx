@@ -29,9 +29,9 @@ const LandingPage: React.FC = () => {
                 </div>
             </header>
             <div className="flex flex-col mb-9 pt-9 max-w-screen-sm mx-auto">
-                <div className="uppercase px-2 py-1 rounded-full bg-yellow-200 dark:bg-yellow-900 border text-yellow-800 dark:text-yellow-400 border-yellow-500 text-xs font-semibold w-max mx-auto inline-flex rotate-3">100% Open-source</div>
-                <h1 className="text-5xl md:text-6xl font-bold text-center pt-4 pb-8 md:pt-8">Minimalistic <br /> <span className="text-yellow-500 dark:text-yellow-400">Note Taking App</span></h1>
-                <p className="text-center text-muted-foreground text-xl"><strong className="font-semibold text-emerald-500">Conotes is only available as a demo</strong>. Your notes will be saved to client-side storage and <strong className="font-semibold text-yellow-500">not persisted in any database or cloud</strong>.</p>
+                <div className="uppercase px-2 py-1 rounded-full bg-creek-200 dark:bg-creek-900 border text-creek-800 dark:text-creek-200 border-creek-500 text-xs font-semibold w-max mx-auto inline-flex rotate-3">100% Open-source</div>
+                <h1 className="text-5xl md:text-6xl font-[600] text-center pt-4 pb-8 md:pt-8 fontSora">Minimalistic <br /> <span className="text-creek-500 dark:text-creek-400">Note Taking App</span></h1>
+                <p className="text-center text-muted-foreground text-lg md:text-xl"><strong className="font-semibold text-creek-400">Conotes is only available as a demo</strong>. Your notes will be saved to client-side storage and <strong className="font-semibold text-creek-400">not persisted in any database or cloud</strong>.</p>
             </div>
                 <div className="w-full md:w-72 mx-auto flex flex-col md:flex-row justify-center items-center gap-2">
                         {isMobile ? (
@@ -57,7 +57,7 @@ const LandingPage: React.FC = () => {
             <div className="py-9">
                 <div>
                     <h1 className="text-4xl md:text-6xl font-semibold inline">
-                        A Couple of Features <em>but</em> <span className="text-yellow-500 dark:text-yellow-400">You Don't Care About It!</span>
+                        A Couple of Features <em>but</em> <span className="text-creek-500 dark:text-creek-400">You Don't Care About It!</span>
                     </h1>
                     <span className="inline-block"><img className="size-12" src={yawningEmoji} alt="yawning emoji" /></span>
                 </div>
@@ -123,7 +123,7 @@ const LandingPage: React.FC = () => {
                 )}
             />
             <footer className="py-9 text-center">
-                Develop by <Link className="underline text-yellow-500" target="_blank" to={'https://github.com/coihsan'}>coihsan</Link>
+                Develop by <Link className="underline text-creek-500" target="_blank" to={'https://github.com/coihsan'}>coihsan</Link>
             </footer>
         </section>
     )

@@ -10,11 +10,13 @@ import { useAppSelector } from "@/hooks/use-redux"
 import MenuBar from "./menubar/menubar"
 
 interface Props {
-    contentNotes: string | null
+    contentNotes: string | null;
+    onUpdate: (content: string) => void;
 }
 
-const NoteEditor: React.FC<Props> = ({ contentNotes }) => {
+const NoteEditor: React.FC<Props> = ({ contentNotes, onUpdate }) => {
     const editable = useAppSelector((state: RootState) => state.app.editable);
+    console.log('contentNotes:', contentNotes);
 
     const editor = useEditor({
         extensions: [
@@ -28,8 +30,10 @@ const NoteEditor: React.FC<Props> = ({ contentNotes }) => {
             }),
         ],
         editable: editable,
-        autofocus: true,
-        content: contentNotes,
+        content: contentNotes ? contentNotes : '<p>This is default content.</p>',
+        onUpdate: ({ editor }) => {
+            onUpdate(editor.getHTML())
+        },
     })
 
     return (
