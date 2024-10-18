@@ -5,6 +5,7 @@ import SearchBar from '@/components/global/search-bar';
 import { Separator } from '@/components/ui/separator';
 import { LabelText } from '@/lib/label-text';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import HeaderSidebar from '@/components/global/header-sidebar';
 
 const Tagslist = () => {
     const searchRef = useRef() as React.MutableRefObject<HTMLInputElement>
@@ -12,10 +13,7 @@ const Tagslist = () => {
 
     return (
         <aside className='sidebarOption'>
-            <div className='static pb-4 px-4'>
-                <span className="text-xl font-bold">{LabelText.TAGS}</span>
-                {/* <SearchBar searchRef={searchRef} searchQuery={_searchNotes} /> */}
-            </div>
+            <HeaderSidebar labelName={LabelText.TAGS} />
             <Separator orientation='horizontal' />
             <ScrollArea className='px-2'>
                 {/* content */}

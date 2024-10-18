@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/redux/store';
 import { MenuType } from '@/lib/enums';
 import Tagslist from "@/containers/tagslist";
-import Boomark from "@/containers/boomark";
+import Favorites from "@/containers/favorites";
 import TrashNotes from "@/containers/trash";
 import Settings from "@/containers/settings";
 import Folders from "@/containers/folders";
@@ -33,7 +33,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             <ResizablePanel className="min-w-[280px] max-w-[500px]" defaultSize={25}>
               {activeMenu === MenuType.NOTES && <NoteList />}
               {activeMenu === MenuType.TAGS && <Tagslist />}
-              {activeMenu === MenuType.FAVORITE && <Boomark />}
+              {activeMenu === MenuType.FAVORITE && <Favorites />}
               {activeMenu === MenuType.TRASH && <TrashNotes />}
               {activeMenu === MenuType.SETTINGS && <Settings />}
               {activeMenu === MenuType.FOLDER && <Folders />}

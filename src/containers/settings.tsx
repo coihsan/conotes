@@ -4,6 +4,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { useAppDispatch } from '@/hooks/use-redux';
 import { setToggleEditor } from '@/lib/redux/slice/app';
+import HeaderSidebar from '@/components/global/header-sidebar';
 
 const Settings = () => {
     const dispatch = useAppDispatch()
@@ -11,10 +12,7 @@ const Settings = () => {
 
     return (
         <aside className='sidebarOption'>
-            <div className="flex items-center justify-between mb-2 px-4 pb-4">
-                <span className="text-xl font-bold">{LabelText.SETTINGS}</span>
-            </div>
-
+            <HeaderSidebar labelName={LabelText.SETTINGS} />
             <Separator orientation='horizontal' />
             <ScrollArea className='px-2'>
                 <div className='p-4'>

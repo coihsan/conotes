@@ -83,8 +83,8 @@ const notesSlice = createSlice({
     })
     // get notes content by ID
     .addCase(getNotesContentByID.fulfilled, (state, action) => {
-      state.activeNoteId = action.payload
-      state.loading = false
+      state.activeNoteId = action.payload.content
+      state.loading = true
       state.status = 'succeeded'
     })
     .addCase(getNotesContentByID.pending, (state) => {

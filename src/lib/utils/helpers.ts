@@ -54,3 +54,7 @@ export const debounceEvent = <T extends Function>(cb: T, wait = 20) => {
 
   return <T>(<any>callable)
 }
+
+export const getActiveNote = (notes : NoteItem[], activeNoteId: string) => {
+  notes.find((note) => note.id === activeNoteId)
+}

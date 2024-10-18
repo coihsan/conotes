@@ -1,51 +1,28 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { ScrollArea } from '@/components/ui/scroll-area';
-import ButtonMenu from '@/components/primitive/button-menu';
-import { searchQuery } from '@/lib/redux/slice/notes';
-import { Filter24Regular, Folder20Regular, NoteAdd24Regular, Pin24Regular, Star20Filled } from '@fluentui/react-icons';
-import SearchBar from '@/components/global/search-bar';
+import React, { useEffect, useRef } from 'react'
+import { Folder20Regular, Star20Filled } from '@fluentui/react-icons';
+import { debounceEvent, getNotesTitle } from '@/lib/utils/helpers';
 import { LabelText } from '@/lib/label-text';
 import { Separator } from '@/components/ui/separator';
-import { v4 } from 'uuid';
-import dayjs from 'dayjs';
-import SettingsMenuNotes from '../settings/settings-menu-notes';
-import { Badge } from '@/components/ui/badge';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { debounceEvent, getNotesTitle } from "@/lib/utils/helpers"
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { searchQuery } from '@/lib/redux/slice/notes';
+import { getAllNotes } from '@/lib/redux/thunk';
+import { useToast } from '@/hooks/use-toast';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/hooks/use-redux';
 import { RootState } from '@/lib/redux/store';
 import clsx from 'clsx';
-import { useToast } from '@/hooks/use-toast';
-import { createNewNotesThunk, getAllNotes } from '@/lib/redux/thunk';
-import { NoteItem } from '@/lib/types';
+import { Badge } from '@/components/ui/badge';
+import SettingsMenuNotes from '../settings/settings-menu-notes';
+import SearchBar from '@/components/global/search-bar';
 import HeaderSidebar from '@/components/global/header-sidebar';
 
-const NoteList = () => {
-    const { toast } = useToast()
+const Favorites = () => {
     const location = useLocation()
     const searchRef = useRef() as React.MutableRefObject<HTMLInputElement>
-    const navigate = useNavigate()
     const dispatch = useAppDispatch()
 
     const allNotes = useAppSelector((state) => state.notes.notes)
     const _searchValues = useAppSelector((state: RootState) => state.notes.searchValue)
-    
-    const createInitialNote = (): NoteItem => {
-        const currentItem = dayjs().format('DD-MM-YYYY');
-        return {
-            id: v4(),
-            title: 'Notes 3',
-            content: 'Hello saya adalah conotes 3',
-            createdAt: currentItem,
-            lastUpdated: currentItem,
-            tags: [],
-            trash: false,
-            pinned: true,
-            favorite: true,
-            folder: "Notes"
-        };
-    };
-    const [notes, setNotes] = useState<NoteItem>(createInitialNote());
 
     const _searchNotes = debounceEvent(
         (searchValue: string) => dispatch(searchQuery(searchValue)),
@@ -55,7 +32,7 @@ const NoteList = () => {
         if (_searchValues) return
     }, [_searchNotes])
 
-    useEffect(() =>{
+    useEffect(() => {
         dispatch(getAllNotes())
     }, [dispatch])
 
@@ -64,45 +41,19 @@ const NoteList = () => {
             notes.title.toLowerCase().includes(_searchValues))
         : allNotes;
 
-    const handleNewNote = async () => {
-        try {
-            const newNote = { ...notes, id: v4() };
-            await dispatch(createNewNotesThunk(newNote as NoteItem));
-            toast({
-                title: "Success",
-                description: "New note created successfully",
-            });
-            navigate(`/app/${newNote.id}`);
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    const fetchFavoriteNotes = filteredNotes.filter(note => note.favorite)
 
     return (
         <aside className='sidebarOption'>
-            <HeaderSidebar labelName={LabelText.NOTES}
-                buttonAction={
-                    <ButtonMenu action={handleNewNote} side="bottom" variant={'ghost'} size={'icon'} label={LabelText.CREATE_NEW_NOTE}>
-                        <NoteAdd24Regular />
-                    </ButtonMenu>
-                }
-                filterAction={
-                    <ButtonMenu side="bottom" variant={'ghost'} size={'icon'} label={LabelText.FILTER}>
-                        <Filter24Regular />
-                    </ButtonMenu>
-                }
-                searchAction={
-                    <SearchBar searchRef={searchRef} searchQuery={_searchNotes} />
-                }
-            />
-            <Separator className='mt-4' orientation='horizontal' />
+            <HeaderSidebar labelName={LabelText.FAVORITE} />
+            <Separator orientation='horizontal' />
             <ScrollArea className='h-full pt-2 scroll-smooth snap-y touch-pan-y'>
                 <div className='snap-end'>
                     {filteredNotes?.length === 0 ? (
                         <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>No notes it's here</div>
                     ) : (
                         <div className='grid grid-cols-1 gap-2 px-2'>
-                            {filteredNotes?.map((item) => (
+                            {fetchFavoriteNotes?.map((item) => (
                                 <Link to={`/app/${item.id}`}
                                     key={item.id}
                                     tabIndex={0}
@@ -114,11 +65,6 @@ const NoteList = () => {
                                                 : null
                                             }
                                         </div>
-                                        {item.pinned ? (
-                                            <Pin24Regular className='absolute right-6 top-3 text-600 dark:text-zinc-300 size-5' />
-                                        ) : (
-                                            null
-                                        )}
                                         <div className='flex flex-col w-full gap-4 pl-4'>
                                             <h3 className='text-sm font-medium w-full line-clamp-1' aria-label={item.title}>
                                                 {getNotesTitle(item.title)}
@@ -155,4 +101,4 @@ const NoteList = () => {
     )
 }
 
-export default NoteList;
+export default Favorites;

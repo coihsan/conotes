@@ -119,7 +119,7 @@ const LandingPage: React.FC = () => {
                 y={-1}
                 strokeDasharray={"4 2"}
                 className={cn(
-                    "[mask-image:radial-gradient(300px_circle_at_top,white,transparent)] -z-50",
+                    "[mask-image:radial-gradient(600px_circle_at_top,white,transparent)] -z-50",
                 )}
             />
             <footer className="py-9 text-center">

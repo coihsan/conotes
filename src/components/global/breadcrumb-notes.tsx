@@ -1,7 +1,6 @@
 import {
     Breadcrumb,
     BreadcrumbItem,
-    BreadcrumbLink,
     BreadcrumbList,
     BreadcrumbPage,
     BreadcrumbSeparator,
@@ -9,6 +8,7 @@ import {
 import { getDocumentName } from "@/lib/utils/helpers";
 import { Home24Regular } from "@fluentui/react-icons";
 import React from "react";
+import { Link } from "react-router-dom";
 
 type routeName = {
     params: string
@@ -19,7 +19,7 @@ const BreadcrumbNotes: React.FC<routeName> = ({params}) => {
         <Breadcrumb>
             <BreadcrumbList>
                 <BreadcrumbItem>
-                    <BreadcrumbLink href="/app"><Home24Regular /></BreadcrumbLink>
+                    <Link to={'/app'}><Home24Regular /></Link>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>

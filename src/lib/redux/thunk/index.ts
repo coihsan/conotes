@@ -1,8 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { NoteItem } from '@/lib/types';
 import { db } from '@/lib/db';
-import { addNote, setNotes, updateNote } from '../slice/notes';
+import { addNote, setActiveNoteContent, setNotes, updateNote } from '../slice/notes';
 import type { RootState, AppDispatch } from '../store'
+import { setActiveMenu } from '../slice/app';
 
 export const createAppAsyncThunk = createAsyncThunk.withTypes<{
   state: RootState
@@ -77,7 +78,7 @@ export const getNotesContentByID = createAppAsyncThunk(
       console.error('Error fetching note content:', error);
       throw error;
     }
-  }
+  },
 );
 
 export const saveNotes = createAppAsyncThunk(

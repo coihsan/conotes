@@ -1,22 +1,21 @@
 import css from '../styles/editor.module.scss'
-import { EditorContent, useEditor } from '@tiptap/react'
+import { EditorContent, HTMLContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import TextAlign from '@tiptap/extension-text-align'
 import { cn } from "@/lib/utils/cn"
 import React from "react"
 import { RootState } from "@/lib/redux/store"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { useAppSelector } from "@/hooks/use-redux"
 import MenuBar from "./menubar/menubar"
+import TextAlign from '@tiptap/extension-text-align'
 
 interface Props {
     contentNotes: string | null;
-    onUpdate: (content: string) => void;
+    onChange: (content: HTMLContent) => void;
 }
 
-const NoteEditor: React.FC<Props> = ({ contentNotes, onUpdate }) => {
+const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
     const editable = useAppSelector((state: RootState) => state.app.editable);
-    console.log('contentNotes:', contentNotes);
 
     const editor = useEditor({
         extensions: [
@@ -30,11 +29,11 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onUpdate }) => {
             }),
         ],
         editable: editable,
-        content: contentNotes ? contentNotes : '<p>This is default content.</p>',
+        content: contentNotes,
         onUpdate: ({ editor }) => {
-            onUpdate(editor.getHTML())
+            onChange(editor.getHTML())
         },
-    })
+    }, [contentNotes])
 
     return (
         <div>
