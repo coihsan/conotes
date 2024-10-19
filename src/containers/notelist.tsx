@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area';
 import ButtonMenu from '@/components/primitive/button-menu';
 import { searchQuery } from '@/lib/redux/slice/notes';
-import { Filter24Regular, Folder20Regular, NoteAdd24Regular, Pin24Regular, Star20Filled } from '@fluentui/react-icons';
+import { Filter24Regular, Folder20Regular, NoteAdd24Regular, Star20Filled } from '@fluentui/react-icons';
 import SearchBar from '@/components/global/search-bar';
 import { LabelText } from '@/lib/label-text';
 import { Separator } from '@/components/ui/separator';
@@ -16,7 +16,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/use-redux';
 import { RootState } from '@/lib/redux/store';
 import clsx from 'clsx';
 import { useToast } from '@/hooks/use-toast';
-import { createNewNotesThunk, getAllNotes } from '@/lib/redux/thunk';
+import { createNewNotesThunk, getAllNotesThunk } from '@/lib/redux/thunk';
 import { NoteItem } from '@/lib/types';
 import HeaderSidebar from '@/components/global/header-sidebar';
 
@@ -34,13 +34,12 @@ const NoteList = () => {
         const currentItem = dayjs().format('DD-MM-YYYY');
         return {
             id: v4(),
-            title: 'Notes 3',
-            content: 'Hello saya adalah conotes 3',
+            title: '',
+            content: '',
             createdAt: currentItem,
             lastUpdated: currentItem,
             tags: [],
             trash: false,
-            pinned: true,
             favorite: true,
             folder: "Notes"
         };
@@ -56,7 +55,7 @@ const NoteList = () => {
     }, [_searchNotes])
 
     useEffect(() =>{
-        dispatch(getAllNotes())
+        dispatch(getAllNotesThunk())
     }, [dispatch])
 
     const filteredNotes = _searchValues
@@ -114,14 +113,9 @@ const NoteList = () => {
                                                 : null
                                             }
                                         </div>
-                                        {item.pinned ? (
-                                            <Pin24Regular className='absolute right-6 top-3 text-600 dark:text-zinc-300 size-5' />
-                                        ) : (
-                                            null
-                                        )}
                                         <div className='flex flex-col w-full gap-4 pl-4'>
                                             <h3 className='text-sm font-medium w-full line-clamp-1' aria-label={item.title}>
-                                                {getNotesTitle(item.title)}
+                                                {getNotesTitle(item.content)}
                                             </h3>
                                             <div className='flex items-center gap-3'>
                                                 {item.folder ?

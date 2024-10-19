@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { NoteItem, NoteState } from '@/lib/types'
-import { getNotes, getNotesContentByID, updateNoteContent } from '../thunk';
+import { getNotes, getNotesContentByID, updateNoteContentThunk } from '../thunk';
 
 const initialState: NoteState = {
   notes: [],
@@ -19,16 +19,12 @@ const notesSlice = createSlice({
     addNote: (state, { payload }: PayloadAction<NoteItem>) => {
       state.notes.push(payload);
     },
-    updateNote: (state, action: PayloadAction<Partial<NoteItem>>) => { 
-      const { id, content, title } = action.payload; 
-      const existingNotes = state.notes.find((note) => note.id === id);
-      if(existingNotes){
-        existingNotes.content = content || ''
-        existingNotes.title = title || ''
-      }
-    },
-    saveNotes : (state, {payload} : PayloadAction<NoteItem[]>) => {
-      state.notes = payload
+    updateNoteContent: (state, { payload }: PayloadAction<NoteItem>) => {
+      state.notes = state.notes.map((note) =>
+        note.id === payload.id
+          ? { ...note, content: payload.content, lastUpdated: payload.lastUpdated }
+          : note
+      )
     },
     setActiveNoteContent: (state, { payload }: PayloadAction<string>) => {
       state.activeNoteId = payload;
@@ -58,14 +54,14 @@ const notesSlice = createSlice({
   extraReducers(builder) {
     builder
     // update notes
-    .addCase(updateNoteContent.fulfilled, (state, action) =>{
+    .addCase(updateNoteContentThunk.fulfilled, (state, action) =>{
       if(state.notes) return action.payload
       state.status = 'succeeded'
     })
-    .addCase(updateNoteContent.pending, (state) => {
+    .addCase(updateNoteContentThunk.pending, (state) => {
       state.status = 'pending'
     })
-    .addCase(updateNoteContent.rejected, (state, action) => {
+    .addCase(updateNoteContentThunk.rejected, (state, action) => {
       state.status = 'rejected'
       state.error = action.error.message
     })
@@ -98,7 +94,7 @@ const notesSlice = createSlice({
 })
 export const {
   addNote,
-  updateNote,
+  updateNoteContent,
   searchQuery,
   toggleFavorite,
   toggleTrash,

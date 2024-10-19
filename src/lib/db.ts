@@ -7,7 +7,7 @@ export class ConotesApp extends Dexie {
   constructor() {
     super('conotes');
     this.version(1).stores({
-      notes: '++id, content, title, createdAt, favorite, lastUpdated, pinned, trash, *tags, *folderId',
+      notes: '++id, content, title, createdAt, favorite, lastUpdated, trash, *tags, *folderId',
     });
   };
 }

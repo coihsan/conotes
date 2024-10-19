@@ -11,7 +11,6 @@ export interface NoteItem {
   tags: TagItem[]
   trash: boolean
   favorite: boolean
-  pinned: boolean
   folder: DefaultFolder
   folderId?: string
 }

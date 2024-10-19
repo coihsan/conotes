@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/collapsible"
 import ButtonMenu from '@/components/primitive/button-menu';
 import { LabelText } from '@/lib/label-text';
-import AddCategoryForm from './add-category-form';
+import AddCategoryForm from '../form/add-category-form';
 import { Link } from 'react-router-dom';
 
 

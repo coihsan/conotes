@@ -7,6 +7,7 @@ import { RootState } from "@/lib/redux/store"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { useAppSelector } from "@/hooks/use-redux"
 import MenuBar from "./menubar/menubar"
+import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
 
 interface Props {
@@ -24,16 +25,24 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
                     levels: [1, 2, 3, 4, 5, 6],
                 },
             }),
+            Placeholder.configure({
+                placeholder: 'Write something …',
+                showOnlyWhenEditable: false,
+                emptyEditorClass: 'is-editor-empty',
+                emptyNodeClass: 'dasdasd',
+              })
+            ,
             TextAlign.configure({
                 types: ['heading', 'paragraph'],
             }),
         ],
         editable: editable,
+        autofocus: true,
         content: contentNotes,
         onUpdate: ({ editor }) => {
             onChange(editor.getHTML())
         },
-    }, [contentNotes])
+    }, [contentNotes, editable, onChange])
 
     return (
         <div>

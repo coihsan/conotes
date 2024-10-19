@@ -1,47 +1,19 @@
-import React, { useEffect, useRef } from 'react'
 import { Folder20Regular, Star20Filled } from '@fluentui/react-icons';
-import { debounceEvent, getNotesTitle } from '@/lib/utils/helpers';
+import { getNotesTitle } from '@/lib/utils/helpers';
 import { LabelText } from '@/lib/label-text';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { searchQuery } from '@/lib/redux/slice/notes';
-import { getAllNotes } from '@/lib/redux/thunk';
-import { useToast } from '@/hooks/use-toast';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '@/hooks/use-redux';
-import { RootState } from '@/lib/redux/store';
+import { Link, useLocation } from 'react-router-dom';
+import { useAppSelector } from '@/hooks/use-redux';
 import clsx from 'clsx';
 import { Badge } from '@/components/ui/badge';
 import SettingsMenuNotes from '../settings/settings-menu-notes';
-import SearchBar from '@/components/global/search-bar';
 import HeaderSidebar from '@/components/global/header-sidebar';
 
 const Favorites = () => {
     const location = useLocation()
-    const searchRef = useRef() as React.MutableRefObject<HTMLInputElement>
-    const dispatch = useAppDispatch()
-
     const allNotes = useAppSelector((state) => state.notes.notes)
-    const _searchValues = useAppSelector((state: RootState) => state.notes.searchValue)
-
-    const _searchNotes = debounceEvent(
-        (searchValue: string) => dispatch(searchQuery(searchValue)),
-        100
-    )
-    useEffect(() => {
-        if (_searchValues) return
-    }, [_searchNotes])
-
-    useEffect(() => {
-        dispatch(getAllNotes())
-    }, [dispatch])
-
-    const filteredNotes = _searchValues
-        ? allNotes?.filter((notes) =>
-            notes.title.toLowerCase().includes(_searchValues))
-        : allNotes;
-
-    const fetchFavoriteNotes = filteredNotes.filter(note => note.favorite)
+    const fetchFavoriteNotes = allNotes.filter(note => note.favorite)
 
     return (
         <aside className='sidebarOption'>
@@ -49,7 +21,7 @@ const Favorites = () => {
             <Separator orientation='horizontal' />
             <ScrollArea className='h-full pt-2 scroll-smooth snap-y touch-pan-y'>
                 <div className='snap-end'>
-                    {filteredNotes?.length === 0 ? (
+                    {allNotes?.length === 0 ? (
                         <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>No notes it's here</div>
                     ) : (
                         <div className='grid grid-cols-1 gap-2 px-2'>

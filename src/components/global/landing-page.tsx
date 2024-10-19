@@ -21,7 +21,7 @@ const LandingPage: React.FC = () => {
                 <div className="text-2xl font-bold">conotes</div>
                 <div className="flex items-center gap-2">
                     <ModeToggle />
-                    <Link className="w-full" target="_blank" to="https://github.com/coihsan/coeditor">
+                    <Link className="w-full" target="_blank" to="https://github.com/coihsan/conotes">
                         <Button size={'icon'} variant={'outline'}>
                             <GitHub />
                         </Button>
@@ -31,7 +31,7 @@ const LandingPage: React.FC = () => {
             <div className="flex flex-col mb-9 pt-9 max-w-screen-sm mx-auto">
                 <div className="uppercase px-2 py-1 rounded-full bg-creek-200 dark:bg-creek-900 border text-creek-800 dark:text-creek-200 border-creek-500 text-xs font-semibold w-max mx-auto inline-flex rotate-3">100% Open-source</div>
                 <h1 className="text-5xl md:text-6xl font-[600] text-center pt-4 pb-8 md:pt-8 fontSora">Minimalistic <br /> <span className="text-creek-500 dark:text-creek-400">Note Taking App</span></h1>
-                <p className="text-center text-muted-foreground text-lg md:text-xl"><strong className="font-semibold text-creek-400">Conotes is only available as a demo</strong>. Your notes will be saved to client-side storage and <strong className="font-semibold text-creek-400">not persisted in any database or cloud</strong>.</p>
+                <p className="text-center text-muted-foreground text-lg md:text-xl"><strong className="font-semibold text-creek-400">Conotes is only available as a demo version.<br /></strong>Any notes you create are stored in the your browser and <strong className="font-semibold text-creek-400">not persisted in any database or cloud</strong>.</p>
             </div>
                 <div className="w-full md:w-72 mx-auto flex flex-col md:flex-row justify-center items-center gap-2">
                         {isMobile ? (
@@ -44,7 +44,7 @@ const LandingPage: React.FC = () => {
                                 </Button>
                             </Link>
                         )}
-                    <Link className="w-full" target="_blank" to="https://github.com/coihsan/coeditor">
+                    <Link className="w-full" target="_blank" to="https://github.com/coihsan/conotes">
                         <Button size={'lg'} className="w-full flex items-center gap-2" variant={'secondary'}>
                             <GitHub />
                             View on GitHub
@@ -57,7 +57,7 @@ const LandingPage: React.FC = () => {
             <div className="py-9">
                 <div>
                     <h1 className="text-4xl md:text-6xl font-semibold inline">
-                        A Couple of Features <em>but</em> <span className="text-creek-500 dark:text-creek-400">You Don't Care About It!</span>
+                    Some features <em>but</em><span className="text-creek-500 dark:text-creek-400"> that doesn't really matter!</span>
                     </h1>
                     <span className="inline-block"><img className="size-12" src={yawningEmoji} alt="yawning emoji" /></span>
                 </div>
@@ -71,43 +71,43 @@ const LandingPage: React.FC = () => {
                     <Card>
                         <CardHeader>
                             <CardTitle>No Ads or Advertising</CardTitle>
-                            <CardDescription>Without any ads, this will make your experience on our app as smooth as possible.</CardDescription>
+                            <CardDescription>This makes your experience in our app as smooth as possible without any ads.</CardDescription>
                         </CardHeader>
                     </Card>
                     <Card>
                         <CardHeader>
                             <CardTitle>No Tracking or Analytics</CardTitle>
-                            <CardDescription>We don't collect any information from users.</CardDescription>
+                            <CardDescription>We do not collect any information from our users.</CardDescription>
                         </CardHeader>
                     </Card>
                     <Card>
                         <CardHeader>
                             <CardTitle>Support <Link className="text-blue-500 underline" target='_blank' to={'https://en.wikipedia.org/wiki/WYSIWYG'}>WYSIWYG</Link></CardTitle>
-                            <CardDescription>We are use <Link to={'https://tiptap.dev/'} className="text-blue-500 underline" target='_blank'>Tiptap Editor</Link> as main library part of our app </CardDescription>
+                            <CardDescription>We are using <Link to={'https://tiptap.dev/'} className="text-blue-500 underline" target='_blank'>Tiptap Editor</Link> as main the library this is part of our app.</CardDescription>
                         </CardHeader>
                     </Card>
                     <Card>
                         <CardHeader>
                             <CardTitle>No Database</CardTitle>
-                            <CardDescription>All notes are only stored in your browser <Link className="text-blue-500 underline" target='_blank' to={'https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API'}> (indexedDB)</Link> but don't provide any data sensitive</CardDescription>
+                            <CardDescription>All notes will be saved to client-side storage in <Link className="text-blue-500 underline" target='_blank' to={'https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API'}> (indexedDB)</Link> <em>but don't provide any data sensitive</em>.</CardDescription>
                         </CardHeader>
                     </Card>
                     <Card>
                         <CardHeader>
                             <CardTitle>No Login</CardTitle>
-                            <CardDescription>Only available for demo user w/o login or signup action</CardDescription>
+                            <CardDescription>Only available for demo user w/o login or signup action required.</CardDescription>
                         </CardHeader>
                     </Card>
                     <Card>
                         <CardHeader>
                             <CardTitle>Search Notes</CardTitle>
-                            <CardDescription>Easely search all notes, or notes with specific tag</CardDescription>
+                            <CardDescription>Easely search all notes, or notes with specific tag.</CardDescription>
                         </CardHeader>
                     </Card>
                     <Card>
                         <CardHeader>
                             <CardTitle>Drag-n-drop</CardTitle>
-                            <CardDescription>For easy management of notes</CardDescription>
+                            <CardDescription>For easy management of notes.</CardDescription>
                         </CardHeader>
                     </Card>
                 </div>

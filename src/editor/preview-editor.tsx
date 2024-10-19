@@ -7,8 +7,9 @@ import HeaderEditor from "./header-editor"
 import BreadcrumbNotes from "@/components/global/breadcrumb-notes"
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux"
 import { getNotesContentByID } from "@/lib/redux/thunk"
-import { updateNote } from "@/lib/redux/slice/notes"
+import { updateNoteContent } from "@/lib/redux/slice/notes"
 import { debounceEvent } from "@/lib/utils/helpers"
+import { NoteItem } from "@/lib/types"
 
 const PreviewEditor: React.FC = () => {
     const { noteId } = useParams()
@@ -19,10 +20,12 @@ const PreviewEditor: React.FC = () => {
     const getNotesData = useAppSelector((state) => state.notes.notes);
     const getNotesForCrumbs = getNotesData.find((note) => noteId === note.id)?.title || ''
 
-    const handleUpdateNotes = debounceEvent((newNote: string) =>{
-      dispatch(updateNote({content: newNote}))
-    })
-
+    const handleUpdateNotes = debounceEvent((content: string) => {
+      const updatedNote: Pick<NoteItem, "content"> = {
+        content: content,
+      };
+      dispatch(updateNoteContent(updatedNote.content));
+    });
 
     useEffect(() => {
         if (noteId) {

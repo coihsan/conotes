@@ -5,32 +5,14 @@ import ButtonMenu from "@/components/primitive/button-menu"
 import { Edit24Regular, Save24Regular, Settings24Regular, Star24Regular } from "@fluentui/react-icons"
 import { LabelText } from "@/lib/label-text"
 import { Separator } from "@/components/ui/separator"
-import { useParams } from "react-router-dom"
-import { useLiveQuery } from "dexie-react-hooks"
-import { db } from "@/lib/db"
 import { useEffect } from "react"
 import { toast } from "sonner"
-import { updateNoteContent } from "@/lib/redux/thunk"
 
 const HeaderEditor: React.FC = () => {
-    const { noteId } = useParams();
 
     // DISPATCH & SELECTOR
     const dispatch = useAppDispatch()
     const editable = useAppSelector((state: RootState) => state.app.editable);
-    // QUERIES
-    const notesItem = useLiveQuery(() => db.notes.toArray())
-    const notesData = notesItem?.find((note) => note.id === noteId)
-
-    const handleSave = () =>{
-        try {
-            dispatch(setEditableEditor(false));
-            console.log('this save')
-            toast('Saved sucessfully')
-        } catch (error) {
-            console.log(error)
-        }
-    }
 
     useEffect(() => {
         if (editable) {
@@ -38,10 +20,19 @@ const HeaderEditor: React.FC = () => {
         }
     }, [editable, dispatch]);
 
+    const handleSave = () => {
+        try {
+            dispatch(setEditableEditor(false));
+            toast('Saved sucessfully')
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <header>
             <div className="flex items-center">
-                <div className="text-muted-foreground text-xs pr-4">Last update : {notesData?.lastUpdated}</div>
+                <div className="text-muted-foreground text-xs pr-4">Last update : </div>
                 {editable ? (
                     <ButtonMenu
                         label={LabelText.SAVE_NOTES}

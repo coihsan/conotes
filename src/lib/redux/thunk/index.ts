@@ -1,9 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { NoteItem } from '@/lib/types';
 import { db } from '@/lib/db';
-import { addNote, setActiveNoteContent, setNotes, updateNote } from '../slice/notes';
+import { addNote, setNotes, updateNoteContent } from '../slice/notes';
 import type { RootState, AppDispatch } from '../store'
-import { setActiveMenu } from '../slice/app';
 
 export const createAppAsyncThunk = createAsyncThunk.withTypes<{
   state: RootState
@@ -23,14 +22,20 @@ export const getNotes = createAppAsyncThunk(
   }
 );
 
-export const updateNoteContent = createAppAsyncThunk(
+export const updateNoteContentThunk = createAppAsyncThunk(
   'notes/updateNoteContent',
-  async ({ id, content }: { id: string; content: string }, { dispatch }) => {
+  async (note: NoteItem, { dispatch }) => {
     try {
-      await db.notes.update(id, { content });
-      dispatch(updateNote({ id, content }));
+      const existingNote = await db.notes.get(note.id);
+
+      if (existingNote) {
+        await db.notes.put(note);
+        dispatch(updateNoteContent(note));
+      } else {
+        console.error(`Note with ID ${note.id} not found.`);
+      }
     } catch (error) {
-      console.error('Error updating note content:', error);
+      console.error('Failed to update note', error);
       throw error;
     }
   }
@@ -49,7 +54,7 @@ export const createNewNotesThunk = createAppAsyncThunk(
   }
 );
 
-export const getAllNotes = createAppAsyncThunk(
+export const getAllNotesThunk = createAppAsyncThunk(
   'notes/getAllNotes',
   async (_, { dispatch }) => {
     try {
@@ -69,7 +74,7 @@ export const getNotesContentByID = createAppAsyncThunk(
     try {
       const note = await db.notes.get(noteId);
       if (note) {
-        dispatch(updateNote(note));
+        dispatch(updateNoteContent(note));
         return note;
       } else {
         throw new Error('Note not found');
@@ -81,12 +86,12 @@ export const getNotesContentByID = createAppAsyncThunk(
   },
 );
 
-export const saveNotes = createAppAsyncThunk(
+export const saveNotesContentThunk = createAppAsyncThunk(
   'notes/saveNotes',
   async(note : NoteItem, { dispatch }) => {
     try {
       await db.notes.put(note);
-      dispatch(updateNote(note));
+      dispatch(updateNoteContent(note));
     } catch (error) {
       console.error('Failed to save note', error);
       throw error;
