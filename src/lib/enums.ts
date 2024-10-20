@@ -11,11 +11,10 @@ export enum NotesSortKey {
 }
 
 export enum MenuType {
-  NOTES = 'NOTES',
-  TAGS = 'TAGS',
-  FOLDER = "FOLDER",
-  FAVORITE = 'FAVORITE',
-  TRASH = 'TRASH',
-  SETTINGS = 'SETTINGS',
-  ACCOUNT = 'ACCOUNT',
+  NOTES = 'Notes',
+  TAGS = 'Tags',
+  FAVORITE = 'Favorites',
+  TRASH = 'Trash',
+  SETTINGS = 'Settings',
+  ACCOUNT = 'Account',
 }

@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/hooks/use-redux";
+import { useAppSelector } from "@/lib/hooks/use-redux";
 import { RootState } from "@/lib/redux/store";
 import { Editor } from "@tiptap/react"
 import StaticToolbar from "./static-toolbar";

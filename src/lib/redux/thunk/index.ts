@@ -9,31 +9,14 @@ export const createAppAsyncThunk = createAsyncThunk.withTypes<{
   dispatch: AppDispatch
 }>()
 
-export const getNotes = createAppAsyncThunk(
-  'notes/getNotes',
-  async (_, { dispatch }) => {
-    try {
-      const notes = await db.notes.toArray();
-      dispatch(setNotes(notes));
-    } catch (error) {
-      console.error('Failed to fetch notes', error);
-      throw error;
-    }
-  }
-);
+// THUNK
 
 export const updateNoteContentThunk = createAppAsyncThunk(
   'notes/updateNoteContent',
   async (note: NoteItem, { dispatch }) => {
     try {
-      const existingNote = await db.notes.get(note.id);
-
-      if (existingNote) {
-        await db.notes.put(note);
-        dispatch(updateNoteContent(note));
-      } else {
-        console.error(`Note with ID ${note.id} not found.`);
-      }
+      await db.notes.put(note);
+      dispatch(updateNoteContent(note));
     } catch (error) {
       console.error('Failed to update note', error);
       throw error;
@@ -45,8 +28,8 @@ export const createNewNotesThunk = createAppAsyncThunk(
   'notes/createNewNotes',
   async (note: NoteItem, { dispatch }) => {
     try {
-      await db.notes.add({ ...note});
-      dispatch(addNote({ ...note}));
+      await db.notes.add({ ...note });
+      dispatch(addNote({ ...note }));
     } catch (error) {
       console.error('Failed to create note', error);
       throw error;
@@ -59,7 +42,7 @@ export const getAllNotesThunk = createAppAsyncThunk(
   async (_, { dispatch }) => {
     try {
       const notes: NoteItem[] = await db.notes.toArray();
-      const sortedNotes = notes.sort((a, b) => a.title.localeCompare(b.title));
+      const sortedNotes = notes.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
       dispatch(setNotes(sortedNotes));
     } catch (error) {
       console.error('Failed to fetch all notes', error);
@@ -68,13 +51,12 @@ export const getAllNotesThunk = createAppAsyncThunk(
   }
 );
 
-export const getNotesContentByID = createAppAsyncThunk(
+export const getNotesContentByIDThunk = createAppAsyncThunk(
   'notes/getNotesContentByID',
-  async (noteId: string, { dispatch }) => {
+  async (noteId: string) => {
     try {
       const note = await db.notes.get(noteId);
       if (note) {
-        dispatch(updateNoteContent(note));
         return note;
       } else {
         throw new Error('Note not found');
@@ -88,13 +70,36 @@ export const getNotesContentByID = createAppAsyncThunk(
 
 export const saveNotesContentThunk = createAppAsyncThunk(
   'notes/saveNotes',
-  async(note : NoteItem, { dispatch }) => {
+  async (data: { noteId: string, content: Pick<NoteItem, 'content' | 'lastUpdated'> }, { dispatch }) => {
     try {
-      await db.notes.put(note);
-      dispatch(updateNoteContent(note));
+      const existingNote = await db.notes.get(data.noteId); 
+
+      if (existingNote) {
+        const updatedNote = { ...existingNote, ...data.content };
+
+        await db.notes.put(updatedNote);
+        dispatch(updateNoteContent(updatedNote));
+      } else {
+        throw new Error('Note not found'); 
+      }
     } catch (error) {
       console.error('Failed to save note', error);
       throw error;
     }
   }
-)
+);
+
+export const updateTitleThunk = createAppAsyncThunk(
+  'notes/saveTitle',
+  async (data: { noteId: string, newTitle: Pick<NoteItem, 'title'> }, { dispatch }) => {
+    const titleNotes = await db.notes.get(data.noteId);
+    if (titleNotes) {
+      const updatedNote = { ...titleNotes, ...data.newTitle };
+      await db.notes.put(updatedNote); 
+      dispatch(updateNoteContent(updatedNote)); 
+    } else {
+      console.error('Note not found'); 
+    }
+  }
+);
+

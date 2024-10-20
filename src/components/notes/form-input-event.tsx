@@ -2,34 +2,34 @@ import React from 'react'
 import { Input } from '@/components/ui/input'
 import { ReactSubmitEvent } from '@/lib/types'
 
-export interface RenameNotesFormProps {
+export interface FormInputEventProps {
   submitHandler: (event: ReactSubmitEvent) => void,
   changeHandler: (editNotesTitle: string, value: string) => void,
   resetHandler: () => void,
-  editingNameNotesId: string,
-  nameNotes: string,
+  editingFormId: string,
+  nameForm: string,
 }
 
-const RenameNotesForm: React.FC<RenameNotesFormProps> = ({
+const FormInputEvent: React.FC<FormInputEventProps> = ({
   submitHandler,
   changeHandler,
   resetHandler,
-  editingNameNotesId,
-  nameNotes
+  editingFormId,
+  nameForm
 }) => {
   return (
     <form action="">
       <Input
         type="text"
-        aria-label="Notes title"
+        aria-label={nameForm}
         maxLength={20}
         autoFocus={true}
-        placeholder="New title..."
+        placeholder="Insert text here..."
         onChange={(event) => {
-          changeHandler(editingNameNotesId, event.target.value)
+          changeHandler(editingFormId, event.target.value)
         }}
         onBlur={(event) => {
-          if (!nameNotes || nameNotes.trim() === '') {
+          if (!nameForm || nameForm.trim() === '') {
             resetHandler()
           } else {
             submitHandler(event)
@@ -39,4 +39,4 @@ const RenameNotesForm: React.FC<RenameNotesFormProps> = ({
     </form>
   )
 }
-export default RenameNotesForm
+export default FormInputEvent

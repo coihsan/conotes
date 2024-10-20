@@ -1,19 +1,19 @@
 import { v4 } from "uuid";
-import { NoteItem, TagItem } from "../types";
-import dayjs from "dayjs";
+import { NoteItem } from "../types";
 import { LabelText } from "../label-text";
+import { format } from "date-fns";
 
+export const currentItem = format(new Date(), 'dd-MM-yyyy');
 export const newNote = (title?: string): NoteItem => ({
   id: v4(),
   content: '',
   title: title || '',
-  createdAt: dayjs().format(),
-  lastUpdated: dayjs().format(),
+  createdAt: currentItem,
+  lastUpdated: currentItem,
   trash: false,
   tags: [],
   favorite: false,
   folderId: v4(),
-  pinned: false,
   folder: 'Notes'
 })
 

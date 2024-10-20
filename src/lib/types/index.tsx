@@ -1,31 +1,31 @@
 import { MenuType, NotesSortKey } from "../enums"
 import { v4 } from "uuid";
 import sync from "../redux/slice/sync";
+import { HTMLContent } from "@tiptap/core";
 
 export interface NoteItem {
   id: string
   title: string
-  content: string
+  content: HTMLContent
   createdAt: string
   lastUpdated: string
-  tags: TagItem[]
+  tags?: TagItem[]
   trash: boolean
   favorite: boolean
-  folder: DefaultFolder
+  folder?: string
   folderId?: string
 }
 
-export type DefaultFolder = 'Notes'
-
 export interface FolderItem {
   id: string
-  name: '' | DefaultFolder
-  draggedOver: boolean
+  name: string
+  icon?: string
 }
 
 export interface TagItem {
   id: string
-  name: string[]
+  name: string,
+  color?: String
 }
 
 export interface Visitor {
@@ -44,7 +44,8 @@ export type ReactSubmitEvent = React.FormEvent<HTMLFormElement> | React.FocusEve
 
 export interface NoteState {
   notes: NoteItem[]
-  activeNoteId: string | null
+  activeFolderId : string
+  activeNoteId: string
   activeTagsId: string
   error: null | string | undefined
   loading: boolean

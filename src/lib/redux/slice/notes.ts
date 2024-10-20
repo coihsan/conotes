@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { NoteItem, NoteState } from '@/lib/types'
-import { getNotes, getNotesContentByID, updateNoteContentThunk } from '../thunk';
+import { getAllNotesThunk, getNotesContentByIDThunk, updateNoteContentThunk } from '../thunk';
 
 const initialState: NoteState = {
   notes: [],
   activeTagsId: '',
+  activeFolderId: '',
   activeNoteId: '',
   searchValue: '',
   error: null,
@@ -66,27 +67,27 @@ const notesSlice = createSlice({
       state.error = action.error.message
     })
     // get notes
-    .addCase(getNotes.pending, (state) => {
+    .addCase(getAllNotesThunk.pending, (state) => {
       state.status = 'pending'
     })
-    .addCase(getNotes.fulfilled, (state, action) => {
+    .addCase(getAllNotesThunk.fulfilled, (state, action) => {
       if(state.notes) return action.payload
       state.status = 'succeeded'
     })
-    .addCase(getNotes.rejected, (state, action) => {
+    .addCase(getAllNotesThunk.rejected, (state, action) => {
       state.status = 'rejected'
       state.error = action.error.message
     })
     // get notes content by ID
-    .addCase(getNotesContentByID.fulfilled, (state, action) => {
+    .addCase(getNotesContentByIDThunk.fulfilled, (state, action) => {
       state.activeNoteId = action.payload.content
       state.loading = true
       state.status = 'succeeded'
     })
-    .addCase(getNotesContentByID.pending, (state) => {
+    .addCase(getNotesContentByIDThunk.pending, (state) => {
       state.loading = true
     })
-    .addCase(getNotesContentByID.rejected, (state, action) => {
+    .addCase(getNotesContentByIDThunk.rejected, (state, action) => {
       state.error = action.error.message
       state.loading = false
     });

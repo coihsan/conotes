@@ -2,7 +2,7 @@ import { LabelText } from '@/lib/label-text';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { useAppDispatch } from '@/hooks/use-redux';
+import { useAppDispatch } from '@/lib/hooks/use-redux';
 import { setToggleEditor } from '@/lib/redux/slice/app';
 import HeaderSidebar from '@/components/global/header-sidebar';
 
@@ -23,7 +23,6 @@ const Settings = () => {
                             <Button variant={'ghost'} onClick={() => dispatch(setToggleEditor(false))}>Bubble</Button>
                         </div>
                     </div>
-                    <Separator className='my-4' />
                 </div>
             </ScrollArea>
         </aside>

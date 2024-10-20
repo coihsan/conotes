@@ -5,10 +5,11 @@ import { cn } from "@/lib/utils/cn"
 import React from "react"
 import { RootState } from "@/lib/redux/store"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { useAppSelector } from "@/hooks/use-redux"
+import { useAppSelector } from "@/lib/hooks/use-redux"
 import MenuBar from "./menubar/menubar"
 import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
+import { Button } from '@/components/ui/button'
 
 interface Props {
     contentNotes: string | null;
@@ -45,7 +46,7 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
     }, [contentNotes, editable, onChange])
 
     return (
-        <div>
+        <>
             {editable && <MenuBar editor={editor} />}
             <ScrollArea>
                 <EditorContent
@@ -55,7 +56,7 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
                 />
                 <ScrollBar orientation="vertical" />
             </ScrollArea>
-        </div>
+        </>
     )
 }
 

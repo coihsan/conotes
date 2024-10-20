@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useContext } from 'react' 
+import React, { MouseEventHandler } from 'react' 
 
 import {
     DropdownMenu,
@@ -7,7 +7,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu";
-import { Bookmark24Filled, Bookmark24Regular, Delete24Regular, Edit24Regular, Folder24Regular, MoreHorizontal16Regular, Star24Regular } from "@fluentui/react-icons";
+import { Delete24Regular, Edit24Regular, Folder24Regular, MoreHorizontal16Regular, Star24Regular } from "@fluentui/react-icons";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -35,8 +35,8 @@ const SettingMenuNotes : React.FC<SettingMenuProps> = ({ className, onClick }) =
                     Rename
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex items-center gap-3">
-                    <Bookmark24Regular className="size-5" />
-                    Add to boomark
+                    <Star24Regular className="size-5" />
+                    Mark as favorite
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex items-center gap-3">
                   <Folder24Regular className="size-5" />
