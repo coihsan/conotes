@@ -11,7 +11,7 @@ import { currentItem, debounceEvent } from "@/lib/utils/helpers"
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
 import { RootState } from '@/lib/redux/store';
 import { useToast } from '@/lib/hooks/use-toast';
-import { createNewNotesThunk, getAllNotesThunk } from '@/lib/redux/thunk';
+import { createNewNotesThunk } from '@/lib/redux/thunk';
 import { NoteItem } from '@/lib/types';
 import HeaderSidebar from '@/components/global/header-sidebar';
 import NotesListItems from '@/components/notes/noteslist-item';
@@ -53,10 +53,6 @@ const NoteList = () => {
         if (_searchValues) return
     }, [_searchNotes])
 
-    useEffect(() =>{
-        dispatch(getAllNotesThunk())
-    }, [dispatch])
-
     const filteredNotes = _searchValues
         ? allNotes?.filter((notes: { title: string; }) =>
             notes.title.toLowerCase().includes(_searchValues))
@@ -96,7 +92,7 @@ const NoteList = () => {
             <ScrollArea className='h-full pt-2 scroll-smooth snap-y touch-pan-y'>
                 <div className='snap-end'>
                     {filteredNotes?.length === 0 ? (
-                        <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>No notes it's here</div>
+                        <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>Not found</div>
                     ) : (
                         <div className='grid grid-cols-1 gap-2 px-2'>
                             <NotesListItems index={filteredNotes} />

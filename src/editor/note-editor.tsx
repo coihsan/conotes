@@ -6,14 +6,13 @@ import React from "react"
 import { RootState } from "@/lib/redux/store"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { useAppSelector } from "@/lib/hooks/use-redux"
-import MenuBar from "./menubar/menubar"
+import MenuBar from "./toolbar"
 import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
-import { Button } from '@/components/ui/button'
 
 interface Props {
     contentNotes: string | null;
-    onChange: (content: HTMLContent) => void;
+    onChange: (content: string) => void;
 }
 
 const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
@@ -41,7 +40,7 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
         autofocus: true,
         content: contentNotes,
         onUpdate: ({ editor }) => {
-            onChange(editor.getHTML())
+            onChange(editor.getText())
         },
     }, [contentNotes, editable, onChange])
 

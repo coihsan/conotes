@@ -1,5 +1,5 @@
 import './App.css'
-import NotesListApp from './components/global/notelist-app'
+import NoteListTable from './components/global/notelist-table'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
       </Helmet>
 
       <main className='h-full w-full'>
-        <NotesListApp />
+        <NoteListTable />
       </main>
     </HelmetProvider>
   )

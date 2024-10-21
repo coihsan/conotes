@@ -8,8 +8,8 @@ import { setActiveMenu } from "@/lib/redux/slice/app";
 import { RootState } from "@/lib/redux/store";
 import clsx from "clsx";
 import { Link } from 'react-router-dom';
-import FolderList from './folder-list';
-import TagsList from './tags-list';
+import FolderNotes from './folder-notes';
+import FolderTags from './folder-tags';
 
 
 const Sidebar: React.FC = () => {
@@ -52,8 +52,8 @@ const Sidebar: React.FC = () => {
                         </button>
                     </div>
                 </div>
-                <FolderList />
-                <TagsList />
+                <FolderTags />
+                <FolderNotes />
             </div>
             <div className="grid gap-2">
                 <ModeToggle />

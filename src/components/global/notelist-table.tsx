@@ -40,7 +40,7 @@ import {
     AvatarImage,
   } from "@/components/ui/avatar"
 
-const NotesListApp = () =>{
+const NoteListTable = () =>{
     const [sorting, setSorting] = useState<SortingState>([])
     const [rowSelection, setRowSelection] = useState({})
     return(
@@ -60,4 +60,4 @@ const NotesListApp = () =>{
     )
 }
 
-export default NotesListApp
+export default NoteListTable

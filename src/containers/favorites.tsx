@@ -40,7 +40,7 @@ const Favorites = () => {
             <ScrollArea className='h-full pt-2 scroll-smooth snap-y touch-pan-y'>
                 <div className='snap-end'>
                     {filteredNotes?.length === 0 ? (
-                        <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>No notes it's here</div>
+                        <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>Not found</div>
                     ) : (
                         <div className='grid grid-cols-1 gap-2 px-2'>
                             <NotesListItems index={allFavoriteNotes} />

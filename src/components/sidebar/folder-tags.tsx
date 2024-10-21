@@ -1,20 +1,18 @@
-import { useState } from "react";
-import { Folder24Regular } from "@fluentui/react-icons";
-import SidebarGroup from "./wrapper/sidebar-group";
+import { Folder24Regular } from "@fluentui/react-icons"
+import SidebarGroup from "./wrapper/sidebar-group"
+import { Badge } from "../ui/badge"
 
-const FolderList = () => {
-    
+const FolderTags = () => {
     return (
-        <SidebarGroup sidebarName="Folders">
+        <SidebarGroup sidebarName="Tags">
             <div role="button" className="flex items-center justify-between w-full hover:bg-zinc-900 p-2">
                 <div className='flex items-center gap-3 text-sm'>
                     <Folder24Regular className='size-5' />
                     {/* <AddCategoryForm /> */}
                 </div>
-                <div className="text-xs rounded-full size-6 bg-zinc-700 p-1 lead-none whitespace-none">12</div>
+                <Badge variant={"icon"}>12</Badge>
             </div>
         </SidebarGroup>
     )
 }
-
-export default FolderList
+export default FolderTags

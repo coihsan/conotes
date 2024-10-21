@@ -19,7 +19,7 @@ const HeaderEditor: React.FC = () => {
         }
     }, [editable, dispatch]);
 
-    const handleSave = () => {
+    const handlePreview = () => {
         try {
             dispatch(setEditableEditor(false));
         } catch (error) {
@@ -32,7 +32,7 @@ const HeaderEditor: React.FC = () => {
             {editable ? (
                 <ButtonMenu
                     label={LabelText.PREVIEW_NOTE}
-                    action={handleSave} variant={'ghost'} size={'icon'}>
+                    action={handlePreview} variant={'ghost'} size={'icon'}>
                     <Eye24Regular />
                 </ButtonMenu>
             ) : (

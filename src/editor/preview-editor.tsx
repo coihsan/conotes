@@ -3,39 +3,56 @@ import '../styles/editor.module.scss'
 import NoteEditor from "./note-editor"
 import React, { useEffect, useState } from "react"
 import { Loading } from "@/components/global/loading"
-import HeaderEditor from "./header-editor"
 import BreadcrumbNotes from "@/components/global/breadcrumb-notes"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
-import { getNotesContentByIDThunk } from "@/lib/redux/thunk"
+import { getNotesContentByIDThunk, updateContentThunk } from "@/lib/redux/thunk"
 import { currentItem, debounceEvent } from "@/lib/utils/helpers"
-import { HTMLContent } from "@tiptap/core"
-import { updateNoteContent } from "@/lib/redux/slice/notes"
 import { NoteItem } from "@/lib/types"
+import { setEditableEditor } from "@/lib/redux/slice/app"
+import HeaderEditor from "./header-editor"
 
 const PreviewEditor: React.FC = () => {
   const { noteId } = useParams()
   const [loading, setLoading] = useState(true);
 
   const dispatch = useAppDispatch();
+  const editable = useAppSelector((state) => state.app.editable);
   const activeNoteContent = useAppSelector((state) => state.notes.activeNoteId);
   const notes = useAppSelector((state) => state.notes.notes);
-  const getNotesForCrumbs = notes.find((note) => noteId === note.id)?.title || ''
+  const getNotesForCrumbs = notes.find((note) => noteId === note.id)?.content || ''
 
-  const handleUpdateNotes = debounceEvent((content: HTMLContent) => {
-    const updatedNote: Partial<NoteItem> = {
-      content: content,
-      lastUpdated: currentItem,
-    };
-    return dispatch(updateNoteContent(updatedNote));
-  });
+  const handleUpdateContent = debounceEvent((_content: string,) => {
+     try {
+       const updatedNotes: Pick<NoteItem, "content" | "lastUpdated"> = {
+         content: _content,
+         lastUpdated: currentItem
+       }
+       if (noteId) { 
+         return dispatch(updateContentThunk({
+           content: updatedNotes,
+           noteId: noteId 
+         }))
+       } else {
+         console.error("noteId is undefined. Cannot update content.");
+       }
+     } catch (error) {
+       console.log(error)
+     }
+   }, 1000)
 
   useEffect(() => {
     if (noteId) {
       dispatch(getNotesContentByIDThunk(noteId)).then(() => {
-        setLoading(false);
-      });
+        setLoading(false)
+      })
     }
   }, [noteId, dispatch]);
+
+  useEffect(() => {
+    if (editable) {
+      dispatch(setEditableEditor(true));
+    }
+  }, [editable, dispatch]);
 
   if (loading) return <Loading />
 
@@ -45,7 +62,7 @@ const PreviewEditor: React.FC = () => {
         <BreadcrumbNotes params={getNotesForCrumbs} />
         <HeaderEditor />
       </div>
-      <NoteEditor onChange={handleUpdateNotes} contentNotes={activeNoteContent} />
+      <NoteEditor onChange={handleUpdateContent} contentNotes={activeNoteContent} />
     </div>
   )
 }

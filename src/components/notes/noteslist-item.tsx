@@ -47,7 +47,7 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                                         null
                                     ) : (
                                         item.tags?.map((tag) => (
-                                            <Badge key={tag.id} variant={'default'}>#{tag.name}</Badge>
+                                            <Badge className="text-xs" key={tag.id} variant={'default'}>#{tag.name}</Badge>
                                         ))
                                     )}
                                 </div>

@@ -11,14 +11,20 @@ export const createAppAsyncThunk = createAsyncThunk.withTypes<{
 
 // THUNK
 
-export const updateNoteContentThunk = createAppAsyncThunk(
-  'notes/updateNoteContent',
-  async (note: NoteItem, { dispatch }) => {
+export const updateContentThunk = createAppAsyncThunk(
+  'notes/saveNotes',
+  async (data: { noteId: string, content: Pick<NoteItem, 'content' | 'lastUpdated'> }, { dispatch }) => {
     try {
-      await db.notes.put(note);
-      dispatch(updateNoteContent(note));
+      const existingNote = await db.notes.get(data.noteId); 
+      if (existingNote) {
+        const updatedNote = { ...existingNote, ...data.content };
+        await db.notes.put(updatedNote);
+        dispatch(updateNoteContent(updatedNote));
+      } else {
+        throw new Error('Note not found'); 
+      }
     } catch (error) {
-      console.error('Failed to update note', error);
+      console.error('Failed to save note', error);
       throw error;
     }
   }
@@ -36,6 +42,18 @@ export const createNewNotesThunk = createAppAsyncThunk(
     }
   }
 );
+
+export const fetchAllNote = createAppAsyncThunk(
+  'notes/fetchAllNotes',
+  async (_, {dispatch}) =>{
+    try {
+      const notes: NoteItem[] = await db.notes.toArray()
+      dispatch(setNotes(notes))
+    } catch (error) {
+      console.log('Failed to fetch all notes')
+    }
+  }
+)
 
 export const getAllNotesThunk = createAppAsyncThunk(
   'notes/getAllNotes',
@@ -68,26 +86,6 @@ export const getNotesContentByIDThunk = createAppAsyncThunk(
   },
 );
 
-export const saveNotesContentThunk = createAppAsyncThunk(
-  'notes/saveNotes',
-  async (data: { noteId: string, content: Pick<NoteItem, 'content' | 'lastUpdated'> }, { dispatch }) => {
-    try {
-      const existingNote = await db.notes.get(data.noteId); 
-
-      if (existingNote) {
-        const updatedNote = { ...existingNote, ...data.content };
-
-        await db.notes.put(updatedNote);
-        dispatch(updateNoteContent(updatedNote));
-      } else {
-        throw new Error('Note not found'); 
-      }
-    } catch (error) {
-      console.error('Failed to save note', error);
-      throw error;
-    }
-  }
-);
 
 export const updateTitleThunk = createAppAsyncThunk(
   'notes/saveTitle',
