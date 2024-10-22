@@ -22,12 +22,11 @@ const notesSlice = createSlice({
     addNote: (state, { payload }: PayloadAction<NoteItem>) => {
       state.notes.push(payload);
     },
-    updateNoteContent: (state, { payload }: PayloadAction<NoteItem>) => {
-      state.notes = state.notes.map((note) =>
-        note.id === payload.id
-          ? { ...note, content: payload.content, lastUpdated: payload.lastUpdated }
-          : note
-      )
+    updateNoteContent: (state, action: PayloadAction<NoteItem>) => {
+      const index = state.notes.findIndex(note => note.id === action.payload.id);
+      if (index !== -1) {
+        state.notes[index] = action.payload;
+      }
     },
     setActiveNoteContent: (state, { payload }: PayloadAction<string>) => {
       state.activeNoteId = payload;
@@ -77,7 +76,7 @@ const notesSlice = createSlice({
     })
     // get notes content by ID
     .addCase(getNotesContentByIDThunk.fulfilled, (state, action) => {
-      state.activeNoteId = action.payload.content
+      state.activeNoteId = action.payload.content?.slice
       state.loading = true
       state.status = 'succeeded'
     })

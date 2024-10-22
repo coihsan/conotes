@@ -1,11 +1,12 @@
 import { MenuType, NotesSortKey } from "../enums"
 import { v4 } from "uuid";
 import sync from "../redux/slice/sync";
+import { Content } from "@tiptap/react";
 
 export interface NoteItem {
   id: string
   title: string
-  content: string
+  content: Content
   createdAt: string
   lastUpdated: string
   tags?: TagItem[]
@@ -44,7 +45,7 @@ export type ReactSubmitEvent = React.FormEvent<HTMLFormElement> | React.FocusEve
 export interface NoteState {
   notes: NoteItem[]
   activeFolderId : string
-  activeNoteId: string
+  activeNoteId: string | null
   activeTagsId: string
   error: null | string | undefined
   loading: boolean

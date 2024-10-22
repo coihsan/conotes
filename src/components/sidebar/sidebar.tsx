@@ -35,19 +35,19 @@ const Sidebar: React.FC = () => {
                     <div className='text-muted-foreground text-xs pl-4 pb-5 uppercase'>menu</div>
                     <div className='grid gap-1'>
                         <button onClick={() => handleMenuClick(MenuType.NOTES)} className={clsx(isActive(MenuType.NOTES) ? 'bg-zinc-700 dark:bg-zinc-800' : '', 'sidebarMenu')}>
-                            <Notepad24Regular />
+                            <Notepad24Regular className={clsx(isActive(MenuType.NOTES) ? 'text-white dark:text-foreground' : 'text-muted-foreground')} />
                             {MenuType.NOTES}
                         </button>
                         <button onClick={() => handleMenuClick(MenuType.FAVORITE)} className={clsx(isActive(MenuType.FAVORITE) ? 'bg-zinc-700 dark:bg-zinc-800' : '', 'sidebarMenu')}>
-                            <Star24Regular />
+                            <Star24Regular className={clsx(isActive(MenuType.FAVORITE) ? 'text-white dark:text-foreground' : 'text-muted-foreground')} />
                             {MenuType.FAVORITE}
                         </button>
                         <button onClick={() => handleMenuClick(MenuType.TRASH)} className={clsx(isActive(MenuType.TRASH) ? 'bg-zinc-700 dark:bg-zinc-800' : '', 'sidebarMenu')}>
-                            <Delete24Regular />
+                            <Delete24Regular className={clsx(isActive(MenuType.TRASH) ? 'text-white dark:text-foreground' : 'text-muted-foreground')} />
                             {MenuType.TRASH}
                         </button>
                         <button onClick={() => handleMenuClick(MenuType.SETTINGS)} className={clsx(isActive(MenuType.SETTINGS) ? 'bg-zinc-700 dark:bg-zinc-800' : '', 'sidebarMenu')}>
-                            <Settings24Regular />
+                            <Settings24Regular className={clsx(isActive(MenuType.SETTINGS) ? 'text-white dark:text-foreground' : 'text-muted-foreground')} />
                             {MenuType.SETTINGS}
                         </button>
                     </div>

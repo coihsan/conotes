@@ -61,6 +61,11 @@
 }
 
 @font-face {
+  font-family: chilax;
+  src: url('/public/font/Chillax-Variable.ttf');
+}
+
+@font-face {
   font-family: sora;
   src: url('/public/font/Sora-Variable.woff2');
 }
@@ -68,11 +73,8 @@
 .fontSora{
   font-family: sora;
 }
-.fontSpline{
-  font-family: spline;
-}
-.fontCabine{
-  font-family: cabine;
+.fontChilax{
+  font-family: chilax;
 }
 
 @layer base {

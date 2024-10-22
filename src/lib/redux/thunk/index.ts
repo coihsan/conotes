@@ -12,19 +12,24 @@ export const createAppAsyncThunk = createAsyncThunk.withTypes<{
 // THUNK
 
 export const updateContentThunk = createAppAsyncThunk(
-  'notes/saveNotes',
-  async (data: { noteId: string, content: Pick<NoteItem, 'content' | 'lastUpdated'> }, { dispatch }) => {
+  'notes/updateContent',
+  async (data: { noteId: string, content: string }, { dispatch }) => {
     try {
       const existingNote = await db.notes.get(data.noteId); 
+      
       if (existingNote) {
-        const updatedNote = { ...existingNote, ...data.content };
+        const updatedNote = { 
+          ...existingNote, 
+          content: data.content, 
+          lastUpdated: new Date().toISOString() 
+        };
         await db.notes.put(updatedNote);
         dispatch(updateNoteContent(updatedNote));
       } else {
-        throw new Error('Note not found'); 
+        throw new Error('Note not found');
       }
     } catch (error) {
-      console.error('Failed to save note', error);
+      console.error('Failed to update note content', error);
       throw error;
     }
   }

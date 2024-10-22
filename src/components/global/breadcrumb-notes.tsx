@@ -10,10 +10,10 @@ import { Home24Regular } from "@fluentui/react-icons";
 import React from "react";
 import { Link } from "react-router-dom";
 
-type routeName = {
+type Props = {
     params: string
 }
-const BreadcrumbNotes: React.FC<routeName> = ({params}) => {
+const BreadcrumbNotes: React.FC<Props> = ({params}) => {
 
     return (
         <Breadcrumb>

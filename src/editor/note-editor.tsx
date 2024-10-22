@@ -1,5 +1,5 @@
 import css from '../styles/editor.module.scss'
-import { EditorContent, HTMLContent, useEditor } from '@tiptap/react'
+import { Content, EditorContent, HTMLContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { cn } from "@/lib/utils/cn"
 import React from "react"
@@ -9,10 +9,11 @@ import { useAppSelector } from "@/lib/hooks/use-redux"
 import MenuBar from "./toolbar"
 import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
+import { NoteItem } from '@/lib/types'
 
 interface Props {
-    contentNotes: string | null;
-    onChange: (content: string) => void;
+    contentNotes: NoteItem;
+    onChange: (content: HTMLContent) => void;
 }
 
 const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
@@ -38,20 +39,19 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
         ],
         editable: editable,
         autofocus: true,
-        content: contentNotes,
+        content: contentNotes.content,
         onUpdate: ({ editor }) => {
-            onChange(editor.getText())
+            onChange(editor.getHTML())
         },
-    }, [contentNotes, editable, onChange])
+    }, [contentNotes.id, editable, onChange])
 
     return (
         <>
             {editable && <MenuBar editor={editor} />}
             <ScrollArea>
                 <EditorContent
-                    className={cn(css.editor)}
+                    className={cn(css.tiptap)}
                     editor={editor}
-                    placeholder="Write something ..."
                 />
                 <ScrollBar orientation="vertical" />
             </ScrollArea>

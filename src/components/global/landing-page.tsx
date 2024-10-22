@@ -18,7 +18,7 @@ const LandingPage: React.FC = () => {
     return (
         <section className="h-full relative w-full max-w-screen-lg mx-auto px-6 md:px-0">
             <header className="py-4 flex items-center justify-between w-full">
-                <div className="text-2xl font-bold fontSora">Nulih</div>
+                <div className="text-1xl md:text-2xl font-semibold fontChilax">conotes</div>
                 <div className="flex items-center gap-2">
                     <ModeToggle />
                     <Link className="w-full" target="_blank" to="https://github.com/coihsan/conotes">
@@ -31,7 +31,7 @@ const LandingPage: React.FC = () => {
             <div className="flex flex-col mb-9 pt-9 max-w-screen-sm mx-auto">
                 <div className="uppercase px-2 py-1 rounded-full bg-creek-200 dark:bg-creek-900 border text-creek-800 dark:text-creek-200 border-creek-500 text-xs font-semibold w-max mx-auto inline-flex rotate-3">100% Open-source</div>
                 <h1 className="text-5xl md:text-6xl font-[600] text-center pt-4 pb-8 md:pt-8 fontSora">Minimalistic <br /> <span className="text-creek-500 dark:text-creek-400">Note Taking App</span></h1>
-                <p className="text-center text-muted-foreground text-lg md:text-xl"><strong className="font-semibold text-creek-400"><em>Nulih</em> is only available as a demo version. </strong>Any notes you create are stored in the your browser and <strong className="font-semibold text-creek-400">not persisted in any database or cloud</strong>.</p>
+                <p className="text-center text-muted-foreground text-md md:text-xl"><strong className="font-semibold text-creek-400">conotes is only available as a demo version. </strong>Any notes you create are stored in the your browser and <strong className="font-semibold text-creek-400">not persisted in any database or cloud</strong>.</p>
             </div>
                 <div className="w-full md:w-72 mx-auto flex flex-col md:flex-row justify-center items-center gap-2">
                         {isMobile ? (
@@ -56,7 +56,7 @@ const LandingPage: React.FC = () => {
             </div>
             <div className="py-9">
                 <div>
-                    <h1 className="text-4xl md:text-6xl font-semibold inline">
+                    <h1 className="text-4xl md:text-6xl font-semibold inline fontSora">
                     Some features <em>but</em><span className="text-creek-500 dark:text-creek-400"> that doesn't really matter!</span>
                     </h1>
                     <span className="inline-block"><img className="size-12" src={yawningEmoji} alt="yawning emoji" /></span>
