@@ -13,7 +13,7 @@ export const createAppAsyncThunk = createAsyncThunk.withTypes<{
 
 export const updateContentThunk = createAppAsyncThunk(
   'notes/updateContent',
-  async (data: { noteId: string, content: string }, { dispatch }) => {
+  async (data: { noteId: string, content: string, title: string }, { dispatch }) => {
     try {
       const existingNote = await db.notes.get(data.noteId); 
       
@@ -21,6 +21,7 @@ export const updateContentThunk = createAppAsyncThunk(
         const updatedNote = { 
           ...existingNote, 
           content: data.content, 
+          title: data.title,
           lastUpdated: new Date().toISOString() 
         };
         await db.notes.put(updatedNote);
@@ -89,20 +90,5 @@ export const getNotesContentByIDThunk = createAppAsyncThunk(
       throw error;
     }
   },
-);
-
-
-export const updateTitleThunk = createAppAsyncThunk(
-  'notes/saveTitle',
-  async (data: { noteId: string, newTitle: Pick<NoteItem, 'title'> }, { dispatch }) => {
-    const titleNotes = await db.notes.get(data.noteId);
-    if (titleNotes) {
-      const updatedNote = { ...titleNotes, ...data.newTitle };
-      await db.notes.put(updatedNote); 
-      dispatch(updateNoteContent(updatedNote)); 
-    } else {
-      console.error('Note not found'); 
-    }
-  }
 );
 

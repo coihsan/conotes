@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { NoteItem, NoteState } from '@/lib/types'
 import { fetchAllNote, getAllNotesThunk, getNotesContentByIDThunk, updateContentThunk } from '../thunk';
+import { v4 } from 'uuid';
+import { currentItem } from '@/lib/utils/helpers';
 
 const initialState: NoteState = {
   notes: [],
@@ -13,7 +15,21 @@ const initialState: NoteState = {
   status: 'pending',
 }
 
-const firstNotes = {}
+const firstNotes : NoteItem = {
+  id: v4(),
+  content: `<h1>This is to be title</h1>`,
+  createdAt: currentItem,
+  lastUpdated: currentItem,
+  trash: false,
+  folder: 'Notes',
+  tags: [
+    {
+      id: v4(),
+      name: "first tags"
+    }
+  ],
+  favorite: true
+}
 
 const notesSlice = createSlice({
   name: 'notes',
@@ -28,14 +44,8 @@ const notesSlice = createSlice({
         state.notes[index] = action.payload;
       }
     },
-    setActiveNoteContent: (state, { payload }: PayloadAction<string>) => {
-      state.activeNoteId = payload;
-    },
     setNotes: (state, { payload }: PayloadAction<NoteItem[]>) => {
       state.notes = payload;
-    },
-    setActiveTagsId: (state, { payload }: PayloadAction<string>) => {
-      state.activeTagsId = payload;
     },
     searchQuery : (state, {payload} : PayloadAction<string>) =>{
       state.searchValue = payload
@@ -76,7 +86,7 @@ const notesSlice = createSlice({
     })
     // get notes content by ID
     .addCase(getNotesContentByIDThunk.fulfilled, (state, action) => {
-      state.activeNoteId = action.payload.content?.slice
+      state.activeNoteId = action.payload.content
       state.loading = true
       state.status = 'succeeded'
     })
@@ -96,8 +106,6 @@ export const {
   toggleFavorite,
   toggleTrash,
   setNotes,
-  setActiveTagsId,
-  setActiveNoteContent,
 } = notesSlice.actions
 
 export default notesSlice.reducer

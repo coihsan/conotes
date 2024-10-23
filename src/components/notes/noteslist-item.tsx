@@ -1,7 +1,7 @@
 import { getNotesTitle } from "@/lib/utils/helpers"
 import { Folder20Regular, Star20Regular } from "@fluentui/react-icons"
 import { Link } from "react-router-dom"
-import SettingMenuNotes from "@/components/settings/settings-menu-notes"
+import SettingNotesList from "@/action/settings-notes-list"
 import { Badge } from "../ui/badge"
 import { NoteItem } from "@/lib/types"
 import React from "react"
@@ -28,7 +28,7 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                             }
                         </div>
                         <div className='flex flex-col w-full gap-4 pl-4'>
-                            <h3 className='text-sm font-medium w-full line-clamp-1' aria-label={item.title}>
+                            <h3 className='text-sm font-medium w-full line-clamp-1' aria-label={item.content}>
                                 {getNotesTitle(item.content)}
                             </h3>
                             <div className='flex items-center gap-3'>
@@ -54,7 +54,7 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                             </div>
                         </div>
                     </div>
-                    <SettingMenuNotes />
+                    <SettingNotesList />
                 </Link>
             ))}
         </>

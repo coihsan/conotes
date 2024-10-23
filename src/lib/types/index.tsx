@@ -1,12 +1,10 @@
 import { MenuType, NotesSortKey } from "../enums"
 import { v4 } from "uuid";
 import sync from "../redux/slice/sync";
-import { Content } from "@tiptap/react";
 
 export interface NoteItem {
   id: string
-  title: string
-  content: Content
+  content: string
   createdAt: string
   lastUpdated: string
   tags?: TagItem[]

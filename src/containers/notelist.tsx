@@ -28,7 +28,6 @@ const NoteList = () => {
     const createInitialNote = (): NoteItem => {
         return {
             id: v4(),
-            title: '',
             content: '',
             createdAt: currentItem,
             lastUpdated: currentItem,
@@ -54,8 +53,8 @@ const NoteList = () => {
     }, [_searchNotes])
 
     const filteredNotes = _searchValues
-        ? allNotes?.filter((notes: { title: string; }) =>
-            notes.title.toLowerCase().includes(_searchValues))
+        ? allNotes?.filter((notes: { content: string; }) =>
+            notes.content.toLowerCase().includes(_searchValues))
         : allNotes;
 
     const handleNewNote = async () => {
@@ -89,14 +88,14 @@ const NoteList = () => {
                     <SearchBar searchRef={searchRef} searchQuery={_searchNotes} />
                 }
             />
-            <ScrollArea className='h-full pt-2 scroll-smooth snap-y touch-pan-y'>
-                <div className='snap-end'>
+            <ScrollArea className='h-full pt-2 scroll-smooth snap-y touch-pan-y pb-24'>
+                <div className='grid grid-cols-1 gap-2 px-2 snap-end'>
                     {filteredNotes?.length === 0 ? (
                         <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>Not found</div>
                     ) : (
-                        <div className='grid grid-cols-1 gap-2 px-2'>
+                        <>
                             <NotesListItems index={filteredNotes} />
-                        </div>
+                        </>
                     )}
                 </div>
             </ScrollArea>

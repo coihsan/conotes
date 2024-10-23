@@ -9,8 +9,8 @@ import { getNotesContentByIDThunk, updateContentThunk } from "@/lib/redux/thunk"
 import { debounceNotes } from "@/lib/utils/helpers"
 import { setEditableEditor } from "@/lib/redux/slice/app"
 import HeaderEditor from "./header-editor"
-import { RootState } from "@/lib/redux/store"
 import { NoteItem } from "@/lib/types"
+import { HTMLContent } from "@tiptap/core"
 
 const PreviewEditor: React.FC = () => {
   const { noteId } = useParams()
@@ -19,27 +19,26 @@ const PreviewEditor: React.FC = () => {
   const dispatch = useAppDispatch();
   const editable = useAppSelector((state) => state.app.editable);
   const activeNoteContent = useAppSelector((state) => state.notes.activeNoteId);
-  const notes = useAppSelector((state : RootState) => state.notes.notes);
-  const getNotesForCrumbs = notes.find((note) => noteId === note.id)?.content || ''
 
   const handleSave = debounceNotes((content : NoteItem) => {}, 1000)
 
   // handle change notes
-  const handleUpdateContent = debounceNotes((content: string) => {
+  const handleUpdateContent = (content: HTMLContent, title: string) => {
     if (noteId) { 
       dispatch(updateContentThunk({
         noteId, 
-        content 
+        content,
+        title
       }));
     } else {
       console.error("noteId is undefined. Cannot update content.");
     }
-  }, 1000);
+  };
 
   useEffect(() => {
     if (noteId) {
       dispatch(getNotesContentByIDThunk(noteId)).then(() => {
-        setLoading(false)
+        setLoading(false);
       })
     }
   }, [noteId, dispatch]);
@@ -48,19 +47,20 @@ const PreviewEditor: React.FC = () => {
     if (editable) {
       dispatch(setEditableEditor(true));
     }
-  }, [editable, dispatch, activeNoteContent]);
+  }, [editable, dispatch]);
 
   if (loading) return <Loading />
 
   return (
-    <div className="h-full w-full border rounded-r-2xl bg-zinc-100 dark:bg-zinc-500/10 overflow-hidden">
+    <div className="h-full w-full border rounded-r-2xl">
       <div className="flex items-center justify-between w-full py-1 px-3 border-b-[1px]">
-        <BreadcrumbNotes params={getNotesForCrumbs.toString()} />
+        <BreadcrumbNotes />
         <HeaderEditor />
       </div>
-      <NoteEditor 
-      onChange={handleUpdateContent} 
-      contentNotes={activeNoteContent} />
+          <NoteEditor 
+          onChange={handleUpdateContent} 
+          contentNotes={activeNoteContent}
+          />
     </div>
   )
 }
