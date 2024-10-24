@@ -3,10 +3,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Delete24Regular, Folder24Regular, MoreHorizontal16Regular, Star24Regular } from "@fluentui/react-icons";
+} from "@/components/ui/dropdown-menu"
+import { ClipboardLink24Regular, Delete24Regular, Folder24Regular, MoreHorizontal16Regular, Star24Regular, StarDismiss24Regular } from "@fluentui/react-icons";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,28 +21,82 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { markAsFavoriteThunk, moveToTrashThunk, removeMarkAsFavoriteThunk } from '@/lib/redux/thunk';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
 
 type SettingMenuProps = {
   className?: string;
+  noteId: string
 }
 
-const SettingNotesList: React.FC<SettingMenuProps> = ({ className }) => {
-  
+const SettingNotesList: React.FC<SettingMenuProps> = ({ className, noteId }) => {
+  const dispatch = useAppDispatch()
+
+  const notes = useAppSelector((state) => state.notes.notes)
+  const currentNote = notes.find((note) => note.id === noteId);
+  const isFavorite = currentNote?.favorite || false;
+
+  const handleMoveToTrash = (noteId: string) => {
+    try {
+      dispatch(moveToTrashThunk(noteId));
+      dispatch(removeMarkAsFavoriteThunk(noteId))
+      console.log('successfull move to trash')
+    } catch (error) {
+      console.log('error move to trash')
+    }
+  };
+
+  const handleMarkAsFavorite = (noteId: string) => {
+    dispatch(markAsFavoriteThunk(noteId))
+    console.log('successfull mark as favorite')
+  }
+  const handleRemoveMarkAsFavorite = (noteId: string) => {
+    dispatch(removeMarkAsFavoriteThunk(noteId))
+    console.log('successfull mark as favorite')
+  }
+
+  const handleCopyReferenceToNote = (noteId: string) => {
+    navigator.clipboard.writeText(noteId)
+  }
+
   return (
     <AlertDialog>
       <DropdownMenu>
-        <DropdownMenuTrigger className={className}><MoreHorizontal16Regular /></DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild className={className}><MoreHorizontal16Regular /></DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem className="flex items-center gap-3">
-            <Folder24Regular />
-            Move to folder
-          </DropdownMenuItem>
-          <DropdownMenuItem className="flex items-center gap-3">
-            <Star24Regular />
-            Mark as favorite
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <Folder24Regular className='size-5' />
+              <span>Move to folder</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem>
+                  <Folder24Regular />
+                  <span>Email</span>
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+          {isFavorite ? (
+            <DropdownMenuItem onClick={() => handleRemoveMarkAsFavorite(noteId)}>
+              <StarDismiss24Regular />
+              Remove as favorite
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem onClick={() => handleMarkAsFavorite(noteId)}>
+              <Star24Regular />
+              Mark as favorite
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuItem onClick={() => handleCopyReferenceToNote(noteId)}>
+            <ClipboardLink24Regular />
+            Copy reference notes
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-red-500 flex items-center gap-2">
+          <DropdownMenuItem
+            onClick={() => handleMoveToTrash(noteId)}
+            className='text-destructive-foreground'>
             <Delete24Regular />
             Move to trash
           </DropdownMenuItem>

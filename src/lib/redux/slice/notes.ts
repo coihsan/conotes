@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { NoteItem, NoteState } from '@/lib/types'
-import { fetchAllNote, getAllNotesThunk, getNotesContentByIDThunk, updateContentThunk } from '../thunk';
+import { fetchAllNote, getAllNotesThunk, getNotesContentByIDThunk, moveToTrashThunk, updateContentThunk } from '../thunk';
 import { v4 } from 'uuid';
 import { currentItem } from '@/lib/utils/helpers';
 
@@ -50,18 +50,21 @@ const notesSlice = createSlice({
     searchQuery : (state, {payload} : PayloadAction<string>) =>{
       state.searchValue = payload
     },
-    toggleFavorite: (state, { payload }: PayloadAction<string>) => {
+    markAsFavorite: (state, { payload }: PayloadAction<string>) => {
       const note = state.notes.find((note) => note.id === payload)
       if (note) {
         note.favorite = !note.favorite
       }
     },
-    toggleTrash: (state, { payload }: PayloadAction<string>) => {
+    moveToTrash: (state, { payload }: PayloadAction<string>) => {
       const note = state.notes.find((note) => note.id === payload)
       if (note) {
         note.trash = !note.trash
       }
     },
+    // deleteEmptyTrash: ( state, { payload } : PayloadAction<string[]> ) =>{
+    //   state.notes.filter((note) => note.id === payload.reduce(state))
+    // }
   },
   extraReducers(builder) {
     builder
@@ -96,15 +99,26 @@ const notesSlice = createSlice({
     .addCase(getNotesContentByIDThunk.rejected, (state, action) => {
       state.error = action.error.message
       state.loading = false
-    });
+    })
+    // handle move to trash
+    .addCase(moveToTrashThunk.pending, (state) => {
+      state.status = 'pending';
+    })
+    .addCase(moveToTrashThunk.fulfilled, (state) => {
+      state.status = 'succeeded';
+    })
+    .addCase(moveToTrashThunk.rejected, (state, action) => {
+      state.status = 'rejected';
+      state.error = action.error.message || null;
+    })
   },
 })
 export const {
   addNote,
   updateNoteContent,
   searchQuery,
-  toggleFavorite,
-  toggleTrash,
+  markAsFavorite,
+  moveToTrash,
   setNotes,
 } = notesSlice.actions
 

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { NoteItem } from '@/lib/types';
 import { db } from '@/lib/db';
-import { addNote, setNotes, updateNoteContent } from '../slice/notes';
+import { addNote, markAsFavorite, moveToTrash, setNotes, updateNoteContent } from '../slice/notes';
 import type { RootState, AppDispatch } from '../store'
 
 export const createAppAsyncThunk = createAsyncThunk.withTypes<{
@@ -92,3 +92,49 @@ export const getNotesContentByIDThunk = createAppAsyncThunk(
   },
 );
 
+export const moveToTrashThunk = createAppAsyncThunk(
+  'notes/deleteNotes',
+  async (noteId: string, {dispatch, rejectWithValue}) => {
+    try {
+      await db.notes.update(noteId, { trash : true })
+      dispatch(moveToTrash(noteId))
+    } catch (error) {
+      rejectWithValue(error)
+    }
+  }
+)
+
+export const markAsFavoriteThunk = createAppAsyncThunk(
+  'notes/markFavorite',
+  async (noteId: string, {dispatch, rejectWithValue}) => {
+    try {
+      await db.notes.update(noteId, { favorite : true})
+      dispatch(markAsFavorite(noteId))
+    } catch (error) {
+      rejectWithValue(error)
+    }
+  }
+)
+export const removeMarkAsFavoriteThunk = createAppAsyncThunk(
+  'notes/markFavorite',
+  async (noteId: string, {dispatch, rejectWithValue}) => {
+    try {
+      await db.notes.update(noteId, { favorite : false})
+      dispatch(markAsFavorite(noteId))
+    } catch (error) {
+      rejectWithValue(error)
+    }
+  }
+)
+
+export const deleteEmptyTrashThunk = createAppAsyncThunk(
+  'note/deletePermanent',
+  async (noteId: string[], {dispatch, rejectWithValue}) => {
+    try {
+      await db.notes.bulkDelete(noteId)
+      
+    } catch (error) {
+      rejectWithValue(error)
+    }
+  }
+)

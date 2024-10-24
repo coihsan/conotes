@@ -33,7 +33,7 @@ const ButtonMenu : React.FC<ButtonMenuProps> = ({
                     <Button
                         variant={variant}
                         size={size}
-                        className={className}
+                        className={`${className} flex items-center gap-2`}
                         onClick={action}
                     >
                         {children}

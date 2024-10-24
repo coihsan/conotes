@@ -25,7 +25,7 @@ const NoteList = () => {
     const allNotes = useAppSelector((state) => state.notes.notes)
     const _searchValues = useAppSelector((state: RootState) => state.notes.searchValue)
     
-    const createInitialNote = (): NoteItem => {
+    const createInitialNote = () : NoteItem => {
         return {
             id: v4(),
             content: '',
@@ -53,9 +53,11 @@ const NoteList = () => {
     }, [_searchNotes])
 
     const filteredNotes = _searchValues
-        ? allNotes?.filter((notes: { content: string; }) =>
-            notes.content.toLowerCase().includes(_searchValues))
-        : allNotes;
+    ? allNotes
+        ?.filter((note) => !note.trash && note.content.toLowerCase().includes(_searchValues))
+        .sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0)) 
+    : allNotes?.filter((note) => !note.trash)
+        .sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0));
 
     const handleNewNote = async () => {
         try {

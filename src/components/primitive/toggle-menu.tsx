@@ -31,7 +31,7 @@ const ToggleMenu : React.FC<ButtonMenuProps> = ({
   }) => {
     return (
         <TooltipProvider>
-            <Tooltip>
+            <Tooltip delayDuration={0}>
                 <TooltipTrigger>
                     <ToggleGroup type="multiple">
                         <ToggleGroupItem

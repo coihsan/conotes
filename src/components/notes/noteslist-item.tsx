@@ -54,7 +54,7 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                             </div>
                         </div>
                     </div>
-                    <SettingNotesList />
+                    <SettingNotesList noteId={item.id} />
                 </Link>
             ))}
         </>

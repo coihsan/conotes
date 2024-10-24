@@ -1,41 +1,43 @@
 import css from '../styles/editor.module.scss'
 import { EditorContent, HTMLContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import Document from '@tiptap/extension-document'
 import { cn } from "@/lib/utils/cn"
 import React from "react"
 import { RootState } from "@/lib/redux/store"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useAppSelector } from "@/lib/hooks/use-redux"
-import MenuBar from "./toolbar"
 import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
 import { getNotesTitle } from '@/lib/utils/helpers'
+import StaticToolbar from './toolbar/static-toolbar'
 
 interface Props {
     contentNotes: string | null;
     onChange: (content: HTMLContent, title: string) => void;
 }
 
+const HeadingDcoument = Document.extend({
+    content: 'heading block*',
+  })
+
 const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
     const editable = useAppSelector((state: RootState) => state.app.editable);
 
     const editor = useEditor({
         extensions: [
+            HeadingDcoument,
             StarterKit.configure({
-                heading: {
-                    levels: [1, 2, 3, 4, 5, 6],
-                },
             }),
             Placeholder.configure({
-                placeholder: 'Write something …',
-                showOnlyWhenEditable: false,
-                emptyEditorClass: 'is-editor-empty',
-                emptyNodeClass: 'dasdasd',
-              })
-            ,
-            TextAlign.configure({
-                types: ['heading', 'paragraph'],
-            }),
+                placeholder: ({ node }) => {
+                  if (node.type.name === 'heading') {
+                    return 'What’s the title?'
+                  }
+        
+                  return 'Can you add some further context?'
+                },
+              }),
         ],
         editable: editable,
         autofocus: true,
@@ -50,22 +52,20 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
     return (
         <>
             {editable ? (
-                <MenuBar editor={editor} />
+                <StaticToolbar editor={editor} />
             ) : (
                 null
             )}
             <ScrollArea className='h-full p-12'>
-                <EditorContent
-                    className={cn(css.tiptap)}
-                    editor={editor}
-                >
-                {/* TODO : Add  EditorProvider and this below component will be slotBefore component */}
                 <div className='flex flex-col'>
                     <div className='text-xs text-muted-foreground'>Last updated : :</div>
                     <div className='text-xs text-muted-foreground'>Tags : </div>
                     <div className='text-xs text-muted-foreground'>Tags : </div>
                 </div>
-                </EditorContent>
+                <EditorContent
+                    className={cn(css.tiptap)}
+                    editor={editor}
+                />
             </ScrollArea>
         </>
     )

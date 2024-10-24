@@ -22,8 +22,8 @@ const Favorites = () => {
     )
 
     const filteredNotes = _searchValues
-        ? notes?.filter((notes: { title: string; }) =>
-            notes.title.toLowerCase().includes(_searchValues))
+        ? notes?.filter((notes: { content: string; }) =>
+            notes.content.toLowerCase().includes(_searchValues))
         : notes;
 
     useEffect(() => {

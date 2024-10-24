@@ -1,11 +1,13 @@
+import ButtonMenu from "@/components/primitive/button-menu"
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { LabelText } from "@/lib/label-text"
+import { Settings24Regular } from "@fluentui/react-icons"
 import { useParams } from "react-router-dom"
 
 
@@ -14,10 +16,12 @@ const SettingsMenuInNotes = () => {
     
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+            <DropdownMenuTrigger>
+                <ButtonMenu label={LabelText.SETTINGS} variant={'ghost'} size={'icon'}>
+                    <Settings24Regular className="size-5" />
+                </ButtonMenu>
+            </DropdownMenuTrigger>
             <DropdownMenuContent>
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem>Profile</DropdownMenuItem>
                 <DropdownMenuItem>Billing</DropdownMenuItem>
                 <DropdownMenuItem>Team</DropdownMenuItem>
