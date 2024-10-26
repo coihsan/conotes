@@ -6,7 +6,9 @@ const initialState : AppState = {
   editable: false,
   activeMenu: MenuType.NOTES,
   loading: false,
-  menuToolbar: true
+  menuToolbar: true,
+  activeFolderId: '',
+  activeTagsId: ''
 };
 
 const appSlice = createSlice({

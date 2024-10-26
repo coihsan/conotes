@@ -11,9 +11,11 @@ import Layout from './components/global/layout.tsx';
 import { Toaster } from "@/components/ui/toaster"
 import { Toaster as ToasterSonner } from 'sonner'
 import PreviewEditor from './editor/preview-editor.tsx';
-import { fetchAllNote } from './lib/redux/thunk/index.ts';
+import { fetchAllNote } from './lib/redux/slice/notes.ts';
+import { fetchFolder } from './lib/redux/slice/folder.ts';
 
 store.dispatch(fetchAllNote())
+store.dispatch(fetchFolder())
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

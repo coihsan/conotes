@@ -52,19 +52,19 @@ export const TextEditorMenuBar = (editor: Editor): TextEditorMenuBarProps[] =>
         {
             icon: TextHeader120Filled,
             label: LabelMenubar.H1,
-            onClick: () => editor.chain().focus().toggleHeading({ level: 1 }).run() && !editor.isActive('codeBlock'),
+            onClick: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
             className: editor.isActive('heading', { level: 1 }) ? 'bg-muted' : '',
         },
         {
             icon: TextHeader220Filled,
             label: LabelMenubar.H2,
-            onClick: () => editor.chain().focus().toggleHeading({ level: 2 }).run() && !editor.isActive('codeBlock'),
-            className: editor.isActive('heading', { level: 2 }) ? 'bg-muted' : '',
+            onClick: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
+            className: editor.isActive('heading', { level: 2 }) ? 'bg-muted' : 'bg-transparent',
         },
         {
             icon: TextHeader320Filled,
             label: LabelMenubar.H3,
-            onClick: () => editor.chain().focus().toggleHeading({ level: 3 }).run() && !editor.isActive('codeBlock'),
+            onClick: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
             className: editor.isActive('heading', { level: 3 }) ? 'bg-muted' : '',
         },
         {

@@ -4,10 +4,11 @@ import { ReactSubmitEvent } from '@/lib/types'
 
 export interface FormInputEventProps {
   submitHandler: (event: ReactSubmitEvent) => void,
-  changeHandler: (editNotesTitle: string, value: string) => void,
+  changeHandler: (editFormName: string, value: string) => void,
   resetHandler: () => void,
   editingFormId: string,
   nameForm: string,
+  placeholder: string
 }
 
 const FormInputEvent: React.FC<FormInputEventProps> = ({
@@ -15,16 +16,18 @@ const FormInputEvent: React.FC<FormInputEventProps> = ({
   changeHandler,
   resetHandler,
   editingFormId,
-  nameForm
+  nameForm,
+  placeholder
 }) => {
   return (
     <form action="">
       <Input
         type="text"
+        className='h-8 rounded-none border-none'
         aria-label={nameForm}
         maxLength={20}
         autoFocus={true}
-        placeholder="Insert text here..."
+        placeholder={placeholder}
         onChange={(event) => {
           changeHandler(editingFormId, event.target.value)
         }}

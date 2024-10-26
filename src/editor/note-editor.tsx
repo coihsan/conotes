@@ -1,19 +1,20 @@
 import css from '../styles/editor.module.scss'
-import { EditorContent, HTMLContent, useEditor } from '@tiptap/react'
+import { Content, EditorContent, HTMLContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Document from '@tiptap/extension-document'
 import { cn } from "@/lib/utils/cn"
 import React from "react"
-import { RootState } from "@/lib/redux/store"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useAppSelector } from "@/lib/hooks/use-redux"
 import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
 import { getNotesTitle } from '@/lib/utils/helpers'
 import StaticToolbar from './toolbar/static-toolbar'
+import { Folder24Regular, History24Regular, NumberSymbol24Regular } from '@fluentui/react-icons'
+import { Badge } from '@/components/ui/badge'
 
 interface Props {
-    contentNotes: string | null;
+    contentNotes: Content;
     onChange: (content: HTMLContent, title: string) => void;
 }
 
@@ -22,19 +23,22 @@ const HeadingDcoument = Document.extend({
   })
 
 const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
-    const editable = useAppSelector((state: RootState) => state.app.editable);
+    const editable = useAppSelector((state) => state.app.editable);
 
     const editor = useEditor({
         extensions: [
             HeadingDcoument,
             StarterKit.configure({
+                document: false,
+            }),
+            TextAlign.configure({
+                types: ['heading', 'paragraph'],
             }),
             Placeholder.configure({
                 placeholder: ({ node }) => {
                   if (node.type.name === 'heading') {
                     return 'What’s the title?'
                   }
-        
                   return 'Can you add some further context?'
                 },
               }),
@@ -57,10 +61,21 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
                 null
             )}
             <ScrollArea className='h-full p-12'>
-                <div className='flex flex-col'>
-                    <div className='text-xs text-muted-foreground'>Last updated : :</div>
-                    <div className='text-xs text-muted-foreground'>Tags : </div>
-                    <div className='text-xs text-muted-foreground'>Tags : </div>
+                <div className='flex items-center justify-between w-full'>
+                    <div className="flex items-center gap-3">
+                        <Badge variant={'outline'} className='gap-1'>
+                            <NumberSymbol24Regular className='size-4' />
+                            <span>firstnotes</span>
+                        </Badge>
+                        <Badge variant={'outline'} className='gap-1'>
+                            <Folder24Regular className='size-4' />
+                            <span>UI/UX</span>
+                        </Badge>
+                    </div>
+                    <Badge variant={'ghost'} className='gap-1'>
+                        <History24Regular className='size-4' />
+                        03-31-2019
+                    </Badge>
                 </div>
                 <EditorContent
                     className={cn(css.tiptap)}

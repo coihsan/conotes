@@ -1,8 +1,10 @@
 import { Folder24Regular } from "@fluentui/react-icons"
 import SidebarGroup from "./wrapper/sidebar-group"
 import { Badge } from "../ui/badge"
+import React from "react"
 
-const FolderTags = () => {
+const FolderTags: React.FC = () => {
+
     return (
         <SidebarGroup sidebarName="Tags">
             <div role="button" className="flex items-center justify-between w-full hover:bg-zinc-900 p-2">

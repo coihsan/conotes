@@ -11,7 +11,7 @@ import { currentItem, debounceEvent } from "@/lib/utils/helpers"
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
 import { RootState } from '@/lib/redux/store';
 import { useToast } from '@/lib/hooks/use-toast';
-import { createNewNotesThunk } from '@/lib/redux/thunk';
+import { createNewNotesThunk } from '@/lib/redux/slice/notes';
 import { NoteItem } from '@/lib/types';
 import HeaderSidebar from '@/components/global/header-sidebar';
 import NotesListItems from '@/components/notes/noteslist-item';
@@ -54,7 +54,7 @@ const NoteList = () => {
 
     const filteredNotes = _searchValues
     ? allNotes
-        ?.filter((note) => !note.trash && note.content.toLowerCase().includes(_searchValues))
+        ?.filter((note) => !note.trash && note.content?.toString().toLowerCase().includes(_searchValues))
         .sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0)) 
     : allNotes?.filter((note) => !note.trash)
         .sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0));
@@ -90,7 +90,7 @@ const NoteList = () => {
                     <SearchBar searchRef={searchRef} searchQuery={_searchNotes} />
                 }
             />
-            <ScrollArea className='h-full pt-2 scroll-smooth snap-y touch-pan-y pb-24'>
+            <ScrollArea className='h-full pt-2 scroll-smooth touch-pan-y pb-24'>
                 <div className='grid grid-cols-1 gap-2 px-2 snap-end'>
                     {filteredNotes?.length === 0 ? (
                         <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>Not found</div>

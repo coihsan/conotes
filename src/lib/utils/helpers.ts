@@ -3,6 +3,7 @@ import { NoteItem } from "../types";
 import { LabelText } from "../label-text";
 import { format } from "date-fns";
 import { Node } from "@tiptap/pm/model";
+import { Content } from "@tiptap/core";
 
 export const currentItem = format(new Date(), 'dd-MM-yyyy');
 export const newNote = (): NoteItem => ({
@@ -21,8 +22,9 @@ export const copyToClipboard = (content: string) => {
   navigator.clipboard.writeText(content)
 }
 
-export const getNotesTitle = (title: string) : string => {
-  const noteText = title.trim().match(/[^#]{1,45}/)
+export const getNotesTitle = (title: Content) : string => {
+  const titles = title?.toString()
+  const noteText = titles?.trim().match(/[^#]{1,45}/)
   return noteText ? noteText[0].trim().split(/\r?\n/)[0] : LabelText.CREATE_NEW_NOTE
 }
 

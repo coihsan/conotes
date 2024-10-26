@@ -52,8 +52,8 @@ const Sidebar: React.FC = () => {
                         </button>
                     </div>
                 </div>
-                <FolderTags />
                 <FolderNotes />
+                <FolderTags />
             </div>
             <div className="grid gap-2">
                 <ModeToggle />

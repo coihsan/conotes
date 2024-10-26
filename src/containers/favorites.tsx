@@ -8,6 +8,7 @@ import SearchBar from '@/components/global/search-bar';
 import { RootState } from '@/lib/redux/store';
 import { useEffect, useRef } from 'react';
 import NotesListItems from '@/components/notes/noteslist-item';
+import { Content } from '@tiptap/react';
 
 const Favorites = () => {
     const dispatch = useAppDispatch()
@@ -22,8 +23,8 @@ const Favorites = () => {
     )
 
     const filteredNotes = _searchValues
-        ? notes?.filter((notes: { content: string; }) =>
-            notes.content.toLowerCase().includes(_searchValues))
+        ? notes?.filter((notes) =>
+            !notes.trash && notes.content?.toString().toLowerCase().includes(_searchValues))
         : notes;
 
     useEffect(() => {
@@ -38,13 +39,13 @@ const Favorites = () => {
                 }
             />
             <ScrollArea className='h-full pt-2 scroll-smooth snap-y touch-pan-y'>
-                <div className='snap-end'>
+                <div className='grid grid-cols-1 gap-2 px-2 snap-end'>
                     {filteredNotes?.length === 0 ? (
                         <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>Not found</div>
                     ) : (
-                        <div className='grid grid-cols-1 gap-2 px-2'>
+                        <>
                             <NotesListItems index={allFavoriteNotes} />
-                        </div>
+                        </>
                     )}
                 </div>
             </ScrollArea>

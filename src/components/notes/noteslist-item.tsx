@@ -6,12 +6,15 @@ import { Badge } from "../ui/badge"
 import { NoteItem } from "@/lib/types"
 import React from "react"
 import clsx from "clsx"
+import { useAppSelector } from "@/lib/hooks/use-redux"
 
 interface NotesListItemsProps {
     index: NoteItem[]
 }
 
 const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
+    const activeNote = useAppSelector((state) => state.notes.notes)
+    const favoriteNotes = activeNote.find((state) => state.favorite)
 
     return (
         <>
@@ -19,7 +22,7 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                 <Link to={`/app/${item.id}`}
                     key={item.id}
                     tabIndex={0}
-                    className={clsx('snap-end relative rounded-xl px-2 h-24 flex items-center justify-between py-4 hover:bg-zinc-200 hover:dark:bg-zinc-800 border', (location.pathname == `/app/${item.id}` ? `bg-zinc-200 dark:bg-zinc-800` : `bg-white dark:bg-zinc-500/5`))} >
+                    className={clsx('snap-start relative rounded-xl px-2 h-24 flex items-center justify-between py-4 hover:bg-zinc-200 hover:dark:bg-zinc-800 border', (location.pathname == `/app/${item.id}` ? `bg-zinc-200 dark:bg-zinc-800` : `bg-white dark:bg-zinc-500/5`))} >
                     <div className='flex w-full'>
                         <div className='w-6'>
                             {item.favorite ?
@@ -28,11 +31,11 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                             }
                         </div>
                         <div className='flex flex-col w-full gap-4 pl-4'>
-                            <h3 className='text-sm font-medium w-full line-clamp-1' aria-label={item.content}>
+                            <h3 className='text-sm font-medium w-full line-clamp-1'>
                                 {getNotesTitle(item.content)}
                             </h3>
                             <div className='flex items-center gap-3'>
-                                {item.folder ?
+                                {favoriteNotes?.favorite === true ?
                                     (
                                         <div className='flex items-center gap-1 text-muted-foreground text-xs font-medium'>
                                             <Folder20Regular />

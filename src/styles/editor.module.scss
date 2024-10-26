@@ -10,7 +10,7 @@
     background-color: transparent;
   }
   &{
-    height: 100%;
+    height: 100dvh;
   }
   /* List styles */
   ul,
@@ -41,7 +41,9 @@
     margin-top: 2.5rem;
     text-wrap: pretty;
   }
-
+  p{
+    margin: 0.25rem 0;
+  }
   h1,
   h2 {
     margin-top: 3.5rem;

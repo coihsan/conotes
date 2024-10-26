@@ -7,9 +7,20 @@ import { debounceEvent } from '@/lib/utils/helpers';
 import SearchBar from '@/components/global/search-bar';
 import { searchQuery } from '@/lib/redux/slice/notes';
 import NotesListItems from '@/components/notes/noteslist-item';
-import ButtonMenu from '@/components/primitive/button-menu';
-import { TrashIcon } from '@radix-ui/react-icons';
-import { Delete24Filled } from '@fluentui/react-icons';
+import { Delete24Regular } from '@fluentui/react-icons';
+import { Content } from '@tiptap/react';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
 
 const TrashNotes = () => {
     const dispatch = useAppDispatch()
@@ -23,11 +34,11 @@ const TrashNotes = () => {
         100
     )
 
-    const handleMovePermanent = () => {}
+    const handleMovePermanent = () => { }
 
     const filteredNotes = _searchValues
-        ? notes?.filter((notes: { content: string; }) =>
-            notes.content.toLowerCase().includes(_searchValues))
+        ? notes?.filter((notes: { content: Content; }) =>
+            notes.content?.toString().toLowerCase().includes(_searchValues))
         : notes;
 
     useEffect(() => {
@@ -41,20 +52,37 @@ const TrashNotes = () => {
                     <SearchBar searchRef={searchRef} searchQuery={_searchNotes} />
                 }
                 buttonAction={
-                    <ButtonMenu action={handleMovePermanent} side="bottom" variant={'destructive'} size={'default'} label={LabelText.CREATE_NEW_NOTE}>
-                        <Delete24Filled />
-                        Empty trash
-                    </ButtonMenu>
+                    <AlertDialog>
+                        <AlertDialogTrigger>
+                            <Button className='flex items-center gap-2' variant={'destructive'} size={'default'}>
+                                <Delete24Regular />
+                                Empty trash
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently remove your data from our app.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleMovePermanent}>Continue</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+
                 }
             />
-            <ScrollArea className='h-full pt-2 scroll-smooth snap-y touch-pan-y'>
-            <div className='snap-end'>
+            <ScrollArea className='h-full pt-2 scroll-smooth touch-pan-y pb-24'>
+                <div className='grid grid-cols-1 gap-2 px-2 snap-end'>
                     {filteredNotes?.length === 0 ? (
                         <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>Not found</div>
                     ) : (
-                        <div className='grid grid-cols-1 gap-2 px-2'>
+                        <>
                             <NotesListItems index={trashNotes} />
-                        </div>
+                        </>
                     )}
                 </div>
             </ScrollArea>

@@ -5,12 +5,14 @@ import React, { useEffect, useState } from "react"
 import { Loading } from "@/components/global/loading"
 import BreadcrumbNotes from "@/components/global/breadcrumb-notes"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
-import { getNotesContentByIDThunk, updateContentThunk } from "@/lib/redux/thunk"
-import { debounceNotes } from "@/lib/utils/helpers"
+import { getNotesContentByIDThunk, updateContentThunk } from "@/lib/redux/slice/notes"
 import { setEditableEditor } from "@/lib/redux/slice/app"
-import HeaderEditor from "./header-editor"
-import { NoteItem } from "@/lib/types"
-import { HTMLContent } from "@tiptap/core"
+import { HTMLContent } from "@tiptap/react"
+import ButtonMenu from "@/components/primitive/button-menu"
+import { LabelText } from "@/lib/label-text"
+import { ArrowMaximize24Regular, Edit24Regular, Save24Regular, Star24Regular } from "@fluentui/react-icons"
+import { Separator } from "@/components/ui/separator"
+import SettingsMenuInNotes from "@/action/setting-menu-in-notes"
 
 const PreviewEditor: React.FC = () => {
   const { noteId } = useParams()
@@ -19,14 +21,12 @@ const PreviewEditor: React.FC = () => {
   const dispatch = useAppDispatch();
   const editable = useAppSelector((state) => state.app.editable);
   const activeNoteContent = useAppSelector((state) => state.notes.activeNoteId);
+  const [noteContent, setNoteContent] = useState(activeNoteContent);
 
-  const handleSave = debounceNotes((content : NoteItem) => {}, 1000)
-
-  // handle change notes
   const handleUpdateContent = (content: HTMLContent, title: string) => {
-    if (noteId) { 
+    if (noteId) {
       dispatch(updateContentThunk({
-        noteId, 
+        noteId,
         content,
         title
       }));
@@ -34,6 +34,10 @@ const PreviewEditor: React.FC = () => {
       console.error("noteId is undefined. Cannot update content.");
     }
   };
+  
+  useEffect(() => {
+    setNoteContent(activeNoteContent); 
+  }, [activeNoteContent]);
 
   useEffect(() => {
     if (noteId) {
@@ -55,12 +59,37 @@ const PreviewEditor: React.FC = () => {
     <div className="h-full w-full border rounded-r-2xl">
       <div className="flex items-center justify-between w-full py-1 px-3 border-b-[1px]">
         <BreadcrumbNotes />
-        <HeaderEditor />
+        <header className="flex items-center gap-px">
+          {editable ? (
+            <ButtonMenu
+              label={LabelText.PREVIEW_NOTE}
+              action={() => dispatch(setEditableEditor(false))} variant={'ghost'} size={'icon'}>
+              <Save24Regular className="size-5" />
+            </ButtonMenu>
+          ) : (
+            <ButtonMenu
+              label={LabelText.EDIT_NOTE}
+              action={() => {
+                dispatch(setEditableEditor(true));
+              }} variant={'ghost'} size={'icon'}>
+              <Edit24Regular className="size-5" />
+            </ButtonMenu>
+          )
+          }
+          <Separator orientation="vertical" />
+          <ButtonMenu label={LabelText.SETTINGS} variant={'ghost'} size={'icon'}>
+            <Star24Regular className="size-5" />
+          </ButtonMenu>
+          <SettingsMenuInNotes />
+          <ButtonMenu label={LabelText.SETTINGS} variant={'ghost'} size={'icon'}>
+            <ArrowMaximize24Regular className="size-5" />
+          </ButtonMenu>
+        </header>
       </div>
-          <NoteEditor 
-          onChange={handleUpdateContent} 
-          contentNotes={activeNoteContent}
-          />
+      <NoteEditor
+        onChange={handleUpdateContent}
+        contentNotes={noteContent}
+      />
     </div>
   )
 }

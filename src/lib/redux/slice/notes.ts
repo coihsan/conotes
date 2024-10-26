@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { NoteItem, NoteState } from '@/lib/types'
-import { fetchAllNote, getAllNotesThunk, getNotesContentByIDThunk, moveToTrashThunk, updateContentThunk } from '../thunk';
 import { v4 } from 'uuid';
 import { currentItem } from '@/lib/utils/helpers';
+import { createAppAsyncThunk } from '../thunk';
+import { db } from '@/lib/db';
 
 const initialState: NoteState = {
   notes: [],
@@ -30,6 +31,191 @@ const firstNotes : NoteItem = {
   ],
   favorite: true
 }
+
+export const updateContentThunk = createAppAsyncThunk(
+  'notes/updateContent',
+  async (data: { noteId: string, content: string, title: string }, { dispatch }) => {
+    try {
+      const existingNote = await db.notes.get(data.noteId); 
+
+      if (existingNote) {
+        const updatedNote = { 
+          ...existingNote, 
+          content: data.content, 
+          title: data.title,
+          lastUpdated: currentItem 
+        };
+        await db.notes.put(updatedNote);
+        dispatch(updateNoteContent(updatedNote));
+
+        const allNotes = await db.notes.toArray(); 
+        return allNotes; 
+      } else {
+        throw new Error('Note not found');
+      }
+    } catch (error) {
+      console.error('Failed to update note content', error);
+      throw error;
+    }
+  }
+);
+
+export const updateActiveNoteId = createAppAsyncThunk(
+  'notes/updateNoteId',
+  async(data: {noteId: string, title: string}, { dispatch }) => {
+    try {
+      const existingNote = await db.notes.get(data.noteId); 
+
+      if (existingNote) {
+        const updatedNote = { 
+          ...existingNote, 
+          title: data.title,
+          lastUpdated: currentItem 
+        };
+        await db.notes.put(updatedNote);
+        dispatch(updateNoteContent(updatedNote));
+
+        const allNotes = await db.notes.toArray(); 
+        return allNotes; 
+      } else {
+        throw new Error('Note not found');
+      }
+    } catch (error) {
+      console.error('Failed to update note content', error);
+      throw error;
+    }
+  }
+)
+
+export const saveActiveNote = createAppAsyncThunk(
+  'notes/updateNoteId',
+  async(data: {noteId: string, content: string}, { dispatch }) => {
+    try {
+      const existingNote = await db.notes.get(data.noteId); 
+
+      if (existingNote) {
+        const updatedNote = { 
+          ...existingNote, 
+          title: data.content,
+          lastUpdated: currentItem 
+        };
+        await db.notes.put(updatedNote);
+        dispatch(updateNoteContent(updatedNote));
+
+        const allNotes = await db.notes.toArray(); 
+        return allNotes; 
+      } else {
+        throw new Error('Note not found');
+      }
+    } catch (error) {
+      console.error('Failed to update note content', error);
+      throw error;
+    }
+  }
+)
+
+export const createNewNotesThunk = createAppAsyncThunk(
+  'notes/createNewNotes',
+  async (note: NoteItem, { dispatch }) => {
+    try {
+      await db.notes.add({ ...note });
+      dispatch(addNote({ ...note }));
+    } catch (error) {
+      console.error('Failed to create note', error);
+      throw error;
+    }
+  }
+);
+
+export const fetchAllNote = createAppAsyncThunk(
+  'notes/fetchAllNotes',
+  async (_, {dispatch}) =>{
+    try {
+      const notes: NoteItem[] = await db.notes.toArray()
+      dispatch(setNotes(notes))
+    } catch (error) {
+      console.log('Failed to fetch all notes')
+    }
+  }
+)
+
+export const getAllNotesThunk = createAppAsyncThunk(
+  'notes/getAllNotes',
+  async (_, { dispatch }) => {
+    try {
+      const notes: NoteItem[] = await db.notes.toArray();
+      const sortedNotes = notes.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+      dispatch(setNotes(sortedNotes));
+    } catch (error) {
+      console.error('Failed to fetch all notes', error);
+      throw error;
+    }
+  }
+);
+
+export const getNotesContentByIDThunk = createAppAsyncThunk(
+  'notes/getNotesContentByID',
+  async (noteId: string) => {
+    try {
+      const note = await db.notes.get(noteId);
+      if (note) {
+        return note;
+      } else {
+        throw new Error('Note not found');
+      }
+    } catch (error) {
+      console.error('Error fetching note content:', error);
+      throw error;
+    }
+  },
+);
+
+export const moveToTrashThunk = createAppAsyncThunk(
+  'notes/deleteNotes',
+  async (noteId: string, {dispatch, rejectWithValue}) => {
+    try {
+      await db.notes.update(noteId, { trash : true })
+      dispatch(moveToTrash(noteId))
+    } catch (error) {
+      rejectWithValue(error)
+    }
+  }
+)
+
+export const markAsFavoriteThunk = createAppAsyncThunk(
+  'notes/markFavorite',
+  async (noteId: string, {dispatch, rejectWithValue}) => {
+    try {
+      await db.notes.update(noteId, { favorite : true})
+      dispatch(markAsFavorite(noteId))
+    } catch (error) {
+      rejectWithValue(error)
+    }
+  }
+)
+export const removeMarkAsFavoriteThunk = createAppAsyncThunk(
+  'notes/markFavorite',
+  async (noteId: string, {dispatch, rejectWithValue}) => {
+    try {
+      await db.notes.update(noteId, { favorite : false})
+      dispatch(markAsFavorite(noteId))
+    } catch (error) {
+      rejectWithValue(error)
+    }
+  }
+)
+
+// export const deleteEmptyTrashThunk = createAppAsyncThunk(
+//   'note/deletePermanent',
+//   async (noteId: string[], {dispatch, rejectWithValue}) => {
+//     try {
+//       await db.notes.bulkDelete(noteId)
+      
+//     } catch (error) {
+//       rejectWithValue(error)
+//     }
+//   }
+// )
 
 const notesSlice = createSlice({
   name: 'notes',
@@ -81,11 +267,16 @@ const notesSlice = createSlice({
       state.error = action.error.message
     })
     // fetch notes
-    .addCase(fetchAllNote.fulfilled, (state, action) => {
+    .addCase(fetchAllNote.fulfilled, (state) => {
       state.status = 'succeeded';
     })
     .addCase(updateContentThunk.fulfilled, (state, action) => {
-      state.status = 'succeeded'
+      state.status = 'succeeded';
+      state.notes = action.payload
+    })
+    .addCase(updateContentThunk.pending, (state) => {
+      state.status = 'pending',
+      state.loading = true
     })
     // get notes content by ID
     .addCase(getNotesContentByIDThunk.fulfilled, (state, action) => {

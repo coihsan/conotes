@@ -21,7 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { markAsFavoriteThunk, moveToTrashThunk, removeMarkAsFavoriteThunk } from '@/lib/redux/thunk';
+import { markAsFavoriteThunk, moveToTrashThunk, removeMarkAsFavoriteThunk } from '@/lib/redux//slice/notes';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
 
 type SettingMenuProps = {
@@ -96,7 +96,7 @@ const SettingNotesList: React.FC<SettingMenuProps> = ({ className, noteId }) => 
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => handleMoveToTrash(noteId)}
-            className='text-destructive-foreground'>
+            className='text-red-500'>
             <Delete24Regular />
             Move to trash
           </DropdownMenuItem>
