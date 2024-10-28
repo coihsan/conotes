@@ -1,4 +1,4 @@
-import { getNotesTitle } from "@/lib/utils/helpers"
+import { getContrastColor, getNotesTitle } from "@/lib/utils/helpers"
 import { Folder20Regular, Star20Regular } from "@fluentui/react-icons"
 import { Link } from "react-router-dom"
 import SettingNotesList from "@/action/settings-notes-list"
@@ -46,11 +46,15 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                                     )
                                 }
                                 <div>
-                                    {item.tags?.length === 0 ? (
-                                        null
-                                    ) : (
+                                    {item.tags && (
                                         item.tags?.map((tag) => (
-                                            <Badge className="text-xs" key={tag.id} variant={'default'}>#{tag.name}</Badge>
+                                            <div
+                                                key={tag.id}
+                                                className="flex items-center space-x-1 rounded-full px-3 py-1 text-sm"
+                                                style={{ backgroundColor: tag.color, color: getContrastColor(tag.color) }}
+                                            >
+                                                <span>{tag.name}</span>
+                                            </div>
                                         ))
                                     )}
                                 </div>

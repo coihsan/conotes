@@ -34,7 +34,8 @@ const NoteList = () => {
             tags: [
                 {
                     id: v4(),
-                    name: "UI"
+                    name: "Design",
+                    color: 'bg-sky-600'
                 }
             ],
             trash: false,

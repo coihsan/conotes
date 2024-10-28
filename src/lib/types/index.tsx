@@ -24,7 +24,7 @@ export interface FolderItem {
 export interface TagItem {
   id: string
   name: string,
-  color?: String
+  color: string
 }
 
 export interface Visitor {

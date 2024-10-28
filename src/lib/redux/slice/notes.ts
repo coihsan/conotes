@@ -26,7 +26,8 @@ const firstNotes : NoteItem = {
   tags: [
     {
       id: v4(),
-      name: "first tags"
+      name: "first tags",
+      color: ''
     }
   ],
   favorite: true
@@ -34,85 +35,34 @@ const firstNotes : NoteItem = {
 
 export const updateContentThunk = createAppAsyncThunk(
   'notes/updateContent',
-  async (data: { noteId: string, content: string, title: string }, { dispatch }) => {
+  async (
+    data: { noteId: string; content: string; title: string },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
-      const existingNote = await db.notes.get(data.noteId); 
+      const existingNote = await db.notes.get(data.noteId);
 
       if (existingNote) {
-        const updatedNote = { 
-          ...existingNote, 
-          content: data.content, 
+        const updatedNote = {
+          ...existingNote,
+          content: data.content,
           title: data.title,
-          lastUpdated: currentItem 
+          lastUpdated: new Date().toISOString()
         };
+
         await db.notes.put(updatedNote);
         dispatch(updateNoteContent(updatedNote));
-
-        const allNotes = await db.notes.toArray(); 
-        return allNotes; 
+        
+        return updatedNote;
       } else {
-        throw new Error('Note not found');
+        return rejectWithValue('Note not found');
       }
     } catch (error) {
       console.error('Failed to update note content', error);
-      throw error;
+      return rejectWithValue(error);
     }
   }
 );
-
-export const updateActiveNoteId = createAppAsyncThunk(
-  'notes/updateNoteId',
-  async(data: {noteId: string, title: string}, { dispatch }) => {
-    try {
-      const existingNote = await db.notes.get(data.noteId); 
-
-      if (existingNote) {
-        const updatedNote = { 
-          ...existingNote, 
-          title: data.title,
-          lastUpdated: currentItem 
-        };
-        await db.notes.put(updatedNote);
-        dispatch(updateNoteContent(updatedNote));
-
-        const allNotes = await db.notes.toArray(); 
-        return allNotes; 
-      } else {
-        throw new Error('Note not found');
-      }
-    } catch (error) {
-      console.error('Failed to update note content', error);
-      throw error;
-    }
-  }
-)
-
-export const saveActiveNote = createAppAsyncThunk(
-  'notes/updateNoteId',
-  async(data: {noteId: string, content: string}, { dispatch }) => {
-    try {
-      const existingNote = await db.notes.get(data.noteId); 
-
-      if (existingNote) {
-        const updatedNote = { 
-          ...existingNote, 
-          title: data.content,
-          lastUpdated: currentItem 
-        };
-        await db.notes.put(updatedNote);
-        dispatch(updateNoteContent(updatedNote));
-
-        const allNotes = await db.notes.toArray(); 
-        return allNotes; 
-      } else {
-        throw new Error('Note not found');
-      }
-    } catch (error) {
-      console.error('Failed to update note content', error);
-      throw error;
-    }
-  }
-)
 
 export const createNewNotesThunk = createAppAsyncThunk(
   'notes/createNewNotes',
@@ -270,13 +220,22 @@ const notesSlice = createSlice({
     .addCase(fetchAllNote.fulfilled, (state) => {
       state.status = 'succeeded';
     })
-    .addCase(updateContentThunk.fulfilled, (state, action) => {
+    .addCase(updateContentThunk.fulfilled, (state, action: PayloadAction<{ id: string; content: string; lastUpdated: string }>) => {
+      const { id, content, lastUpdated } = action.payload;
+      const note = state.notes.find((note) => note.id === id);
+      if (note) {
+        note.content = content;
+        note.lastUpdated = lastUpdated;
+      }
       state.status = 'succeeded';
-      state.notes = action.payload
+      state.loading = false;
     })
     .addCase(updateContentThunk.pending, (state) => {
       state.status = 'pending',
       state.loading = true
+    })
+    .addCase(updateContentThunk.rejected, (state, action) => {
+      state.error = action.payload as string;
     })
     // get notes content by ID
     .addCase(getNotesContentByIDThunk.fulfilled, (state, action) => {
