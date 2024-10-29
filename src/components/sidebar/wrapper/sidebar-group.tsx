@@ -8,8 +8,6 @@ import { LabelText } from '@/lib/label-text';
 import { useState } from "react";
 import { Add24Regular, ChevronDown20Regular, ChevronRight20Regular } from "@fluentui/react-icons";
 
-type SidebarType = "tgas" | "folders"
-
 type SidebarGroupProps = {
     children : React.ReactNode
     sidebarName: string

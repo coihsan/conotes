@@ -5,7 +5,6 @@ import { currentItem } from '@/lib/utils/helpers';
 import { createAppAsyncThunk } from '../thunk';
 import { db } from '@/lib/db';
 import { Content } from '@tiptap/core';
-import { RootState } from '../store';
 
 const initialState: NoteState = {
   notes: [],
@@ -146,8 +145,8 @@ export const markAsFavoriteThunk = createAppAsyncThunk(
 )
 
 export const deleteEmptyTrashThunk = createAppAsyncThunk(
-  'note/deletePermanent',
-  async (_, { rejectWithValue }) => {
+  'note/deleteEmpty',
+  async (_, { dispatch, rejectWithValue }) => {
     try {
       const allNotes = await db.notes.toArray();
       const notesToDelete = allNotes.filter(note => {
@@ -155,11 +154,20 @@ export const deleteEmptyTrashThunk = createAppAsyncThunk(
       });
       const noteIdsToDelete = notesToDelete.map(note => note.id);
       await db.notes.bulkDelete(noteIdsToDelete);
+      dispatch(bulkDeleteFromTrash(notesToDelete))
     } catch (error) {
       rejectWithValue(error);
     }
   }
 );
+
+export const deletePermanentAction = createAppAsyncThunk(
+  'notes/deleteSingle',
+  async (noteId: string, {dispatch}) => {
+    await db.notes.delete(noteId)
+    dispatch(singleDeleteFromTrash(noteId))
+  }
+)
 
 
 const notesSlice = createSlice({
@@ -188,15 +196,21 @@ const notesSlice = createSlice({
       }
     },
     moveToTrash: (state, { payload }: PayloadAction<string>) => {
-      const note = state.notes.find((note) => note.id === payload)
+      const note = state.notes.find((note) => note.id === payload);
       if (note) {
-        note.trash = !note.trash
+        note.trash = !note.trash;
+        if (note.trash) { 
+          note.favorite = false; 
+        }
       }
     },
-    deleteEmptyTrash: (state, { payload } : PayloadAction<NoteItem[]>) => {
-      const index = state.notes.find((state) => state.id);
-      // todo create slice for this, i will be back
-    }
+    bulkDeleteFromTrash: (state, { payload }: PayloadAction<NoteItem[]>) => {
+      state.notes = state.notes.filter(note => !payload.some(deletedNote => deletedNote.id === note.id));
+    },
+    singleDeleteFromTrash: (state, { payload }: PayloadAction<string>) => {
+      state.notes = state.notes.filter(note => note.id !== payload);
+    },  
+
   },
   extraReducers(builder) {
     builder
@@ -277,6 +291,8 @@ export const {
   markAsFavorite,
   moveToTrash,
   setNotes,
+  bulkDeleteFromTrash,
+  singleDeleteFromTrash,
 } = notesSlice.actions
 
 export default notesSlice.reducer

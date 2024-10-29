@@ -1,6 +1,6 @@
 import { getContrastColor, getNotesTitle } from "@/lib/utils/helpers"
 import { Folder20Regular, Star20Regular } from "@fluentui/react-icons"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import SettingNotesList from "@/action/settings-notes-list"
 import { NoteItem } from "@/lib/types"
 import React from "react"
@@ -11,6 +11,7 @@ interface NotesListItemsProps {
 }
 
 const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
+    let location = useLocation();
 
     return (
         <>
@@ -20,7 +21,7 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                     tabIndex={0}
                     className={clsx('snap-start relative rounded-xl px-2 h-24 flex items-center justify-between py-4 hover:bg-zinc-200 hover:dark:bg-zinc-800 border', (location.pathname == `/app/${item.id}` ? `bg-zinc-200 dark:bg-zinc-800` : `bg-white dark:bg-zinc-500/5`))} >
                     <div className='flex w-full items-center'>
-                        <div>
+                        <div className="size-6">
                             {item.favorite ?
                                 (<Star20Regular className='text-yellow-600 dark:text-yellow-400 size-5' />)
                                 : null

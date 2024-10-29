@@ -2,8 +2,7 @@ import { v4 } from "uuid";
 import { NoteItem } from "../types";
 import { LabelText } from "../label-text";
 import { format } from "date-fns";
-import { Node } from "@tiptap/pm/model";
-import { Content } from "@tiptap/core";
+import { Content, Editor } from "@tiptap/core";
 
 export const currentItem = format(new Date(), 'dd-MM-yyyy');
 export const newNote = (): NoteItem => ({
@@ -19,7 +18,7 @@ export const newNote = (): NoteItem => ({
 })
 
 export const copyToClipboard = (noteId: string, content: string) => {
-  if(noteId){
+  if (noteId) {
     navigator.clipboard.writeText(content)
   } else{
     console.log('Failed copy to clipboard')

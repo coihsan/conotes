@@ -34,22 +34,13 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { Card, CardContent } from '@/components/ui/card'
 import { useState } from 'react'
-import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-  } from "@/components/ui/avatar"
 
 const NoteListTable = () =>{
     const [sorting, setSorting] = useState<SortingState>([])
     const [rowSelection, setRowSelection] = useState({})
     return(
         <main className="h-full p-6 rounded-r-2xl border-r-[1px] border-y-[1px]">
-            <header className='flex items-center gap-3 pb-4'>
-                <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                    <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
+            <header className='pb-4'>
                 <h1 className="text-2xl font-medium">Welcome visitors</h1>
             </header>
             <Separator />

@@ -20,14 +20,31 @@ import { Edit24Regular, Save24Regular } from "@fluentui/react-icons"
 import { Separator } from "@/components/ui/separator"
 import SettingsMenuInNotes from "@/action/setting-menu-in-notes"
 import { useParams } from 'react-router-dom'
+import { markAsFavoriteThunk } from '@/lib/redux/slice/notes'
 
 interface Props {
     contentNotes: Content;
     onChange: (content: HTMLContent, title: string) => void;
 }
+
 const HeadingDcoument = Document.extend({
     content: 'heading block*',
 })
+
+const createExtensions = [
+    HeadingDcoument,
+    StarterKit.configure({
+        document: false,
+    }),
+    TextAlign.configure({
+        types: ['heading'],
+    }),
+    Placeholder.configure({
+        placeholder: 'What’s the title?',
+        emptyEditorClass: 'is-editor-empty',
+        emptyNodeClass: 'is-empty',
+    })
+]
 
 const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
     const { noteId } = useParams()
@@ -38,42 +55,28 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
     const isFavorites = notes.find((note) => note.id === noteId)?.favorite
 
     const editor = useEditor({
-        extensions: [
-            HeadingDcoument,
-            StarterKit.configure({
-                document: false
-            }),
-            TextAlign.configure({
-                types: ['heading', 'paragraph'],
-            }),
-            Placeholder.configure({
-                placeholder: ({ node }) => {
-                    if (node.type.name === 'heading') {
-                        return 'What’s the title?'
-                    }
-                    return 'Can you add some further context?'
-                },
-            }),
-        ],
+        extensions: createExtensions,
         content: contentNotes,
         editable: editable,
         autofocus: true,
         onUpdate: ({ editor }) => {
             const editorContent = editor.getHTML();
-            const firstNode = editorContent[0];
-            onChange(editorContent, getNotesTitle(firstNode))
+            const getFirst = editorContent[0]
+            onChange(editorContent, getNotesTitle(getFirst))
         },
+        editorProps: {
+            attributes: {
+              autocomplete: 'off',
+              autocorrect: 'off',
+              autocapitalize: 'off',
+              class: cn('focus:outline-none', css.noteEditor)
+            }
+          },
     }, [])
 
-    const handleToggleFavorite = (noteId: string, value: boolean) => {}
-
-    const handlePreview = () => {
-        dispatch(setEditableEditor(false))
-    }
-
-    const handleEditNote = () => {
-        dispatch(setEditableEditor(true))
-    }
+    const handleToggleFavorite = (noteId: string, value: boolean) => {dispatch(markAsFavoriteThunk({noteId, value}))}
+    const handlePreview = () => {dispatch(setEditableEditor(false))}
+    const handleEditNote = () => {dispatch(setEditableEditor(true))}
 
     useEffect(() => {
         if (editor && contentNotes) {
@@ -94,6 +97,7 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
             <div className="flex items-center justify-between w-full py-1 px-3 border-b-[1px]">
                 <BreadcrumbNotes />
                 <header className="flex items-center gap-px">
+                    <div className='text-xs text-muted-foreground pr-6'>Edit Oct 08</div>
                     {editable ? (
                         <ButtonMenu
                             label={LabelText.PREVIEW_NOTE}
@@ -110,11 +114,11 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
                     )}
                     <Separator orientation="vertical" />
                     {isFavorites ? (
-                        <ButtonMenu label={LabelText.FAVORITE} variant={'ghost'} size={'icon'}>
+                        <ButtonMenu action={() => handleToggleFavorite(noteId as string, false)} label={LabelText.FAVORITE} variant={'ghost'} size={'icon'}>
                         <StarDismiss24Regular className="size-5 text-yellow-600 dark:text-yellow-400" />
                     </ButtonMenu>
                     ) : (
-                        <ButtonMenu label={LabelText.FAVORITE} variant={'ghost'} size={'icon'}>
+                        <ButtonMenu action={() => handleToggleFavorite(noteId as string, true)} label={LabelText.FAVORITE} variant={'ghost'} size={'icon'}>
                         <StarAdd24Regular className="size-5" />
                     </ButtonMenu>
                     )}

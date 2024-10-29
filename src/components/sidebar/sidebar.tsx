@@ -11,7 +11,6 @@ import { Link } from 'react-router-dom';
 import FolderNotes from './folder-notes';
 import FolderTags from './folder-tags';
 
-
 const Sidebar: React.FC = () => {
     const dispatch = useDispatch();
 

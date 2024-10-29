@@ -1,14 +1,10 @@
-import React, { useEffect, useRef } from 'react'
 import { LabelText } from '@/lib/label-text';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import HeaderSidebar from '@/components/global/header-sidebar';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
-import { debounceEvent } from '@/lib/utils/helpers';
-import SearchBar from '@/components/global/search-bar';
-import { deleteEmptyTrashThunk, searchQuery } from '@/lib/redux/slice/notes';
+import { deleteEmptyTrashThunk } from '@/lib/redux/slice/notes';
 import NotesListItems from '@/components/notes/noteslist-item';
 import { Delete24Regular } from '@fluentui/react-icons';
-import { Content } from '@tiptap/react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -24,35 +20,16 @@ import { Button } from "@/components/ui/button"
 
 const TrashNotes = () => {
     const dispatch = useAppDispatch()
-    const searchRef = useRef() as React.MutableRefObject<HTMLInputElement>
-    const _searchValues = useAppSelector((state) => state.notes.searchValue)
     const notes = useAppSelector((state) => state.notes.notes)
     const trashNotes = notes.filter(note => note.trash)
 
-    const _searchNotes = debounceEvent(
-        (searchValue: string) => dispatch(searchQuery(searchValue)),
-        100
-    )
-
-    const filteredNotes = _searchValues
-        ? notes?.filter((notes: { content: Content; }) =>
-            notes.content?.toString().toLowerCase().includes(_searchValues))
-        : notes;
-
-    const handleDeletePermanent = () => {
+    const handleBulkDeletePermanent = () => {
         dispatch(deleteEmptyTrashThunk())
     }
-
-    useEffect(() => {
-        if (_searchValues) return
-    }, [_searchNotes])
 
     return (
         <aside className='sidebarOption'>
             <HeaderSidebar labelName={LabelText.TRASH}
-                searchAction={
-                    <SearchBar searchRef={searchRef} searchQuery={_searchNotes} />
-                }
                 buttonAction={
                     <AlertDialog>
                         {trashNotes.length === 0 ? (
@@ -75,7 +52,7 @@ const TrashNotes = () => {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={handleDeletePermanent}>Continue</AlertDialogAction>
+                                <AlertDialogAction onClick={handleBulkDeletePermanent}>Continue</AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
@@ -84,7 +61,7 @@ const TrashNotes = () => {
             />
             <ScrollArea className='h-full pt-2 scroll-smooth touch-pan-y pb-24'>
                 <div className='grid grid-cols-1 gap-2 px-2 snap-end'>
-                    {filteredNotes?.length === 0 ? (
+                    {trashNotes?.length === 0 ? (
                         <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>Not found</div>
                     ) : (
                         <>

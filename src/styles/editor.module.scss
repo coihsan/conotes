@@ -1,17 +1,21 @@
-.tiptap {
+.noteEditor {
   :first-child {
     margin-top: 2rem;
   }
-  :focus-within{
+
+  :focus-within {
     outline: transparent;
     border-color: transparent;
   }
-  ::-webkit-scrollbar{
+
+  ::-webkit-scrollbar {
     background-color: transparent;
   }
-  &{
-    height: 100dvh;
+
+  & {
+    height: 100%;
   }
+
   /* List styles */
   ul,
   ol {
@@ -23,11 +27,17 @@
       margin-bottom: 0.25em;
     }
   }
-  ul{
+
+  ul {
     list-style-type: disc;
   }
-  ol{
+
+  ol {
     list-style-type: decimal;
+  }
+
+  .text-node {
+    margin: 1rem 0;
   }
 
   /* Heading styles */
@@ -41,9 +51,11 @@
     margin-top: 2.5rem;
     text-wrap: pretty;
   }
-  p{
+
+  p {
     margin: 0.25rem 0;
   }
+
   h1,
   h2 {
     margin-top: 3.5rem;
@@ -67,11 +79,14 @@
   h6 {
     font-size: 1rem;
   }
-  button{
+
+  button {
     background-color: unset;
+
     &:hover {
       background-color: red;
     }
+
     &.is-active {
       background-color: green;
 
@@ -118,24 +133,23 @@
     margin: 2rem 0;
   }
 
-  /* Placeholder (at the top) */
-  p.is-editor-empty:first-child::before {
-    color: var(--gray-4);
+  &[contenteditable="false"] {
+    opacity: 0.9;
+  }
+  & .is-editor-empty:first-child::before {
+    color: #adb5bd;
     content: attr(data-placeholder);
     float: left;
     height: 0;
     pointer-events: none;
   }
-    .is-empty::before {
-      color: hsl(var(--muted-foreground));
-      content: attr(data-placeholder);
-      float: left;
-      height: 0;
-      pointer-events: none;
-    }
-
-  &[contenteditable="false"] {
-    cursor: not-allowed;
-    opacity: 0.6;
+  & .is-empty::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
   }
+  
 }
+

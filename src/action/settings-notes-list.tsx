@@ -10,10 +10,11 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ClipboardLink24Regular, Delete24Regular, Folder24Regular, MoreHorizontal16Regular, StarAdd24Regular, StarDismiss24Regular } from "@fluentui/react-icons";
-import { markAsFavoriteThunk, moveToTrashThunk } from '@/lib/redux//slice/notes';
+import { ClipboardLink24Regular, Delete24Regular, DeleteDismiss24Regular, Dismiss24Regular, Folder24Regular, MoreHorizontal16Regular, StarAdd24Regular, StarDismiss24Regular } from "@fluentui/react-icons";
+import { deletePermanentAction, markAsFavoriteThunk, moveToTrashThunk } from '@/lib/redux//slice/notes';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
 import { MenuType } from '@/lib/enums';
+import { copyToClipboard } from '@/lib/utils/helpers';
 
 type SettingMenuProps = {
   className?: string;
@@ -36,15 +37,20 @@ const SettingNotesList: React.FC<SettingMenuProps> = ({ className, noteId }) => 
   const handleMoveToTrash = (noteId: string) => {
     try {
       dispatch(moveToTrashThunk(noteId));
-      handleMarkAsFavorite(noteId, false)
       console.log('successfull move to trash')
     } catch (error) {
       console.log('error move to trash')
     }
   };
 
+  const handleSingleDeletePermanent = (noteId: string) => {
+    dispatch(deletePermanentAction(noteId))
+    console.log('delete single is sucessfuly')
+}
+
   const handleCopyReferenceToNote = (noteId: string) => {
     navigator.clipboard.writeText(noteId)
+    console.log('bulk delete is succeessfully')
   }
 
   return (
@@ -84,21 +90,21 @@ const SettingNotesList: React.FC<SettingMenuProps> = ({ className, noteId }) => 
         {activeMenu === MenuType.TRASH && 
           <DropdownMenuItem
           onClick={() => handleMoveToTrash(noteId)}>
-          <Delete24Regular />
+          <DeleteDismiss24Regular />
           Restore from trash
         </DropdownMenuItem>
         }
         <DropdownMenuItem onClick={() => handleCopyReferenceToNote(noteId)}>
           <ClipboardLink24Regular />
-          Copy reference notes
+          Copy note ID
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         {activeMenu === MenuType.TRASH ? (
           <>
           <DropdownMenuItem
-              onClick={() => handleMoveToTrash(noteId)}
+              onClick={() => handleSingleDeletePermanent(noteId)}
               className='text-red-500'>
-              <Delete24Regular />
+              <Dismiss24Regular />
               Delete permanent
             </DropdownMenuItem>
           </>
