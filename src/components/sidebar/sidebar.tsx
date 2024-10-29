@@ -29,7 +29,7 @@ const Sidebar: React.FC = () => {
             <div className="flex flex-col w-full gap-2">
                 <Link to={'/app'} className='pb-4 flex items-center pl-4 gap-2 w-full border-b border-zinc-700 dark:border-border'>
                     <Logo className="size-7 invert" />
-                    <span className='text-2xl font-semibold'>Nulih</span>
+                    <span className='text-2xl font-semibold'>conotes</span>
                 </Link>
                 <div className='grid gap-1 border-b border-zinc-700 dark:border-border py-4'>
                     <div className='text-muted-foreground text-xs pl-4 pb-5 uppercase'>menu</div>

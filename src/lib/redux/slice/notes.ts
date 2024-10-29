@@ -4,6 +4,8 @@ import { v4 } from 'uuid';
 import { currentItem } from '@/lib/utils/helpers';
 import { createAppAsyncThunk } from '../thunk';
 import { db } from '@/lib/db';
+import { Content } from '@tiptap/core';
+import { RootState } from '../store';
 
 const initialState: NoteState = {
   notes: [],
@@ -36,7 +38,7 @@ const firstNotes : NoteItem = {
 export const updateContentThunk = createAppAsyncThunk(
   'notes/updateContent',
   async (
-    data: { noteId: string; content: string; title: string },
+    data: { noteId: string; content: Content; title: string },
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -50,10 +52,9 @@ export const updateContentThunk = createAppAsyncThunk(
           lastUpdated: new Date().toISOString()
         };
 
-        await db.notes.put(updatedNote);
-        dispatch(updateNoteContent(updatedNote));
-        
-        return updatedNote;
+        await db.notes.update(data.noteId, {content: data.content});
+        dispatch(updateNoteContent(updatedNote))
+        return updatedNote
       } else {
         return rejectWithValue('Note not found');
       }
@@ -109,7 +110,7 @@ export const getNotesContentByIDThunk = createAppAsyncThunk(
     try {
       const note = await db.notes.get(noteId);
       if (note) {
-        return note;
+        return note.content;
       } else {
         throw new Error('Note not found');
       }
@@ -134,38 +135,32 @@ export const moveToTrashThunk = createAppAsyncThunk(
 
 export const markAsFavoriteThunk = createAppAsyncThunk(
   'notes/markFavorite',
-  async (noteId: string, {dispatch, rejectWithValue}) => {
+  async (data: {noteId: string, value: boolean}, {dispatch, rejectWithValue}) => {
     try {
-      await db.notes.update(noteId, { favorite : true})
-      dispatch(markAsFavorite(noteId))
-    } catch (error) {
-      rejectWithValue(error)
-    }
-  }
-)
-export const removeMarkAsFavoriteThunk = createAppAsyncThunk(
-  'notes/markFavorite',
-  async (noteId: string, {dispatch, rejectWithValue}) => {
-    try {
-      await db.notes.update(noteId, { favorite : false})
-      dispatch(markAsFavorite(noteId))
+      await db.notes.update(data.noteId, { favorite : data.value})
+      dispatch(markAsFavorite(data.noteId))
     } catch (error) {
       rejectWithValue(error)
     }
   }
 )
 
-// export const deleteEmptyTrashThunk = createAppAsyncThunk(
-//   'note/deletePermanent',
-//   async (noteId: string[], {dispatch, rejectWithValue}) => {
-//     try {
-//       await db.notes.bulkDelete(noteId)
-      
-//     } catch (error) {
-//       rejectWithValue(error)
-//     }
-//   }
-// )
+export const deleteEmptyTrashThunk = createAppAsyncThunk(
+  'note/deletePermanent',
+  async (_, { rejectWithValue }) => {
+    try {
+      const allNotes = await db.notes.toArray();
+      const notesToDelete = allNotes.filter(note => {
+        return note.trash === true; 
+      });
+      const noteIdsToDelete = notesToDelete.map(note => note.id);
+      await db.notes.bulkDelete(noteIdsToDelete);
+    } catch (error) {
+      rejectWithValue(error);
+    }
+  }
+);
+
 
 const notesSlice = createSlice({
   name: 'notes',
@@ -198,9 +193,10 @@ const notesSlice = createSlice({
         note.trash = !note.trash
       }
     },
-    // deleteEmptyTrash: ( state, { payload } : PayloadAction<string[]> ) =>{
-    //   state.notes.filter((note) => note.id === payload.reduce(state))
-    // }
+    deleteEmptyTrash: (state, { payload } : PayloadAction<NoteItem[]>) => {
+      const index = state.notes.find((state) => state.id);
+      // todo create slice for this, i will be back
+    }
   },
   extraReducers(builder) {
     builder
@@ -220,7 +216,7 @@ const notesSlice = createSlice({
     .addCase(fetchAllNote.fulfilled, (state) => {
       state.status = 'succeeded';
     })
-    .addCase(updateContentThunk.fulfilled, (state, action: PayloadAction<{ id: string; content: string; lastUpdated: string }>) => {
+    .addCase(updateContentThunk.fulfilled, (state, action: PayloadAction<{ id: string; content: Content; lastUpdated: string }>) => {
       const { id, content, lastUpdated } = action.payload;
       const note = state.notes.find((note) => note.id === id);
       if (note) {
@@ -239,7 +235,7 @@ const notesSlice = createSlice({
     })
     // get notes content by ID
     .addCase(getNotesContentByIDThunk.fulfilled, (state, action) => {
-      state.activeNoteId = action.payload.content
+      state.activeNoteId = action.payload as string
       state.loading = true
       state.status = 'succeeded'
     })
@@ -260,6 +256,17 @@ const notesSlice = createSlice({
     .addCase(moveToTrashThunk.rejected, (state, action) => {
       state.status = 'rejected';
       state.error = action.error.message || null;
+    })
+    .addCase(deleteEmptyTrashThunk.fulfilled, (state, action) => {
+      state.loading = false;
+      state.status = 'succeeded';
+    })
+    .addCase(deleteEmptyTrashThunk.rejected, (state) => {
+      state.status = 'rejected';
+    })
+    .addCase(deleteEmptyTrashThunk.pending, (state) => {
+      state.status = 'pending';
+      state.loading = true
     })
   },
 })

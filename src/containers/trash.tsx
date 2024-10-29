@@ -5,7 +5,7 @@ import HeaderSidebar from '@/components/global/header-sidebar';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
 import { debounceEvent } from '@/lib/utils/helpers';
 import SearchBar from '@/components/global/search-bar';
-import { searchQuery } from '@/lib/redux/slice/notes';
+import { deleteEmptyTrashThunk, searchQuery } from '@/lib/redux/slice/notes';
 import NotesListItems from '@/components/notes/noteslist-item';
 import { Delete24Regular } from '@fluentui/react-icons';
 import { Content } from '@tiptap/react';
@@ -34,12 +34,14 @@ const TrashNotes = () => {
         100
     )
 
-    const handleMovePermanent = () => { }
-
     const filteredNotes = _searchValues
         ? notes?.filter((notes: { content: Content; }) =>
             notes.content?.toString().toLowerCase().includes(_searchValues))
         : notes;
+
+    const handleDeletePermanent = () => {
+        dispatch(deleteEmptyTrashThunk())
+    }
 
     useEffect(() => {
         if (_searchValues) return
@@ -53,12 +55,17 @@ const TrashNotes = () => {
                 }
                 buttonAction={
                     <AlertDialog>
-                        <AlertDialogTrigger>
-                            <Button className='flex items-center gap-2' variant={'destructive'} size={'default'}>
-                                <Delete24Regular />
-                                Empty trash
-                            </Button>
-                        </AlertDialogTrigger>
+                        {trashNotes.length === 0 ? (
+                            null
+                        ) : (
+                            <AlertDialogTrigger>
+                                <Button className='flex items-center gap-2' variant={'destructive'} size={'default'}>
+                                    <Delete24Regular />
+                                    Empty trash
+                                </Button>
+                            </AlertDialogTrigger>
+                        ) 
+                        }
                         <AlertDialogContent>
                             <AlertDialogHeader>
                                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -68,7 +75,7 @@ const TrashNotes = () => {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={handleMovePermanent}>Continue</AlertDialogAction>
+                                <AlertDialogAction onClick={handleDeletePermanent}>Continue</AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>

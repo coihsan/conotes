@@ -4,7 +4,8 @@ import NoteEditor from "./note-editor"
 import React, { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import { getNotesContentByIDThunk, updateContentThunk } from "@/lib/redux/slice/notes"
-import { HTMLContent } from "@tiptap/react"
+import { Content } from "@tiptap/react"
+import { debounceEvent } from "@/lib/utils/helpers"
 
 const PreviewEditor: React.FC = () => {
   const { noteId } = useParams()
@@ -13,7 +14,7 @@ const PreviewEditor: React.FC = () => {
   const activeNoteContent = useAppSelector((state) => state.notes.activeNoteId);
   const [noteContent, setNoteContent] = useState(activeNoteContent);
 
-  const handleUpdateContent = (content: HTMLContent, title: string) => {
+  const handleUpdateContent = debounceEvent((content: Content, title: string) => {
     if (noteId) {
       dispatch(updateContentThunk({
         noteId,
@@ -23,7 +24,7 @@ const PreviewEditor: React.FC = () => {
     } else {
       console.error("noteId is undefined. Cannot update content.");
     }
-  };
+  }, 500)
 
   useEffect(() => {
     setNoteContent(activeNoteContent);
@@ -32,6 +33,8 @@ const PreviewEditor: React.FC = () => {
   useEffect(() => {
     if (noteId) {
       dispatch(getNotesContentByIDThunk(noteId))
+    } else {
+      console.log('Not found')
     }
   }, [noteId, dispatch]);
 

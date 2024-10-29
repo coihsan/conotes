@@ -44,7 +44,7 @@ export type ReactSubmitEvent = React.FormEvent<HTMLFormElement> | React.FocusEve
 export interface NoteState {
   notes: NoteItem[]
   activeFolderId : string
-  activeNoteId: Content
+  activeNoteId: string
   activeTagsId: string
   searchValue: string
   loading: boolean

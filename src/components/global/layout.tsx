@@ -6,15 +6,14 @@ import {
 import Sidebar from "@/components/sidebar/sidebar";
 import NoteList from "@/containers/notelist";
 import { Helmet, HelmetProvider } from 'react-helmet-async'
-import { useSelector } from 'react-redux';
-import { RootState } from '@/lib/redux/store';
 import { MenuType } from '@/lib/enums';
 import Favorites from "@/containers/favorites";
 import TrashNotes from "@/containers/trash";
 import Settings from "@/containers/settings";
+import { useAppSelector } from "@/lib/hooks/use-redux";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const activeMenu = useSelector((state: RootState) => state.app.activeMenu);
+  const activeMenu = useAppSelector((state) => state.app.activeMenu);
 
   return (
     <HelmetProvider>

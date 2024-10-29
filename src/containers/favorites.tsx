@@ -8,7 +8,6 @@ import SearchBar from '@/components/global/search-bar';
 import { RootState } from '@/lib/redux/store';
 import { useEffect, useRef } from 'react';
 import NotesListItems from '@/components/notes/noteslist-item';
-import { Content } from '@tiptap/react';
 
 const Favorites = () => {
     const dispatch = useAppDispatch()
@@ -17,12 +16,13 @@ const Favorites = () => {
     const allFavoriteNotes = notes.filter(note => note.favorite)
 
     const _searchValues = useAppSelector((state: RootState) => state.notes.searchValue)
+
     const _searchNotes = debounceEvent(
         (searchValue: string) => dispatch(searchQuery(searchValue)),
         100
     )
 
-    const filteredNotes = _searchValues
+    const filteredNotes = _searchValues !== ''
         ? notes?.filter((notes) =>
             !notes.trash && notes.content?.toString().toLowerCase().includes(_searchValues))
         : notes;

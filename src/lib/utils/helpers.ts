@@ -18,8 +18,12 @@ export const newNote = (): NoteItem => ({
   folder: 'Notes'
 })
 
-export const copyToClipboard = (content: string) => {
-  navigator.clipboard.writeText(content)
+export const copyToClipboard = (noteId: string, content: string) => {
+  if(noteId){
+    navigator.clipboard.writeText(content)
+  } else{
+    console.log('Failed copy to clipboard')
+  }
 }
 
 export const getNotesTitle = (title: Content) : string => {
@@ -38,13 +42,13 @@ export const debounceEvent = <T extends Function>(cb: T, wait = 20) => {
   return <T>(<any>callable)
 }
 
-export const debounceNotes = (func: Function, wait: number) => {
-  let timeout: NodeJS.Timeout;
-  return (...args: any[]) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(this, args), wait);
-  };
-};
+// export const debounceNotes = (func: Function, wait: number) => {
+//   let timeout: NodeJS.Timeout;
+//   return (...args: any[]) => {
+//     clearTimeout(timeout);
+//     timeout = setTimeout(() => func.apply(this, args), wait);
+//   };
+// };
 
 export const getActiveNote = (notes : NoteItem[], activeNoteId: string) => {
   notes.find((note) => note.id === activeNoteId)

@@ -15,6 +15,7 @@ import { createNewNotesThunk } from '@/lib/redux/slice/notes';
 import { NoteItem } from '@/lib/types';
 import HeaderSidebar from '@/components/global/header-sidebar';
 import NotesListItems from '@/components/notes/noteslist-item';
+import { MenuType } from '@/lib/enums';
 
 const NoteList = () => {
     const { toast } = useToast()
@@ -24,6 +25,7 @@ const NoteList = () => {
 
     const allNotes = useAppSelector((state) => state.notes.notes)
     const _searchValues = useAppSelector((state: RootState) => state.notes.searchValue)
+    const activeMenu = useAppSelector((state) => state.app.activeMenu);
     
     const createInitialNote = () : NoteItem => {
         return {
@@ -50,7 +52,7 @@ const NoteList = () => {
         100
     )
     useEffect(() => {
-        if (_searchValues) return
+        if (_searchValues && (activeMenu === MenuType.NOTES)) return
     }, [_searchNotes])
 
     const filteredNotes = _searchValues

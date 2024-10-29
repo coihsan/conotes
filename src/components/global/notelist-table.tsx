@@ -44,7 +44,7 @@ const NoteListTable = () =>{
     const [sorting, setSorting] = useState<SortingState>([])
     const [rowSelection, setRowSelection] = useState({})
     return(
-        <main className="h-full p-6 rounded-r-2xl border-r-[1px] border-y-[1px] bg-zinc-50 dark:bg-zinc-900">
+        <main className="h-full p-6 rounded-r-2xl border-r-[1px] border-y-[1px]">
             <header className='flex items-center gap-3 pb-4'>
                 <Avatar>
                     <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
