@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area';
 import ButtonMenu from '@/components/primitive/button-menu';
-import { searchQuery } from '@/lib/redux/slice/notes';
+import { getNotesCount, searchQuery } from '@/lib/redux/slice/notes';
 import { Filter24Regular, NoteAdd24Regular } from '@fluentui/react-icons';
 import SearchBar from '@/components/global/search-bar';
 import { LabelText } from '@/lib/label-text';
@@ -45,7 +45,7 @@ const NoteList = () => {
             folder: "Notes"
         };
     };
-    const [notes, setNotes] = useState<NoteItem>(createInitialNote());
+    const [notes] = useState<NoteItem>(createInitialNote());
 
     const _searchNotes = debounceEvent(
         (searchValue: string) => dispatch(searchQuery(searchValue)),
@@ -58,7 +58,7 @@ const NoteList = () => {
     const filteredNotes = _searchValues
     ? allNotes
         ?.filter((note) => !note.trash && note.content?.toString().toLowerCase().includes(_searchValues))
-        .sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0)) 
+        .sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0))
     : allNotes?.filter((note) => !note.trash)
         .sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0));
 
@@ -78,7 +78,9 @@ const NoteList = () => {
 
     return (
         <aside className='sidebarOption'>
-            <HeaderSidebar labelName={LabelText.NOTES}
+            <HeaderSidebar 
+            labelName={LabelText.NOTES}
+            countIndex={filteredNotes.length}
                 buttonAction={
                     <ButtonMenu action={handleNewNote} side="bottom" variant={'ghost'} size={'icon'} label={LabelText.CREATE_NEW_NOTE}>
                         <NoteAdd24Regular />

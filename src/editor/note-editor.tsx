@@ -10,7 +10,7 @@ import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
 import { getNotesTitle } from '@/lib/utils/helpers'
 import StaticToolbar from './toolbar/static-toolbar'
-import { Folder24Regular, History24Regular, NumberSymbol24Regular, StarAdd24Regular, StarDismiss24Regular } from '@fluentui/react-icons'
+import { Folder24Regular, History24Regular, NumberSymbol24Regular, StarAdd24Regular, StarDismiss24Filled } from '@fluentui/react-icons'
 import { Badge } from '@/components/ui/badge'
 import { setEditableEditor } from "@/lib/redux/slice/app"
 import BreadcrumbNotes from "@/components/global/breadcrumb-notes"
@@ -37,7 +37,7 @@ const createExtensions = [
         document: false,
     }),
     TextAlign.configure({
-        types: ['heading'],
+        types: ['heading', 'paragraph'],
     }),
     Placeholder.configure({
         placeholder: 'What’s the title?',
@@ -93,7 +93,7 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
     }, [editable, dispatch]);
 
     return (
-        <>
+        <div className='h-full w-full'>
             <div className="flex items-center justify-between w-full py-1 px-3 border-b-[1px]">
                 <BreadcrumbNotes />
                 <header className="flex items-center gap-px">
@@ -115,7 +115,7 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
                     <Separator orientation="vertical" />
                     {isFavorites ? (
                         <ButtonMenu action={() => handleToggleFavorite(noteId as string, false)} label={LabelText.FAVORITE} variant={'ghost'} size={'icon'}>
-                        <StarDismiss24Regular className="size-5 text-yellow-600 dark:text-yellow-400" />
+                        <StarDismiss24Filled className="size-5 text-creek-600 dark:text-creek-400" />
                     </ButtonMenu>
                     ) : (
                         <ButtonMenu action={() => handleToggleFavorite(noteId as string, true)} label={LabelText.FAVORITE} variant={'ghost'} size={'icon'}>
@@ -126,7 +126,7 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
                 </header>
             </div>
             {editable && <StaticToolbar editor={editor} />}
-            <ScrollArea className='h-full p-12'>
+            <ScrollArea className='h-full w-full p-12'>
                 <div className='flex items-center justify-between w-full'>
                     <div className="flex items-center gap-3">
                         <Badge variant={'outline'} className='gap-1'>
@@ -148,7 +148,7 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
                     editor={editor}
                 />
             </ScrollArea>
-        </>
+        </div>
     )
 }
 

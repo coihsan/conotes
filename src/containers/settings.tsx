@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useAppDispatch } from '@/lib/hooks/use-redux';
 import { setToggleEditor } from '@/lib/redux/slice/app';
 import HeaderSidebar from '@/components/global/header-sidebar';
+import { ModeToggle } from '@/components/global/mode-toggle';
 
 const Settings = () => {
     const dispatch = useAppDispatch()
@@ -23,6 +24,7 @@ const Settings = () => {
                             <Button variant={'ghost'} onClick={() => dispatch(setToggleEditor(false))}>Bubble</Button>
                         </div>
                     </div>
+                    <ModeToggle />
                 </div>
             </ScrollArea>
         </aside>

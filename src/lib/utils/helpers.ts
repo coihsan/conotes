@@ -2,7 +2,7 @@ import { v4 } from "uuid";
 import { NoteItem } from "../types";
 import { LabelText } from "../label-text";
 import { format } from "date-fns";
-import { Content, Editor } from "@tiptap/core";
+import { Content } from "@tiptap/core";
 
 export const currentItem = format(new Date(), 'dd-MM-yyyy');
 export const newNote = (): NoteItem => ({
@@ -25,10 +25,16 @@ export const copyToClipboard = (noteId: string, content: string) => {
   }
 }
 
+export const extractTextFromHTML = (html: string) => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  return doc.body.textContent?.trim() || "";
+}
+
 export const getNotesTitle = (title: Content) : string => {
   const titles = title?.toString()
-  const noteText = titles?.trim().match(/[^#]{1,45}/)
-  return noteText ? noteText[0].trim().split(/\r?\n/)[0] : LabelText.CREATE_NEW_NOTE
+  const noteText = titles?.trim().match(/[^#]{1,55}/)
+  return noteText ? extractTextFromHTML(noteText[0]).trim().split(/\r?\n/)[0] : LabelText.CREATE_NEW_NOTE
 }
 
 export const debounceEvent = <T extends Function>(cb: T, wait = 20) => {
@@ -41,22 +47,24 @@ export const debounceEvent = <T extends Function>(cb: T, wait = 20) => {
   return <T>(<any>callable)
 }
 
-// export const debounceNotes = (func: Function, wait: number) => {
-//   let timeout: NodeJS.Timeout;
-//   return (...args: any[]) => {
-//     clearTimeout(timeout);
-//     timeout = setTimeout(() => func.apply(this, args), wait);
-//   };
-// };
-
 export const getActiveNote = (notes : NoteItem[], activeNoteId: string) => {
   notes.find((note) => note.id === activeNoteId)
 }
 
-export function getContrastColor(hexColor: string): string {
+export const getContrastColor = (hexColor: string) : string => {
   const r = parseInt(hexColor?.slice(1, 3), 16)
   const g = parseInt(hexColor?.slice(3, 5), 16)
   const b = parseInt(hexColor?.slice(5, 7), 16)
   const yiq = (r * 299 + g * 587 + b * 114) / 1000
   return yiq >= 128 ? "#000000" : "#FFFFFF"
+}
+
+export const getTitleHead = (activeNoteId: string) => {
+  const getTitle = getNotesTitle(activeNoteId)
+  
+  if( getTitle ){
+    return `${getTitle} | 'Conotes'`
+  } else {
+    return 'Conotes'
+  }
 }

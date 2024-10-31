@@ -1,6 +1,9 @@
 .noteEditor {
-  :first-child {
-    margin-top: 2rem;
+  height: 100%;
+  h1:first-child {
+    margin: 2rem 0;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid hsl(var(--border));
   }
 
   :focus-within {
@@ -48,18 +51,17 @@
   h5,
   h6 {
     line-height: 1.1;
-    margin-top: 2.5rem;
+    margin-top: 0.5rem;
     text-wrap: pretty;
   }
 
   p {
-    margin: 0.25rem 0;
+    margin: 1rem 0;
   }
 
   h1,
   h2 {
-    margin-top: 3.5rem;
-    margin-bottom: 1.5rem;
+    margin: 1.5rem 0;
   }
 
   h1 {

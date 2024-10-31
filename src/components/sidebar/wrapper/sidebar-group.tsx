@@ -16,12 +16,12 @@ const SidebarGroup : React.FC<SidebarGroupProps> = ({ children, sidebarName }) =
     const [isOpen, setIsOpen] = useState(false)
     
     return(
-        <div className='w-full'>
+        <>
             <Collapsible
                 open={isOpen}
                 onOpenChange={setIsOpen}
             >
-                <div className='flex items-center justify-between w-full relative'>
+                <div className='flex items-center justify-between w-full relative px-2'>
                     <CollapsibleTrigger className="text-sm flex items-center gap-3">
                         { isOpen ? <ChevronDown20Regular /> : <ChevronRight20Regular /> }
                         {sidebarName}
@@ -34,7 +34,7 @@ const SidebarGroup : React.FC<SidebarGroupProps> = ({ children, sidebarName }) =
                     {children}
                 </CollapsibleContent>
             </Collapsible>
-        </div>
+        </>
     )
 }
 export default SidebarGroup

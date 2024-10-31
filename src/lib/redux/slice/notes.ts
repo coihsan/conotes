@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { NoteItem, NoteState } from '@/lib/types'
-import { v4 } from 'uuid';
-import { currentItem } from '@/lib/utils/helpers';
 import { createAppAsyncThunk } from '../thunk';
 import { db } from '@/lib/db';
 import { Content } from '@tiptap/core';
@@ -15,23 +13,6 @@ const initialState: NoteState = {
   error: null,
   loading: true,
   status: 'pending',
-}
-
-const firstNotes : NoteItem = {
-  id: v4(),
-  content: `<h1>This is to be title</h1>`,
-  createdAt: currentItem,
-  lastUpdated: currentItem,
-  trash: false,
-  folder: 'Notes',
-  tags: [
-    {
-      id: v4(),
-      name: "first tags",
-      color: ''
-    }
-  ],
-  favorite: true
 }
 
 export const updateContentThunk = createAppAsyncThunk(
@@ -89,21 +70,7 @@ export const fetchAllNote = createAppAsyncThunk(
   }
 )
 
-export const getAllNotesThunk = createAppAsyncThunk(
-  'notes/getAllNotes',
-  async (_, { dispatch }) => {
-    try {
-      const notes: NoteItem[] = await db.notes.toArray();
-      const sortedNotes = notes.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
-      dispatch(setNotes(sortedNotes));
-    } catch (error) {
-      console.error('Failed to fetch all notes', error);
-      throw error;
-    }
-  }
-);
-
-export const getNotesContentByIDThunk = createAppAsyncThunk(
+export const getActiveNote = createAppAsyncThunk(
   'notes/getNotesContentByID',
   async (noteId: string) => {
     try {
@@ -177,6 +144,9 @@ const notesSlice = createSlice({
     addNote: (state, { payload }: PayloadAction<NoteItem>) => {
       state.notes.push(payload);
     },
+    getNotesCount: (state) =>{
+      state.notes.length
+    },
     updateNoteContent: (state, action: PayloadAction<NoteItem>) => {
       const index = state.notes.findIndex(note => note.id === action.payload.id);
       if (index !== -1) {
@@ -214,18 +184,6 @@ const notesSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-    // get notes
-    .addCase(getAllNotesThunk.pending, (state) => {
-      state.status = 'pending'
-    })
-    .addCase(getAllNotesThunk.fulfilled, (state, action) => {
-      if(state.notes) return action.payload
-      state.status = 'succeeded'
-    })
-    .addCase(getAllNotesThunk.rejected, (state, action) => {
-      state.status = 'rejected'
-      state.error = action.error.message
-    })
     // fetch notes
     .addCase(fetchAllNote.fulfilled, (state) => {
       state.status = 'succeeded';
@@ -248,15 +206,15 @@ const notesSlice = createSlice({
       state.error = action.payload as string;
     })
     // get notes content by ID
-    .addCase(getNotesContentByIDThunk.fulfilled, (state, action) => {
+    .addCase(getActiveNote.fulfilled, (state, action) => {
       state.activeNoteId = action.payload as string
       state.loading = true
       state.status = 'succeeded'
     })
-    .addCase(getNotesContentByIDThunk.pending, (state) => {
+    .addCase(getActiveNote.pending, (state) => {
       state.loading = true
     })
-    .addCase(getNotesContentByIDThunk.rejected, (state, action) => {
+    .addCase(getActiveNote.rejected, (state, action) => {
       state.error = action.error.message
       state.loading = false
     })
@@ -271,7 +229,7 @@ const notesSlice = createSlice({
       state.status = 'rejected';
       state.error = action.error.message || null;
     })
-    .addCase(deleteEmptyTrashThunk.fulfilled, (state, action) => {
+    .addCase(deleteEmptyTrashThunk.fulfilled, (state) => {
       state.loading = false;
       state.status = 'succeeded';
     })
@@ -293,6 +251,7 @@ export const {
   setNotes,
   bulkDeleteFromTrash,
   singleDeleteFromTrash,
+  getNotesCount
 } = notesSlice.actions
 
 export default notesSlice.reducer

@@ -38,6 +38,11 @@ const FormInputEvent: React.FC<FormInputEventProps> = ({
             submitHandler(event)
           }
         }}
+        onKeyUp={(event) => {
+          if(event.key === "Enter"){
+            submitHandler(event)
+          }
+        }}
       />
     </form>
   )

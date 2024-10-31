@@ -33,7 +33,9 @@ const Favorites = () => {
 
     return (
         <aside className='sidebarOption'>
-            <HeaderSidebar labelName={LabelText.FAVORITE}
+            <HeaderSidebar 
+                countIndex={allFavoriteNotes.length}
+                labelName={LabelText.FAVORITE}
                 searchAction={
                     <SearchBar searchRef={searchRef} searchQuery={_searchNotes} />
                 }

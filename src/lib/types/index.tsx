@@ -1,6 +1,5 @@
 import { MenuType, NotesSortKey } from "../enums"
 import { v4 } from "uuid";
-import sync from "../redux/slice/sync";
 import { Content } from "@tiptap/react";
 
 export interface NoteItem {
@@ -39,7 +38,7 @@ export type ReactMouseEvent =
   | React.MouseEvent<HTMLDivElement>
   | React.ChangeEvent<HTMLSelectElement>
 
-export type ReactSubmitEvent = React.FormEvent<HTMLFormElement> | React.FocusEvent<HTMLInputElement>
+export type ReactSubmitEvent = React.FormEvent<HTMLFormElement> | React.FocusEvent<HTMLInputElement> | React.KeyboardEvent<HTMLInputElement>
 
 export interface NoteState {
   notes: NoteItem[]
@@ -58,6 +57,7 @@ export interface FolderState {
   editingFolderId : {id: string, name: string}
   loading: boolean
   error: null | string | undefined
+  status?: 'idle' | 'pending' | 'succeeded' | 'rejected'
 }
 
 export interface TagsState {
@@ -103,17 +103,3 @@ export interface MenuState {
   activeMenu: MenuType;
 }
 
-export interface SynchronizeState {
-  sync: boolean,
-  pendingSync: boolean,
-  lastSync: string,
-  error: string
-}
-export interface SynchronizePayload {
-  folder: FolderItem[],
-  notes: NoteItem[],
-}
-export interface SyncAction {
-  type: typeof sync.prototype
-  payload: SynchronizePayload
-}

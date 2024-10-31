@@ -3,7 +3,7 @@ import '../styles/editor.module.scss'
 import NoteEditor from "./note-editor"
 import React, { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
-import { getNotesContentByIDThunk, updateContentThunk } from "@/lib/redux/slice/notes"
+import { getActiveNote, updateContentThunk } from "@/lib/redux/slice/notes"
 import { Content } from "@tiptap/react"
 import { debounceEvent } from "@/lib/utils/helpers"
 
@@ -32,7 +32,7 @@ const PreviewEditor: React.FC = () => {
 
   useEffect(() => {
     if (noteId) {
-      dispatch(getNotesContentByIDThunk(noteId))
+      dispatch(getActiveNote(noteId))
     } else {
       console.log('Not found')
     }

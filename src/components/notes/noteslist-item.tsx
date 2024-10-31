@@ -1,5 +1,5 @@
 import { getContrastColor, getNotesTitle } from "@/lib/utils/helpers"
-import { Folder20Regular, Star20Regular } from "@fluentui/react-icons"
+import { Folder20Regular, Star20Filled, Star20Regular } from "@fluentui/react-icons"
 import { Link, useLocation } from "react-router-dom"
 import SettingNotesList from "@/action/settings-notes-list"
 import { NoteItem } from "@/lib/types"
@@ -23,7 +23,7 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                     <div className='flex w-full items-center'>
                         <div className="size-6">
                             {item.favorite ?
-                                (<Star20Regular className='text-yellow-600 dark:text-yellow-400 size-5' />)
+                                (<Star20Filled className='text-creek-600 dark:text-creek-400 size-5' />)
                                 : null
                             }
                         </div>
@@ -34,7 +34,7 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                             <div className='flex items-center gap-3'>
                                 {item?.folder &&
                                     <div className='flex items-center gap-1 text-muted-foreground text-xs font-medium'>
-                                        <Folder20Regular />
+                                        <Folder20Regular className="size-4" />
                                         {item.folder}
                                     </div>
                                 }

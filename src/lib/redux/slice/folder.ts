@@ -12,6 +12,7 @@ const initialState: FolderState = {
     },
     error: '',
     loading: true,
+    status: 'pending'
 }
 
 export const fetchFolder = createAppAsyncThunk(
@@ -38,6 +39,17 @@ export const addNewFolderAction = createAppAsyncThunk(
     }
 )
 
+export const getNotesByActiveFolderId = createAppAsyncThunk(
+    'folder/folderById',
+    async (folderId: string, {dispatch, rejectWithValue}) => {
+       try {
+        const folderById = await db.folders.get(folderId)
+       } catch (error) {
+        rejectWithValue(error)
+       }
+    }
+)
+
 const folderSlice = createSlice({
     name: 'folder',
     initialState: initialState,
@@ -48,6 +60,15 @@ const folderSlice = createSlice({
         setFolder: (state, { payload }: PayloadAction<FolderItem[]>) => {
             state.folder = payload
         }
+    },
+    extraReducers(builder){
+        builder
+        .addCase(fetchFolder.fulfilled, (state) => {
+            state.status = 'succeeded'
+        })
+        .addCase(addNewFolderAction.fulfilled, (state) => {
+            state.status = 'succeeded'
+        })
     }
 })
 
