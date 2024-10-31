@@ -6,10 +6,7 @@ import { db } from '@/lib/db'
 const initialState: FolderState = {
     folder: [],
     activeFolderId: '',
-    editingFolderId: {
-        id: '',
-        name: ''
-    },
+    editingFolder: false,
     error: '',
     loading: true,
     status: 'pending'
@@ -50,6 +47,26 @@ export const getNotesByActiveFolderId = createAppAsyncThunk(
     }
 )
 
+export const updateFolderName = createAppAsyncThunk(
+    'folder/updateFolder',
+    async(data: {folderId: string, folderName: string}, {dispatch, rejectWithValue}) =>{
+        try {
+            const existingFolder = await db.folders.get(data.folderId)
+            if(existingFolder){
+                const dataFolder = {
+                    id: data.folderId,
+                    name: data.folderName
+                }
+                await db.folders.update(data.folderId, {name : data.folderName})
+                dispatch(updateFolder(dataFolder))
+                return dataFolder
+            }
+        } catch (error) {
+            rejectWithValue(error)
+        }
+    }
+)
+
 const folderSlice = createSlice({
     name: 'folder',
     initialState: initialState,
@@ -59,6 +76,17 @@ const folderSlice = createSlice({
         },
         setFolder: (state, { payload }: PayloadAction<FolderItem[]>) => {
             state.folder = payload
+        },
+        toggleEdit:( state, action) => {
+            state.editingFolder = action.payload
+        },
+        updateFolder: (state, { payload } : PayloadAction<FolderItem>) => {
+            state.folder = state.folder.map((item) =>
+                item.id === payload.id ? { ...item, name: payload.name } : item
+            )
+        },
+        getActiveFolderId: (state, {payload} : PayloadAction<string>) => {
+            state.activeFolderId = payload
         }
     },
     extraReducers(builder){
@@ -74,7 +102,10 @@ const folderSlice = createSlice({
 
 export const {
     addFolder,
-    setFolder
+    setFolder,
+    updateFolder,
+    toggleEdit,
+    getActiveFolderId
 } = folderSlice.actions
 
 export default folderSlice.reducer

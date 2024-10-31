@@ -17,7 +17,6 @@ export interface NoteItem {
 export interface FolderItem {
   id: string
   name: string
-  icon?: string
 }
 
 export interface TagItem {
@@ -54,7 +53,7 @@ export interface NoteState {
 export interface FolderState {
   folder: FolderItem[]
   activeFolderId : string
-  editingFolderId : {id: string, name: string}
+  editingFolder :boolean
   loading: boolean
   error: null | string | undefined
   status?: 'idle' | 'pending' | 'succeeded' | 'rejected'

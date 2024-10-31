@@ -21,13 +21,14 @@ type SettingMenuProps = {
   noteId: string
 }
 
-const SettingNotesList: React.FC<SettingMenuProps> = ({ className, noteId }) => {
+const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId }) => {
   const dispatch = useAppDispatch()
 
   const notes = useAppSelector((state) => state.notes.notes)
   const currentNote = notes.find((note) => note.id === noteId);
   const activeMenu = useAppSelector((state) => state.app.activeMenu);
   const isFavorite = currentNote?.favorite || false;
+  const findFolder = useAppSelector((state) => state.folder.folder)
 
   const handleMarkAsFavorite = (noteId: string, value: boolean) => {
     dispatch(markAsFavoriteThunk({ noteId, value }))
@@ -49,7 +50,7 @@ const SettingNotesList: React.FC<SettingMenuProps> = ({ className, noteId }) => 
 }
 
   const handleCopyReferenceToNote = (noteId: string) => {
-    navigator.clipboard.writeText(noteId)
+    copyToClipboard(noteId, noteId)
     console.log('bulk delete is succeessfully')
   }
 
@@ -59,16 +60,23 @@ const SettingNotesList: React.FC<SettingMenuProps> = ({ className, noteId }) => 
       <DropdownMenuContent>
         <DropdownMenuSub>
           {activeMenu !== MenuType.TRASH &&
+            findFolder.length === 0 ? (
+              null
+            ) : (
             <DropdownMenuSubTrigger>
               <Folder24Regular className='size-5' />
               <span>Move to folder</span>
-            </DropdownMenuSubTrigger>}
+            </DropdownMenuSubTrigger>
+            )
+            }
           <DropdownMenuPortal>
             <DropdownMenuSubContent>
-              <DropdownMenuItem>
-                <Folder24Regular />
-                <span>Email</span>
-              </DropdownMenuItem>
+                {findFolder.map((folder) => (
+                  <DropdownMenuItem key={folder.id}>
+                    <Folder24Regular />
+                    <span>{folder.name}</span>
+                  </DropdownMenuItem>
+                ))}
             </DropdownMenuSubContent>
           </DropdownMenuPortal>
         </DropdownMenuSub>
@@ -120,4 +128,4 @@ const SettingNotesList: React.FC<SettingMenuProps> = ({ className, noteId }) => 
     </DropdownMenu>
   )
 }
-export default SettingNotesList
+export default NotesListItemOptions

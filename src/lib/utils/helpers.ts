@@ -63,7 +63,7 @@ export const getTitleHead = (activeNoteId: string) => {
   const getTitle = getNotesTitle(activeNoteId)
   
   if( getTitle ){
-    return `${getTitle} | 'Conotes'`
+    return `${getTitle} / Conotes`
   } else {
     return 'Conotes'
   }

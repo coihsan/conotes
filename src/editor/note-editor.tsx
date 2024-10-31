@@ -18,7 +18,7 @@ import ButtonMenu from "@/components/primitive/button-menu"
 import { LabelText } from "@/lib/label-text"
 import { Edit24Regular, Save24Regular } from "@fluentui/react-icons"
 import { Separator } from "@/components/ui/separator"
-import SettingsMenuInNotes from "@/action/setting-menu-in-notes"
+import NotesListNoteOptions from "@/components/notes/noteslist-note-options"
 import { useParams } from 'react-router-dom'
 import { markAsFavoriteThunk } from '@/lib/redux/slice/notes'
 
@@ -122,7 +122,7 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
                         <StarAdd24Regular className="size-5" />
                     </ButtonMenu>
                     )}
-                    <SettingsMenuInNotes />
+                    <NotesListNoteOptions />
                 </header>
             </div>
             {editable && <StaticToolbar editor={editor} />}

@@ -1,7 +1,7 @@
 import { getContrastColor, getNotesTitle } from "@/lib/utils/helpers"
-import { Folder20Regular, Star20Filled, Star20Regular } from "@fluentui/react-icons"
+import { Folder20Regular, Star20Filled } from "@fluentui/react-icons"
 import { Link, useLocation } from "react-router-dom"
-import SettingNotesList from "@/action/settings-notes-list"
+import NotesListItemOptions from "@/components/notes/noteslist-item-options"
 import { NoteItem } from "@/lib/types"
 import React from "react"
 import clsx from "clsx"
@@ -54,7 +54,7 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                             </div>
                         </div>
                     </div>
-                    <SettingNotesList noteId={item.id} />
+                    <NotesListItemOptions noteId={item.id} />
                 </Link>
             ))}
         </>

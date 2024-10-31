@@ -17,4 +17,5 @@ export enum MenuType {
   TRASH = 'Trash',
   SETTINGS = 'Settings',
   ACCOUNT = 'Account',
+  FOLDER = 'Folder'
 }
