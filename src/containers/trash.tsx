@@ -62,7 +62,7 @@ const TrashNotes = () => {
             <ScrollArea className='h-full pt-2 scroll-smooth touch-pan-y pb-24'>
                 <div className='grid grid-cols-1 gap-2 px-2 snap-end'>
                     {trashNotes?.length === 0 ? (
-                        <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>Not found</div>
+                        <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>Empty</div>
                     ) : (
                         <>
                             <NotesListItems index={trashNotes} />

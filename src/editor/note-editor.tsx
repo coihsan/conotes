@@ -1,7 +1,6 @@
 import css from '../styles/editor.module.scss'
 import { Content, EditorContent, HTMLContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import Document from '@tiptap/extension-document'
 import { cn } from "@/lib/utils/cn"
 import React, { useEffect } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -21,6 +20,7 @@ import { Separator } from "@/components/ui/separator"
 import NotesListNoteOptions from "@/components/notes/noteslist-note-options"
 import { useParams } from 'react-router-dom'
 import { markAsFavoriteThunk } from '@/lib/redux/slice/notes'
+import Document from '@tiptap/extension-document'
 
 interface Props {
     contentNotes: Content;

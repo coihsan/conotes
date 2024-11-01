@@ -88,7 +88,7 @@
 
 @layer components {
   .sidebarMenu{
-    @apply w-full h-9 pl-4 rounded-xl flex items-center justify-start gap-4 transition-all duration-300
+    @apply w-full h-9 pl-2 rounded-xl flex items-center justify-start gap-4
   }
   .sidebarOption{
     @apply py-4 border-l-[1px] border-y-[1px] bg-zinc-100 dark:bg-zinc-500/10 rounded-l-2xl h-full

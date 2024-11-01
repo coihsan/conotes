@@ -7,7 +7,6 @@ import { setActiveMenu } from "@/lib/redux/slice/app";
 import { RootState } from "@/lib/redux/store";
 import { Link } from 'react-router-dom';
 import FolderNotes from './folder-notes';
-import FolderTags from './folder-tags';
 import { ScrollArea } from '../ui/scroll-area';
 
 const Sidebar: React.FC = () => {
@@ -70,7 +69,6 @@ const Sidebar: React.FC = () => {
             </div>
             <ScrollArea className='h-full'>
                 <FolderNotes />
-                <FolderTags />
             </ScrollArea>
         </aside>
     )

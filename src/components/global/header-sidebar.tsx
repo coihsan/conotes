@@ -22,7 +22,12 @@ const HeaderSidebar: React.FC<Props> = ({
                 <div className="flex items-center justify-between mb-2 px-4">
                     <div className="flex items-center gap-3">
                         <span className="text-xl font-medium">{labelName}</span>
-                        {countIndex && <div className="size-6 font-medium rounded-full bg-creek-800 text-creek-200 flex items-center justify-center">{countIndex}</div>}
+                        {countIndex ? (
+                            <div className="size-6 font-medium rounded-full bg-creek-800 text-creek-200 flex items-center justify-center">{countIndex}</div>
+                        ) : (
+                            null
+                        )
+                        }
                     </div>
                     <div className='flex items-center gap-3'>
                         {buttonAction}

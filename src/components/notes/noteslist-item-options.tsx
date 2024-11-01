@@ -10,8 +10,8 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ClipboardLink24Regular, Delete24Regular, DeleteDismiss24Regular, Dismiss24Regular, Folder24Regular, MoreHorizontal16Regular, StarAdd24Regular, StarDismiss24Regular } from "@fluentui/react-icons";
-import { deletePermanentAction, markAsFavoriteThunk, moveToTrashThunk } from '@/lib/redux//slice/notes';
+import { ClipboardLink24Regular, Delete24Regular, DeleteDismiss24Regular, Dismiss24Regular, Folder24Regular, MoreHorizontal16Regular, NumberRow20Filled, StarAdd24Regular, StarDismiss24Regular } from "@fluentui/react-icons";
+import { deletePermanentAction, markAsFavoriteThunk, toggleTrashAction } from '@/lib/redux//slice/notes';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
 import { MenuType } from '@/lib/enums';
 import { copyToClipboard } from '@/lib/utils/helpers';
@@ -35,19 +35,19 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
     console.log('successfull mark as favorite')
   }
 
-  const handleMoveToTrash = (noteId: string) => {
+  const handleMoveToTrash = (noteId: string, value: boolean) => {
     try {
-      dispatch(moveToTrashThunk(noteId));
+      dispatch(toggleTrashAction({noteId, value}));
       console.log('successfull move to trash')
     } catch (error) {
       console.log('error move to trash')
     }
-  };
+  }
 
   const handleSingleDeletePermanent = (noteId: string) => {
     dispatch(deletePermanentAction(noteId))
     console.log('delete single is sucessfuly')
-}
+  }
 
   const handleCopyReferenceToNote = (noteId: string) => {
     copyToClipboard(noteId, noteId)
@@ -59,24 +59,22 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
       <DropdownMenuTrigger asChild className={className}><MoreHorizontal16Regular /></DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuSub>
-          {activeMenu !== MenuType.TRASH &&
-            findFolder.length === 0 ? (
-              null
-            ) : (
+          {activeMenu === MenuType.TRASH || findFolder.length === 0 ? (
+            null
+          ) : (
             <DropdownMenuSubTrigger>
               <Folder24Regular className='size-5' />
               <span>Move to folder</span>
             </DropdownMenuSubTrigger>
-            )
-            }
+          )}
           <DropdownMenuPortal>
             <DropdownMenuSubContent>
-                {findFolder.map((folder) => (
-                  <DropdownMenuItem key={folder.id}>
-                    <Folder24Regular />
-                    <span>{folder.name}</span>
-                  </DropdownMenuItem>
-                ))}
+              {findFolder.map((folder) => (
+                <DropdownMenuItem key={folder.id}>
+                  <Folder24Regular />
+                  <span>{folder.name}</span>
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuSubContent>
           </DropdownMenuPortal>
         </DropdownMenuSub>
@@ -95,12 +93,12 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
             </DropdownMenuItem>
           )
         )}
-        {activeMenu === MenuType.TRASH && 
+        {activeMenu === MenuType.TRASH &&
           <DropdownMenuItem
-          onClick={() => handleMoveToTrash(noteId)}>
-          <DeleteDismiss24Regular />
-          Restore from trash
-        </DropdownMenuItem>
+            onClick={() => handleMoveToTrash(noteId, false)}>
+            <DeleteDismiss24Regular />
+            Restore from trash
+          </DropdownMenuItem>
         }
         <DropdownMenuItem onClick={() => handleCopyReferenceToNote(noteId)}>
           <ClipboardLink24Regular />
@@ -109,7 +107,7 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
         <DropdownMenuSeparator />
         {activeMenu === MenuType.TRASH ? (
           <>
-          <DropdownMenuItem
+            <DropdownMenuItem
               onClick={() => handleSingleDeletePermanent(noteId)}
               className='text-red-500'>
               <Dismiss24Regular />
@@ -118,7 +116,7 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
           </>
         ) : (
           <DropdownMenuItem
-            onClick={() => handleMoveToTrash(noteId)}
+            onClick={() => handleMoveToTrash(noteId, true)}
             className='text-red-500'>
             <Delete24Regular />
             Move to trash

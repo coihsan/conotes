@@ -23,7 +23,6 @@ export const updateContentThunk = createAppAsyncThunk(
   ) => {
     try {
       const existingNote = await db.notes.get(data.noteId);
-
       if (existingNote) {
         const updatedNote = {
           ...existingNote,
@@ -31,7 +30,6 @@ export const updateContentThunk = createAppAsyncThunk(
           title: data.title,
           lastUpdated: new Date().toISOString()
         };
-
         await db.notes.update(data.noteId, {content: data.content});
         dispatch(updateNoteContent(updatedNote))
         return updatedNote
@@ -87,17 +85,21 @@ export const getActiveNote = createAppAsyncThunk(
   },
 );
 
-export const moveToTrashThunk = createAppAsyncThunk(
+export const toggleTrashAction = createAppAsyncThunk(
   'notes/deleteNotes',
-  async (noteId: string, {dispatch, rejectWithValue}) => {
+  async (data: { noteId: string, value: boolean }, { dispatch, rejectWithValue }) => {
     try {
-      await db.notes.update(noteId, { trash : true })
-      dispatch(moveToTrash(noteId))
+      const updates: Partial<NoteItem> = { trash: data.value }; 
+      if (data.value) { 
+        updates.favorite = false;
+      }
+      await db.notes.update(data.noteId, updates);
+      dispatch(toggleTrashNotes(data.noteId));
     } catch (error) {
-      rejectWithValue(error)
+      rejectWithValue(error);
     }
   }
-)
+);
 
 export const markAsFavoriteThunk = createAppAsyncThunk(
   'notes/markFavorite',
@@ -136,6 +138,8 @@ export const deletePermanentAction = createAppAsyncThunk(
   }
 )
 
+// =============================== SLICE ====================================
+// =============================== SLICE ====================================
 
 const notesSlice = createSlice({
   name: 'notes',
@@ -153,6 +157,9 @@ const notesSlice = createSlice({
         state.notes[index] = action.payload;
       }
     },
+    getActiveFolderId: (state, {payload} : PayloadAction<string>) => {
+      state.activeFolderId = payload
+    },
     setNotes: (state, { payload }: PayloadAction<NoteItem[]>) => {
       state.notes = payload;
     },
@@ -165,7 +172,7 @@ const notesSlice = createSlice({
         note.favorite = !note.favorite
       }
     },
-    moveToTrash: (state, { payload }: PayloadAction<string>) => {
+    toggleTrashNotes: (state, { payload }: PayloadAction<string>) => {
       const note = state.notes.find((note) => note.id === payload);
       if (note) {
         note.trash = !note.trash;
@@ -182,6 +189,8 @@ const notesSlice = createSlice({
     },  
 
   },
+  // =============================== extraReducers ====================================
+  // =============================== extraReducers ====================================
   extraReducers(builder) {
     builder
     // fetch notes
@@ -219,13 +228,13 @@ const notesSlice = createSlice({
       state.loading = false
     })
     // handle move to trash
-    .addCase(moveToTrashThunk.pending, (state) => {
+    .addCase(toggleTrashAction.pending, (state) => {
       state.status = 'pending';
     })
-    .addCase(moveToTrashThunk.fulfilled, (state) => {
+    .addCase(toggleTrashAction.fulfilled, (state) => {
       state.status = 'succeeded';
     })
-    .addCase(moveToTrashThunk.rejected, (state, action) => {
+    .addCase(toggleTrashAction.rejected, (state, action) => {
       state.status = 'rejected';
       state.error = action.error.message || null;
     })
@@ -247,11 +256,12 @@ export const {
   updateNoteContent,
   searchQuery,
   markAsFavorite,
-  moveToTrash,
+  toggleTrashNotes,
   setNotes,
   bulkDeleteFromTrash,
   singleDeleteFromTrash,
-  getNotesCount
+  getNotesCount,
+  getActiveFolderId
 } = notesSlice.actions
 
 export default notesSlice.reducer

@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { NoteItem } from "../types";
+import { FolderItem, NoteItem } from "../types";
 import { LabelText } from "../label-text";
 import { format } from "date-fns";
 import { Content } from "@tiptap/core";

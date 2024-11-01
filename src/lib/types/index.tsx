@@ -25,13 +25,6 @@ export interface TagItem {
   color: string
 }
 
-export interface Visitor {
-  id: typeof v4
-  name: string
-  avatar?: string
-  isOnline: boolean
-}
-
 export type ReactMouseEvent =
   | MouseEvent
   | React.MouseEvent<HTMLDivElement>
@@ -52,7 +45,6 @@ export interface NoteState {
 
 export interface FolderState {
   folder: FolderItem[]
-  activeFolderId : string
   editingFolder :boolean
   loading: boolean
   error: null | string | undefined

@@ -5,7 +5,6 @@ import { db } from '@/lib/db'
 
 const initialState: FolderState = {
     folder: [],
-    activeFolderId: '',
     editingFolder: false,
     error: '',
     loading: true,
@@ -36,17 +35,6 @@ export const addNewFolderAction = createAppAsyncThunk(
     }
 )
 
-export const getNotesByActiveFolderId = createAppAsyncThunk(
-    'folder/folderById',
-    async (folderId: string, {dispatch, rejectWithValue}) => {
-       try {
-        const folderById = await db.folders.get(folderId)
-       } catch (error) {
-        rejectWithValue(error)
-       }
-    }
-)
-
 export const updateFolderName = createAppAsyncThunk(
     'folder/updateFolder',
     async(data: {folderId: string, folderName: string}, {dispatch, rejectWithValue}) =>{
@@ -63,6 +51,17 @@ export const updateFolderName = createAppAsyncThunk(
             }
         } catch (error) {
             rejectWithValue(error)
+        }
+    }
+)
+
+export const moveNoteToFolder = createAppAsyncThunk(
+    'folder/addToFolder',
+    async(data: {folderId: string, noteId: string}) => {
+        try {
+            await db.folderNotes.add(data.folderId, data.noteId)
+        } catch (error) {
+            console.log(error)
         }
     }
 )
@@ -85,9 +84,6 @@ const folderSlice = createSlice({
                 item.id === payload.id ? { ...item, name: payload.name } : item
             )
         },
-        getActiveFolderId: (state, {payload} : PayloadAction<string>) => {
-            state.activeFolderId = payload
-        }
     },
     extraReducers(builder){
         builder
@@ -105,7 +101,6 @@ export const {
     setFolder,
     updateFolder,
     toggleEdit,
-    getActiveFolderId
 } = folderSlice.actions
 
 export default folderSlice.reducer
