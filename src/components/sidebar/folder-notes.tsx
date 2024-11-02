@@ -1,8 +1,7 @@
-import SidebarGroup from "./wrapper/sidebar-group";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import { v4 } from "uuid"
 import { FolderItem, ReactSubmitEvent } from "@/lib/types"
-import React from "react";
+import React, { useEffect } from "react";
 import { addNewFolderAction } from "@/lib/redux/slice/folder";
 import FolderListItem from "../folder/folderlist-item";
 import { Input } from "../ui/input";
@@ -14,13 +13,15 @@ import {
 import ButtonMenu from '@/components/primitive/button-menu';
 import { LabelText } from '@/lib/label-text';
 import { useState } from "react";
-import { Add24Regular, ChevronDown20Regular, ChevronRight20Regular, FolderAdd24Regular } from "@fluentui/react-icons";
+import { Add24Regular, ChevronDown20Regular, ChevronRight20Regular } from "@fluentui/react-icons";
+import useLocalStorage from "@/lib/hooks/use-localstorage";
 
 const FolderNotes: React.FC = () => {
     const dispatch = useAppDispatch()
     const activeFolderId = useAppSelector((folder) => folder.notes.activeFolderId)
     const folders = useAppSelector((folder) => folder.folder.folder)
-    const [isOpen, setIsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(true)
+    // const [collapsibleOpen, setCollapsibleOpen] = useLocalStorage('collapsibleOpen', isOpen)
 
     const onSubmitFolder = (event: ReactSubmitEvent): void => {
         event.preventDefault()
@@ -34,6 +35,10 @@ const FolderNotes: React.FC = () => {
     const onKeyUp = () => { }
     const onBlur = () => { }
 
+    // useEffect(() => {
+    //     setCollapsibleOpen(isOpen)
+    // }, [isOpen])
+
     return (
         <Collapsible
             open={isOpen}
@@ -45,7 +50,7 @@ const FolderNotes: React.FC = () => {
                     Folder
                 </CollapsibleTrigger>
                 <ButtonMenu side='right' size={'icon'} variant={'ghost'} label={LabelText.CREATE_NEW_FOLDER}>
-                    <FolderAdd24Regular className='size-5' />
+                    <Add24Regular className='size-5' />
                 </ButtonMenu>
             </div>
             <CollapsibleContent>

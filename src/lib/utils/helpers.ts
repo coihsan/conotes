@@ -3,6 +3,7 @@ import { FolderItem, NoteItem } from "../types";
 import { LabelText } from "../label-text";
 import { format } from "date-fns";
 import { Content } from "@tiptap/core";
+import { useAppSelector } from "../hooks/use-redux";
 
 export const currentItem = format(new Date(), 'dd-MM-yyyy');
 export const newNote = (): NoteItem => ({
@@ -68,3 +69,9 @@ export const getTitleHead = (activeNoteId: string) => {
     return 'Conotes'
   }
 }
+
+export const useNoteTitle = (noteId: string) => { 
+  const notes = useAppSelector((state) => state.notes.notes); 
+  const note = notes.find((note) => note.id === noteId); 
+  return note ? note.content : ''; 
+};

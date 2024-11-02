@@ -1,3 +1,4 @@
+import ReactDOM from 'react-dom'
 import React, { createContext, useContext, useState } from 'react'
 
 type Props = {
@@ -5,4 +6,9 @@ type Props = {
     setAddFolder: (adding: boolean) => undefined
 }
 
-// const useFolderContext : React.FC<Props> = () => {}
+const FolderContext : React.FC<Props> = ({ addFolder, setAddFolder}) => {
+    return(
+        <div></div>
+    )
+}
+export default FolderContext

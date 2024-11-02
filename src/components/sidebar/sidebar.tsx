@@ -11,7 +11,6 @@ import { ScrollArea } from '../ui/scroll-area';
 
 const Sidebar: React.FC = () => {
     const dispatch = useDispatch();
-
     const handleMenuClick = (menu: MenuType) => {
         dispatch(setActiveMenu(menu));
     };
@@ -19,7 +18,7 @@ const Sidebar: React.FC = () => {
         const activeMenu = useSelector((state: RootState) => state.app.activeMenu);
         return activeMenu === menu;
     };
-
+    
     return (
         <aside className="w-80 py-4 border-[1px] rounded-2xl bg-zinc-800 dark:bg-zinc-950 text-white flex flex-col justify-between mr-1">
             <div className="flex flex-col w-full gap-2">

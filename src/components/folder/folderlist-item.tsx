@@ -1,6 +1,6 @@
 import { FolderItem } from "@/lib/types"
 import { Folder24Regular, FolderOpen24Filled } from "@fluentui/react-icons"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Badge } from "../ui/badge"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import { Input } from "../ui/input"
@@ -19,14 +19,16 @@ const FolderListItem: React.FC<Props> = ({ index }) => {
     const isEditing = useAppSelector((state) => state.folder.editingFolder)
     const activeFolder = useAppSelector((state) => state.notes.activeFolderId)
 
-    const hanldleGetFolderActive = (folderId: string) : void => {
-        dispatch(getActiveFolderId(folderId))
-        dispatch(setActiveMenu(MenuType.FOLDER))
+    const hanldleGetFolderActive = (folderId: string): void => {
+        if (folderId) {
+            dispatch(getActiveFolderId(folderId))
+            dispatch(setActiveMenu(MenuType.FOLDER))
+        }
     }
 
-    const resetFolder = () => {}
-    const onKeyUp = () => {}
-    const onBlur = () => {}
+    const onKeyUp = () => { }
+    const onBlur = () => { }
+    const handleDoubleClick = () => { }
 
     return (
         <div>
@@ -39,7 +41,7 @@ const FolderListItem: React.FC<Props> = ({ index }) => {
                     className="flex items-center justify-between w-full gap-2 p-2 cursor-pointer">
                     <div className='flex items-center gap-3 text-sm'>
                         <div>
-                            {activeFolder ? (
+                            {activeFolder === item.id  ? (
                                 <FolderOpen24Filled className='size-5' />
                             ) : (
                                 <Folder24Regular className='size-5' />
@@ -48,12 +50,12 @@ const FolderListItem: React.FC<Props> = ({ index }) => {
                         <form>
                             {isEditing ? (
                                 <Input
-                                className="h-7"
-                                defaultValue={item.name}
-                                onReset={resetFolder}
-                                onKeyDown={onKeyUp}
-                                onBlur={onBlur}
-                            />
+                                    onDoubleClick={handleDoubleClick}
+                                    className="h-7"
+                                    defaultValue={item.name}
+                                    onKeyDown={onKeyUp}
+                                    onBlur={onBlur}
+                                />
                             ) : (
                                 <span className="line-clamp-1">{item.name}</span>
                             )}

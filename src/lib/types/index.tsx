@@ -19,6 +19,15 @@ export interface FolderItem {
   name: string
 }
 
+export interface FolderNotes {
+  folderId: string,
+  noteId: string
+}
+export interface FolderTags{
+  noteId: string, 
+  tagId: string
+}
+
 export interface TagItem {
   id: string
   name: string,

@@ -19,7 +19,7 @@ export const updateContentThunk = createAppAsyncThunk(
   'notes/updateContent',
   async (
     data: { noteId: string; content: Content; title: string },
-    { dispatch, rejectWithValue }
+    { rejectWithValue }
   ) => {
     try {
       const existingNote = await db.notes.get(data.noteId);
@@ -28,11 +28,10 @@ export const updateContentThunk = createAppAsyncThunk(
           ...existingNote,
           content: data.content,
           title: data.title,
-          lastUpdated: new Date().toISOString()
+          lastUpdated: new Date().toISOString(),
         };
-        await db.notes.update(data.noteId, {content: data.content});
-        dispatch(updateNoteContent(updatedNote))
-        return updatedNote
+        await db.notes.update(data.noteId, { content: data.content, lastUpdated: updatedNote.lastUpdated });
+        return updatedNote;
       } else {
         return rejectWithValue('Note not found');
       }
@@ -148,15 +147,12 @@ const notesSlice = createSlice({
     addNote: (state, { payload }: PayloadAction<NoteItem>) => {
       state.notes.push(payload);
     },
-    getNotesCount: (state) =>{
-      state.notes.length
-    },
-    updateNoteContent: (state, action: PayloadAction<NoteItem>) => {
-      const index = state.notes.findIndex(note => note.id === action.payload.id);
-      if (index !== -1) {
-        state.notes[index] = action.payload;
-      }
-    },
+    // updateNoteContent: (state, action: PayloadAction<NoteItem>) => {
+    //   const index = state.notes.findIndex(note => note.id === action.payload.id);
+    //   if (index !== -1) {
+    //     state.notes[index] = action.payload;
+    //   }
+    // },
     getActiveFolderId: (state, {payload} : PayloadAction<string>) => {
       state.activeFolderId = payload
     },
@@ -197,7 +193,7 @@ const notesSlice = createSlice({
     .addCase(fetchAllNote.fulfilled, (state) => {
       state.status = 'succeeded';
     })
-    .addCase(updateContentThunk.fulfilled, (state, action: PayloadAction<{ id: string; content: Content; lastUpdated: string }>) => {
+    .addCase(updateContentThunk.fulfilled, (state, action) => {
       const { id, content, lastUpdated } = action.payload;
       const note = state.notes.find((note) => note.id === id);
       if (note) {
@@ -207,13 +203,15 @@ const notesSlice = createSlice({
       state.status = 'succeeded';
       state.loading = false;
     })
-    .addCase(updateContentThunk.pending, (state) => {
-      state.status = 'pending',
-      state.loading = true
-    })
-    .addCase(updateContentThunk.rejected, (state, action) => {
-      state.error = action.payload as string;
-    })
+    // .addCase(updateContentThunk.pending, (state) => {
+    //   state.status = 'pending';
+    //   state.loading = true;
+    // })
+    // .addCase(updateContentThunk.rejected, (state, action) => {
+    //   state.status = 'rejected';
+    //   state.error = action.payload as string;
+    //   state.loading = false;
+    // })
     // get notes content by ID
     .addCase(getActiveNote.fulfilled, (state, action) => {
       state.activeNoteId = action.payload as string
@@ -253,14 +251,12 @@ const notesSlice = createSlice({
 })
 export const {
   addNote,
-  updateNoteContent,
   searchQuery,
   markAsFavorite,
   toggleTrashNotes,
   setNotes,
   bulkDeleteFromTrash,
   singleDeleteFromTrash,
-  getNotesCount,
   getActiveFolderId
 } = notesSlice.actions
 

@@ -1,4 +1,4 @@
-import { FolderItem, FolderState } from '@/lib/types'
+import { FolderItem, FolderNotes, FolderState } from '@/lib/types'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createAppAsyncThunk } from '../thunk'
 import { db } from '@/lib/db'
@@ -23,17 +23,37 @@ export const fetchFolder = createAppAsyncThunk(
     }
 )
 
+export const getNoteInFolder = createAppAsyncThunk(
+    'folder/getNoteFolder',
+    async(data: {folderId: string, noteId: string}, {rejectWithValue}) => {
+       try {
+        return await db.folderNotes
+        .where("folderId")
+        .equals(data.folderId)
+        .toArray()
+        .then(async (relations) => {
+        const noteIds = relations.map((relation) => relation.noteId);
+        return await db.notes.where("id").anyOf(noteIds).toArray();
+        });
+       } catch (error) {
+        rejectWithValue(error)
+       }
+    }
+)
+
 export const addNewFolderAction = createAppAsyncThunk(
     'folder/addFolder',
-    async (folder: FolderItem, { dispatch }) => {
+    async (folder: FolderItem, { dispatch, rejectWithValue }) => { 
         try {
-            await db.folders.add(folder)
+            await db.folders.add({...folder})
             dispatch(addFolder(folder))
         } catch (error) {
             console.log('Failed to create new folder')
+            return rejectWithValue(error);
         }
     }
 )
+
 
 export const updateFolderName = createAppAsyncThunk(
     'folder/updateFolder',
@@ -57,9 +77,9 @@ export const updateFolderName = createAppAsyncThunk(
 
 export const moveNoteToFolder = createAppAsyncThunk(
     'folder/addToFolder',
-    async(data: {folderId: string, noteId: string}) => {
+    async(data: FolderNotes) => {
         try {
-            await db.folderNotes.add(data.folderId, data.noteId)
+            await db.folderNotes.add(data)
         } catch (error) {
             console.log(error)
         }
@@ -76,9 +96,6 @@ const folderSlice = createSlice({
         setFolder: (state, { payload }: PayloadAction<FolderItem[]>) => {
             state.folder = payload
         },
-        toggleEdit:( state, action) => {
-            state.editingFolder = action.payload
-        },
         updateFolder: (state, { payload } : PayloadAction<FolderItem>) => {
             state.folder = state.folder.map((item) =>
                 item.id === payload.id ? { ...item, name: payload.name } : item
@@ -93,14 +110,16 @@ const folderSlice = createSlice({
         .addCase(addNewFolderAction.fulfilled, (state) => {
             state.status = 'succeeded'
         })
+        // .addCase(moveNoteToFolder.fulfilled, (state, action) => {
+        //     state.folder.push(...action.payload)
+        // })
     }
 })
 
 export const {
-    addFolder,
     setFolder,
+    addFolder,
     updateFolder,
-    toggleEdit,
 } = folderSlice.actions
 
 export default folderSlice.reducer

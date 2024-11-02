@@ -15,6 +15,7 @@ import { deletePermanentAction, markAsFavoriteThunk, toggleTrashAction } from '@
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
 import { MenuType } from '@/lib/enums';
 import { copyToClipboard } from '@/lib/utils/helpers';
+import { moveNoteToFolder } from '@/lib/redux/slice/folder';
 
 type SettingMenuProps = {
   className?: string;
@@ -25,10 +26,10 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
   const dispatch = useAppDispatch()
 
   const notes = useAppSelector((state) => state.notes.notes)
+  const findFolder = useAppSelector((state) => state.folder.folder)
   const currentNote = notes.find((note) => note.id === noteId);
   const activeMenu = useAppSelector((state) => state.app.activeMenu);
   const isFavorite = currentNote?.favorite || false;
-  const findFolder = useAppSelector((state) => state.folder.folder)
 
   const handleMarkAsFavorite = (noteId: string, value: boolean) => {
     dispatch(markAsFavoriteThunk({ noteId, value }))
@@ -54,8 +55,31 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
     console.log('bulk delete is succeessfully')
   }
 
+  const handleMoveToFolder = () => {
+    try {
+      const notes = useAppSelector((state) => state.notes.notes)
+      const noteId = notes.find((note) => note.id)?.folderId
+      const findFolder = useAppSelector((state) => state.folder.folder)
+      const folderId = findFolder.find((folder) => folder.id)?.id
+
+      const data = {
+        folderId: noteId as string,
+        noteId: folderId as string
+      }
+
+      if(data) {
+        dispatch(moveNoteToFolder(data))
+        console.log('success move to folder')
+      }
+      return data
+    } catch (error) {
+      
+    }
+  }
+
   return (
-    <DropdownMenu>
+    <div onClick={(event) => event.stopPropagation()}>
+      <DropdownMenu>
       <DropdownMenuTrigger asChild className={className}><MoreHorizontal16Regular /></DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuSub>
@@ -70,7 +94,7 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
           <DropdownMenuPortal>
             <DropdownMenuSubContent>
               {findFolder.map((folder) => (
-                <DropdownMenuItem key={folder.id}>
+                <DropdownMenuItem onClick={() => handleMoveToFolder} key={folder.id}>
                   <Folder24Regular />
                   <span>{folder.name}</span>
                 </DropdownMenuItem>
@@ -124,6 +148,7 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
         )}
       </DropdownMenuContent>
     </DropdownMenu>
+    </div>
   )
 }
 export default NotesListItemOptions
