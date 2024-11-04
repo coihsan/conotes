@@ -8,16 +8,19 @@ import { LabelText } from "@/lib/label-text"
 import SearchBar from "@/components/global/search-bar"
 import { useRef } from "react"
 import { debounceEvent } from "@/lib/utils/helpers"
-import { searchQuery } from "@/lib/redux/slice/notes"
+import { searchQuery, selectAllNotes } from "@/lib/redux/slice/notes"
+import { getFolder, getNotes } from "@/lib/redux/selector"
 
 const Folders = () => {
     const dispatch = useAppDispatch()
     const searchRef = useRef() as React.MutableRefObject<HTMLInputElement>
-    const notes = useAppSelector((state) => state.notes.notes)
-    const activeFolder = useAppSelector((state) => state.notes.activeFolderId)
-    const findNotesInFolder = notes.filter((note) => note.id === activeFolder)
-    const folder = useAppSelector((state) => state.folder.folder)
-    const getFolderId = folder.find((folder) => folder.id === activeFolder)
+
+    const notes = useAppSelector((state) => selectAllNotes(state))
+    const { activeFolderId } = useAppSelector(getNotes)
+
+    const findNotesInFolder = notes.filter((note) => note.id === activeFolderId)
+    const { folder } = useAppSelector(getFolder)
+    const getFolderId = folder.find((folder) => folder.id === activeFolderId)
 
     const _searchNotes = debounceEvent(
         (searchValue: string) => dispatch(searchQuery(searchValue)),

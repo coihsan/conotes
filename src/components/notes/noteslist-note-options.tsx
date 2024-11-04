@@ -7,15 +7,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAppSelector } from "@/lib/hooks/use-redux"
 import { LabelText } from "@/lib/label-text"
+import { getNotes } from "@/lib/redux/selector"
 import { copyToClipboard } from "@/lib/utils/helpers"
 import { CopyAdd24Regular, Settings24Regular } from "@fluentui/react-icons"
 import React from "react"
 import { useParams } from "react-router-dom"
 
-
 const NotesListNoteOptions : React.FC = () => {
     const { noteId } = useParams()
-    const activeNoteContent = useAppSelector((state) => state.notes.activeNoteId);
+    const {activeNoteId} = useAppSelector(getNotes);
 
     const handleCopyClipboard = (noteId: string, content: string) => {
         copyToClipboard(noteId, content)
@@ -30,7 +30,7 @@ const NotesListNoteOptions : React.FC = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleCopyClipboard(noteId as string, activeNoteContent)}>
+                <DropdownMenuItem onClick={() => handleCopyClipboard(noteId as string, activeNoteId)}>
                     <CopyAdd24Regular />
                     Copy note
                 </DropdownMenuItem>

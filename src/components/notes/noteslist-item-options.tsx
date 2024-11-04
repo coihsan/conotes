@@ -11,11 +11,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ClipboardLink24Regular, Delete24Regular, DeleteDismiss24Regular, Dismiss24Regular, Folder24Regular, MoreHorizontal16Regular, NumberRow20Filled, StarAdd24Regular, StarDismiss24Regular } from "@fluentui/react-icons";
-import { deletePermanentAction, markAsFavoriteThunk, toggleTrashAction } from '@/lib/redux//slice/notes';
+import { deletePermanentAction, markAsFavoriteThunk, selectAllNotes, toggleTrashAction } from '@/lib/redux//slice/notes';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
 import { MenuType } from '@/lib/enums';
 import { copyToClipboard } from '@/lib/utils/helpers';
 import { moveNoteToFolder } from '@/lib/redux/slice/folder';
+import { getApp } from '@/lib/redux/selector';
 
 type SettingMenuProps = {
   className?: string;
@@ -25,10 +26,10 @@ type SettingMenuProps = {
 const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId }) => {
   const dispatch = useAppDispatch()
 
-  const notes = useAppSelector((state) => state.notes.notes)
+  const notes = useAppSelector((state) => selectAllNotes(state))
   const findFolder = useAppSelector((state) => state.folder.folder)
   const currentNote = notes.find((note) => note.id === noteId);
-  const activeMenu = useAppSelector((state) => state.app.activeMenu);
+  const { activeMenu } = useAppSelector(getApp);
   const isFavorite = currentNote?.favorite || false;
 
   const handleMarkAsFavorite = (noteId: string, value: boolean) => {
@@ -46,7 +47,7 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
   }
 
   const handleSingleDeletePermanent = (noteId: string) => {
-    dispatch(deletePermanentAction(noteId))
+    dispatch(deletePermanentAction({ noteId }))
     console.log('delete single is sucessfuly')
   }
 
@@ -57,7 +58,7 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
 
   const handleMoveToFolder = () => {
     try {
-      const notes = useAppSelector((state) => state.notes.notes)
+      const notes = useAppSelector((state) => selectAllNotes(state))
       const noteId = notes.find((note) => note.id)?.folderId
       const findFolder = useAppSelector((state) => state.folder.folder)
       const folderId = findFolder.find((folder) => folder.id)?.id

@@ -2,33 +2,32 @@ import { debounceEvent } from '@/lib/utils/helpers';
 import { LabelText } from '@/lib/label-text';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
-import { searchQuery } from '@/lib/redux/slice/notes';
+import { searchQuery, selectAllNotes } from '@/lib/redux/slice/notes';
 import HeaderSidebar from '@/components/global/header-sidebar';
 import SearchBar from '@/components/global/search-bar';
-import { RootState } from '@/lib/redux/store';
 import { useEffect, useRef } from 'react';
 import NotesListItems from '@/components/notes/noteslist-item';
+import { getNotes } from '@/lib/redux/selector';
 
 const Favorites = () => {
     const dispatch = useAppDispatch()
     const searchRef = useRef() as React.MutableRefObject<HTMLInputElement>
-    const notes = useAppSelector((state) => state.notes.notes)
+    const notes = useAppSelector((state) => selectAllNotes(state))
     const allFavoriteNotes = notes.filter(note => note.favorite)
 
-    const _searchValues = useAppSelector((state: RootState) => state.notes.searchValue)
+    const { searchValue } = useAppSelector(getNotes)
 
     const _searchNotes = debounceEvent(
         (searchValue: string) => dispatch(searchQuery(searchValue)),
-        100
-    )
+        100)
 
-    const filteredNotes = _searchValues !== ''
+    const filteredNotes = searchValue
         ? notes?.filter((notes) =>
-            !notes.trash && notes.content?.toString().toLowerCase().includes(_searchValues))
+            !notes.trash && notes.content?.toString().toLowerCase().includes(searchValue))
         : notes;
 
     useEffect(() => {
-        if (_searchValues) return
+        if (searchValue) return
     }, [_searchNotes])
 
     return (

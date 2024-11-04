@@ -6,13 +6,15 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import { getActiveNote, updateContentThunk } from "@/lib/redux/slice/notes"
 import { Content } from "@tiptap/react"
 import { debounceEvent } from "@/lib/utils/helpers"
+import { ReactMouseEvent } from "@/lib/types"
+import { getNotes } from "@/lib/redux/selector"
 
 const PreviewEditor: React.FC = () => {
   const { noteId } = useParams()
 
   const dispatch = useAppDispatch();
-  const activeNoteContent = useAppSelector((state) => state.notes.activeNoteId);
-  const [noteContent, setNoteContent] = useState(activeNoteContent);
+  const { activeNoteId } = useAppSelector(getNotes);
+  const [noteContent, setNoteContent] = useState(activeNoteId);
 
   const handleUpdateContent = debounceEvent((content: Content, title: string) => {
     if (noteId) {
@@ -27,8 +29,8 @@ const PreviewEditor: React.FC = () => {
   }, 500)
 
   useEffect(() => {
-    setNoteContent(activeNoteContent);
-  }, [activeNoteContent]);
+    setNoteContent(activeNoteId);
+  }, [activeNoteId]);
 
   useEffect(() => {
     if (noteId) {
@@ -42,8 +44,12 @@ const PreviewEditor: React.FC = () => {
     <div className="h-full w-full border rounded-r-2xl">
       <NoteEditor
         onChange={handleUpdateContent}
-        contentNotes={noteContent}
-      />
+        contentNotes={noteContent} 
+        title={""} 
+        onChangeTitle={function (event: ReactMouseEvent): void {
+          throw new Error("Function not implemented.")
+        }}      
+        />
     </div>
   )
 }

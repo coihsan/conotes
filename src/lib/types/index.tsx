@@ -1,22 +1,24 @@
 import { MenuType, NotesSortKey } from "../enums"
 import { v4 } from "uuid";
 import { Content } from "@tiptap/react";
+import { EntityState } from "@reduxjs/toolkit";
 
 export interface NoteItem {
-  id: string
-  content: Content
-  createdAt: string
-  lastUpdated: string
-  tags?: TagItem[]
-  trash: boolean
-  favorite: boolean
-  folder?: string
-  folderId?: string
+  id: string,
+  title: string,
+  content: Content,
+  createdAt: string,
+  lastUpdated: string,
+  tags?: TagItem[],
+  trash: boolean,
+  favorite: boolean,
+  folder?: string,
+  folderId?: string,
 }
 
 export interface FolderItem {
-  id: string
-  name: string
+  id: string,
+  name: string,
 }
 
 export interface FolderNotes {
@@ -29,20 +31,20 @@ export interface FolderTags{
 }
 
 export interface TagItem {
-  id: string
+  id: string,
   name: string,
-  color: string
+  color: string,
 }
 
 export type ReactMouseEvent =
   | MouseEvent
   | React.MouseEvent<HTMLDivElement>
   | React.ChangeEvent<HTMLSelectElement>
+  | React.ChangeEvent<HTMLInputElement>
 
 export type ReactSubmitEvent = React.FormEvent<HTMLFormElement> | React.FocusEvent<HTMLInputElement> | React.KeyboardEvent<HTMLInputElement>
 
-export interface NoteState {
-  notes: NoteItem[]
+export interface NoteState extends EntityState<NoteItem, string> {
   activeFolderId : string
   activeNoteId: string
   activeTagsId: string
@@ -86,6 +88,7 @@ export interface AppState {
 export interface RootState {
   appState: AppState;
   noteState: NoteState;
+  folderState: FolderState;
   settingsState: SettingsState;
 }
 

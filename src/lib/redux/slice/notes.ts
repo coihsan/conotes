@@ -1,11 +1,15 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, createEntityAdapter, Update } from '@reduxjs/toolkit'
 import { NoteItem, NoteState } from '@/lib/types'
 import { createAppAsyncThunk } from '../thunk';
 import { db } from '@/lib/db';
 import { Content } from '@tiptap/core';
+import { RootState } from '../store';
 
-const initialState: NoteState = {
-  notes: [],
+export const notesAdapter = createEntityAdapter<NoteItem>({
+  sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
+});
+
+const initialState: NoteState = notesAdapter.getInitialState({
   activeTagsId: '',
   activeFolderId: '',
   activeNoteId: '',
@@ -13,41 +17,37 @@ const initialState: NoteState = {
   error: null,
   loading: true,
   status: 'pending',
-}
+})
 
-export const updateContentThunk = createAppAsyncThunk(
+export const updateContentThunk = createAppAsyncThunk<Update<NoteItem, string>, { noteId: string; content: Content, title: string }>(
   'notes/updateContent',
-  async (
-    data: { noteId: string; content: Content; title: string },
-    { rejectWithValue }
-  ) => {
+  async (data, { rejectWithValue }) => {
     try {
       const existingNote = await db.notes.get(data.noteId);
       if (existingNote) {
-        const updatedNote = {
-          ...existingNote,
+        const updates: Partial<NoteItem> = {
           content: data.content,
           title: data.title,
           lastUpdated: new Date().toISOString(),
         };
-        await db.notes.update(data.noteId, { content: data.content, lastUpdated: updatedNote.lastUpdated });
-        return updatedNote;
+        await db.notes.update(data.noteId, updates);
+        return { id: data.noteId, changes: updates };
       } else {
         return rejectWithValue('Note not found');
       }
     } catch (error) {
       console.error('Failed to update note content', error);
-      return rejectWithValue(error);
+      return rejectWithValue(error as string);
     }
   }
 );
 
-export const createNewNotesThunk = createAppAsyncThunk(
+export const addNewNote = createAppAsyncThunk(
   'notes/createNewNotes',
-  async (note: NoteItem, { dispatch }) => {
+  async (note: NoteItem) => {
     try {
-      await db.notes.add({ ...note });
-      dispatch(addNote({ ...note }));
+      const id = await db.notes.add({ ...note });
+      return { ...note, id };
     } catch (error) {
       console.error('Failed to create note', error);
       throw error;
@@ -55,17 +55,18 @@ export const createNewNotesThunk = createAppAsyncThunk(
   }
 );
 
-export const fetchAllNote = createAppAsyncThunk(
+export const fetchAllNote = createAppAsyncThunk<NoteItem[], void, { rejectValue: string }>(
   'notes/fetchAllNotes',
-  async (_, {dispatch}) =>{
+  async (_, { rejectWithValue }) => {
     try {
-      const notes: NoteItem[] = await db.notes.toArray()
-      dispatch(setNotes(notes))
+      const notes = await db.notes.toArray();
+      return notes;
     } catch (error) {
-      console.log('Failed to fetch all notes')
+      console.log('Failed to fetch all notes');
+      return rejectWithValue('Failed to fetch notes');
     }
   }
-)
+);
 
 export const getActiveNote = createAppAsyncThunk(
   'notes/getNotesContentByID',
@@ -84,180 +85,184 @@ export const getActiveNote = createAppAsyncThunk(
   },
 );
 
-export const toggleTrashAction = createAppAsyncThunk(
+export const toggleTrashAction = createAppAsyncThunk<Update<NoteItem, string>, { noteId: string; value: boolean }>(
   'notes/deleteNotes',
-  async (data: { noteId: string, value: boolean }, { dispatch, rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
-      const updates: Partial<NoteItem> = { trash: data.value }; 
-      if (data.value) { 
+      const updates: Partial<NoteItem> = { trash: data.value };
+      if (data.value) {
         updates.favorite = false;
       }
       await db.notes.update(data.noteId, updates);
-      dispatch(toggleTrashNotes(data.noteId));
+      return { id: data.noteId, changes: updates };
     } catch (error) {
-      rejectWithValue(error);
+      return rejectWithValue(error as string);
     }
   }
 );
 
-export const markAsFavoriteThunk = createAppAsyncThunk(
+export const markAsFavoriteThunk = createAppAsyncThunk<Update<NoteItem, string>, { noteId: string; value: boolean }>(
   'notes/markFavorite',
-  async (data: {noteId: string, value: boolean}, {dispatch, rejectWithValue}) => {
+  async (data, { rejectWithValue }) => {
     try {
-      await db.notes.update(data.noteId, { favorite : data.value})
-      dispatch(markAsFavorite(data.noteId))
+      const updates : Partial<NoteItem> =  { favorite: data.value }
+      if( data.value ) {
+        updates.favorite = true
+      }
+      await db.notes.update(data.noteId, updates);
+      return { id: data.noteId, changes: updates };
     } catch (error) {
-      rejectWithValue(error)
+      return rejectWithValue(error as string);
     }
   }
 )
 
-export const deleteEmptyTrashThunk = createAppAsyncThunk(
+export const deleteEmptyTrashThunk = createAppAsyncThunk<string[], void, { rejectValue: string }>(
   'note/deleteEmpty',
-  async (_, { dispatch, rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const allNotes = await db.notes.toArray();
-      const notesToDelete = allNotes.filter(note => {
-        return note.trash === true; 
-      });
+      const notesToDelete = allNotes.filter(note => note.trash);
       const noteIdsToDelete = notesToDelete.map(note => note.id);
       await db.notes.bulkDelete(noteIdsToDelete);
-      dispatch(bulkDeleteFromTrash(notesToDelete))
+      return noteIdsToDelete;
     } catch (error) {
-      rejectWithValue(error);
+      return rejectWithValue('error');
     }
   }
 );
 
-export const deletePermanentAction = createAppAsyncThunk(
-  'notes/deleteSingle',
-  async (noteId: string, {dispatch}) => {
-    await db.notes.delete(noteId)
-    dispatch(singleDeleteFromTrash(noteId))
-  }
-)
 
-// =============================== SLICE ====================================
+export const deletePermanentAction = createAppAsyncThunk<Update<NoteItem, string>, { noteId: string }, { rejectValue: string }>(
+  'notes/deleteSingle',
+  async (data, { rejectWithValue }) => {
+    try {
+      const notes = await db.notes.toArray();
+      const notesToDelete = notes.find(note => note.id === data.noteId);
+      
+      if (notesToDelete) {
+        const ids = notesToDelete.id;
+        await db.notes.delete(ids);
+        return { id: ids, changes: {} };
+      } else {
+        return rejectWithValue('Note not found');
+      }
+    } catch (error) {
+      return rejectWithValue(error as string);
+    }
+  }
+);
+
 // =============================== SLICE ====================================
 
 const notesSlice = createSlice({
   name: 'notes',
   initialState,
   reducers: {
-    addNote: (state, { payload }: PayloadAction<NoteItem>) => {
-      state.notes.push(payload);
-    },
-    // updateNoteContent: (state, action: PayloadAction<NoteItem>) => {
-    //   const index = state.notes.findIndex(note => note.id === action.payload.id);
-    //   if (index !== -1) {
-    //     state.notes[index] = action.payload;
-    //   }
-    // },
-    getActiveFolderId: (state, {payload} : PayloadAction<string>) => {
+    getActiveFolderId: (state, { payload }: PayloadAction<string>) => {
       state.activeFolderId = payload
     },
-    setNotes: (state, { payload }: PayloadAction<NoteItem[]>) => {
-      state.notes = payload;
+    searchQuery: (state, action: PayloadAction<string>) => {
+      state.searchValue = action.payload
     },
-    searchQuery : (state, {payload} : PayloadAction<string>) =>{
-      state.searchValue = payload
-    },
-    markAsFavorite: (state, { payload }: PayloadAction<string>) => {
-      const note = state.notes.find((note) => note.id === payload)
-      if (note) {
-        note.favorite = !note.favorite
-      }
-    },
-    toggleTrashNotes: (state, { payload }: PayloadAction<string>) => {
-      const note = state.notes.find((note) => note.id === payload);
-      if (note) {
-        note.trash = !note.trash;
-        if (note.trash) { 
-          note.favorite = false; 
-        }
-      }
-    },
-    bulkDeleteFromTrash: (state, { payload }: PayloadAction<NoteItem[]>) => {
-      state.notes = state.notes.filter(note => !payload.some(deletedNote => deletedNote.id === note.id));
-    },
-    singleDeleteFromTrash: (state, { payload }: PayloadAction<string>) => {
-      state.notes = state.notes.filter(note => note.id !== payload);
-    },  
-
   },
-  // =============================== extraReducers ====================================
   // =============================== extraReducers ====================================
   extraReducers(builder) {
     builder
-    // fetch notes
-    .addCase(fetchAllNote.fulfilled, (state) => {
-      state.status = 'succeeded';
-    })
-    .addCase(updateContentThunk.fulfilled, (state, action) => {
-      const { id, content, lastUpdated } = action.payload;
-      const note = state.notes.find((note) => note.id === id);
-      if (note) {
-        note.content = content;
-        note.lastUpdated = lastUpdated;
-      }
-      state.status = 'succeeded';
-      state.loading = false;
-    })
-    // .addCase(updateContentThunk.pending, (state) => {
-    //   state.status = 'pending';
-    //   state.loading = true;
-    // })
-    // .addCase(updateContentThunk.rejected, (state, action) => {
-    //   state.status = 'rejected';
-    //   state.error = action.payload as string;
-    //   state.loading = false;
-    // })
-    // get notes content by ID
-    .addCase(getActiveNote.fulfilled, (state, action) => {
-      state.activeNoteId = action.payload as string
-      state.loading = true
-      state.status = 'succeeded'
-    })
-    .addCase(getActiveNote.pending, (state) => {
-      state.loading = true
-    })
-    .addCase(getActiveNote.rejected, (state, action) => {
-      state.error = action.error.message
-      state.loading = false
-    })
-    // handle move to trash
-    .addCase(toggleTrashAction.pending, (state) => {
-      state.status = 'pending';
-    })
-    .addCase(toggleTrashAction.fulfilled, (state) => {
-      state.status = 'succeeded';
-    })
-    .addCase(toggleTrashAction.rejected, (state, action) => {
-      state.status = 'rejected';
-      state.error = action.error.message || null;
-    })
-    .addCase(deleteEmptyTrashThunk.fulfilled, (state) => {
-      state.loading = false;
-      state.status = 'succeeded';
-    })
-    .addCase(deleteEmptyTrashThunk.rejected, (state) => {
-      state.status = 'rejected';
-    })
-    .addCase(deleteEmptyTrashThunk.pending, (state) => {
-      state.status = 'pending';
-      state.loading = true
-    })
+      // fetch notes
+      .addCase(addNewNote.fulfilled, (state, action) => {
+        notesAdapter.addOne(state, action.payload);
+      })
+      .addCase(fetchAllNote.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchAllNote.fulfilled, (state, action) => {
+        if (action.payload) {
+          notesAdapter.setAll(state, action.payload);
+        } else {
+          notesAdapter.setAll(state, []);
+          state.error = 'Failed to fetch notes';
+        }
+        state.loading = false;
+      })
+
+      .addCase(fetchAllNote.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(updateContentThunk.fulfilled, (state, action) => {
+        notesAdapter.updateOne(state, action.payload);
+        state.status = 'succeeded';
+        state.loading = false;
+      })
+
+      .addCase(updateContentThunk.pending, (state) => {
+        state.status = 'pending';
+        state.loading = true;
+      })
+      .addCase(updateContentThunk.rejected, (state, action) => {
+        state.status = 'rejected';
+        state.error = action.payload as string;
+        state.loading = false;
+      })
+      // get notes content by ID
+      .addCase(getActiveNote.fulfilled, (state, action) => {
+        state.activeNoteId = action.payload as string
+        state.loading = true
+        state.status = 'succeeded'
+      })
+      .addCase(getActiveNote.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(getActiveNote.rejected, (state, action) => {
+        state.error = action.error.message
+        state.loading = false
+      })
+      // handle favorite 
+      .addCase(markAsFavoriteThunk.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        notesAdapter.updateOne(state, action.payload)
+      })
+      // handle delete permantent
+      .addCase(deletePermanentAction.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        notesAdapter.removeOne(state, action.payload.id)
+      })
+      // handle move to trash
+      .addCase(toggleTrashAction.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        notesAdapter.updateOne(state, action.payload)
+      })
+      .addCase(toggleTrashAction.pending, (state) => {
+        state.status = 'pending';
+      })
+      .addCase(toggleTrashAction.rejected, (state, action) => {
+        state.status = 'rejected';
+        state.error = action.error.message || null;
+      })
+      .addCase(deleteEmptyTrashThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.status = 'succeeded';
+        notesAdapter.removeMany(state, action.payload);
+      })
+      .addCase(deleteEmptyTrashThunk.rejected, (state) => {
+        state.status = 'rejected';
+      })
+      .addCase(deleteEmptyTrashThunk.pending, (state) => {
+        state.status = 'pending';
+        state.loading = true
+      })
   },
 })
 export const {
-  addNote,
   searchQuery,
-  markAsFavorite,
-  toggleTrashNotes,
-  setNotes,
-  bulkDeleteFromTrash,
-  singleDeleteFromTrash,
   getActiveFolderId
 } = notesSlice.actions
 
 export default notesSlice.reducer
+
+
+export const {
+  selectAll: selectAllNotes,
+  selectById: selectNotesById,
+} = notesAdapter.getSelectors((state: RootState) => state.notes)

@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import { v4 } from "uuid"
 import { FolderItem, ReactSubmitEvent } from "@/lib/types"
-import React, { useEffect } from "react";
+import React from "react";
 import { addNewFolderAction } from "@/lib/redux/slice/folder";
 import FolderListItem from "../folder/folderlist-item";
 import { Input } from "../ui/input";
@@ -13,15 +13,13 @@ import {
 import ButtonMenu from '@/components/primitive/button-menu';
 import { LabelText } from '@/lib/label-text';
 import { useState } from "react";
-import { Add24Regular, ChevronDown20Regular, ChevronRight20Regular } from "@fluentui/react-icons";
-import useLocalStorage from "@/lib/hooks/use-localstorage";
+import { Add24Regular, Checkmark20Filled, ChevronDown20Regular, ChevronRight20Regular, Dismiss20Filled } from "@fluentui/react-icons";
 
 const FolderNotes: React.FC = () => {
     const dispatch = useAppDispatch()
-    const activeFolderId = useAppSelector((folder) => folder.notes.activeFolderId)
     const folders = useAppSelector((folder) => folder.folder.folder)
     const [isOpen, setIsOpen] = useState(true)
-    // const [collapsibleOpen, setCollapsibleOpen] = useLocalStorage('collapsibleOpen', isOpen)
+    const [isVisible, setIsVisible] = useState(false)
 
     const onSubmitFolder = (event: ReactSubmitEvent): void => {
         event.preventDefault()
@@ -35,9 +33,9 @@ const FolderNotes: React.FC = () => {
     const onKeyUp = () => { }
     const onBlur = () => { }
 
-    // useEffect(() => {
-    //     setCollapsibleOpen(isOpen)
-    // }, [isOpen])
+    const handleAddNewFolder = () => {
+        setIsVisible(true)
+    }
 
     return (
         <Collapsible
@@ -49,23 +47,33 @@ const FolderNotes: React.FC = () => {
                     {isOpen ? <ChevronDown20Regular /> : <ChevronRight20Regular />}
                     Folder
                 </CollapsibleTrigger>
-                <ButtonMenu side='right' size={'icon'} variant={'ghost'} label={LabelText.CREATE_NEW_FOLDER}>
+                <ButtonMenu action={handleAddNewFolder} side='right' size={'icon'} variant={'ghost'} label={LabelText.CREATE_NEW_FOLDER}>
                     <Add24Regular className='size-5' />
                 </ButtonMenu>
             </div>
             <CollapsibleContent>
                 <FolderListItem index={folders} />
-                <div className='px-2'>
-                    <form onSubmit={onSubmitFolder}>
-                        <Input
-                            className="h-8"
-                            placeholder="New folder..."
-                            onReset={resetFolder}
-                            onKeyUp={onKeyUp}
-                            onBlur={onBlur}
-                        />
-                    </form>
-                </div>
+                {isVisible &&
+                    <div className='px-2 flex items-center gap-1'>
+                        <form className="w-full" onSubmit={onSubmitFolder}>
+                            <Input
+                                className="h-8"
+                                placeholder="New folder..."
+                                onReset={resetFolder}
+                                onKeyUp={onKeyUp}
+                                onBlur={onBlur}
+                            />
+                        </form>
+                        <div className="flex items-center">
+                            <ButtonMenu label="Save" action={() => setIsVisible(true)} variant={'ghost'} size={'icon'}>
+                                <Checkmark20Filled />
+                            </ButtonMenu>
+                            <ButtonMenu label="Close" action={() => setIsVisible(false)} variant={'ghost'} size={'icon'}>
+                                <Dismiss20Filled />
+                            </ButtonMenu>
+                        </div>
+                    </div>
+                }
             </CollapsibleContent>
         </Collapsible>
     )

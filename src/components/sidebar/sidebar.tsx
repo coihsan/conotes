@@ -1,21 +1,20 @@
 import { Notepad24Regular, Delete24Regular, Settings24Regular, Star24Regular, Notepad24Filled, Star24Filled, Delete24Filled, Settings24Filled } from '@fluentui/react-icons';
 import React from "react";
 import { Logo } from '@/components/global/logo';
-import { useDispatch, useSelector } from 'react-redux';
 import { MenuType } from '@/lib/enums';
 import { setActiveMenu } from "@/lib/redux/slice/app";
-import { RootState } from "@/lib/redux/store";
 import { Link } from 'react-router-dom';
 import FolderNotes from './folder-notes';
 import { ScrollArea } from '../ui/scroll-area';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
 
 const Sidebar: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const handleMenuClick = (menu: MenuType) => {
         dispatch(setActiveMenu(menu));
     };
     const isActive = (menu: MenuType) => {
-        const activeMenu = useSelector((state: RootState) => state.app.activeMenu);
+        const activeMenu = useAppSelector((state) => state.app.activeMenu);
         return activeMenu === menu;
     };
     

@@ -2,7 +2,7 @@ import { LabelText } from '@/lib/label-text';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import HeaderSidebar from '@/components/global/header-sidebar';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
-import { deleteEmptyTrashThunk } from '@/lib/redux/slice/notes';
+import { deleteEmptyTrashThunk, selectAllNotes } from '@/lib/redux/slice/notes';
 import NotesListItems from '@/components/notes/noteslist-item';
 import { Delete24Regular } from '@fluentui/react-icons';
 import {
@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button"
 
 const TrashNotes = () => {
     const dispatch = useAppDispatch()
-    const notes = useAppSelector((state) => state.notes.notes)
+    const notes = useAppSelector((state) => selectAllNotes(state))
     const trashNotes = notes.filter(note => note.trash)
 
     const handleBulkDeletePermanent = () => {

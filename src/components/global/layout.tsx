@@ -51,7 +51,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             {activeMenu === MenuType.FAVORITE && <Favorites />}
             {activeMenu === MenuType.TRASH && <TrashNotes />}
             {activeMenu === MenuType.SETTINGS && <Settings />}
-            {activeMenu === MenuType.FOLDER && <Folders />}
+            {activeMenu === MenuType.FOLDER && <Folders /> }
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={75}>

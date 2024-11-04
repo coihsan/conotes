@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area';
 import ButtonMenu from '@/components/primitive/button-menu';
-import { getNotesCount, searchQuery } from '@/lib/redux/slice/notes';
+import { searchQuery, selectAllNotes } from '@/lib/redux/slice/notes';
 import { Filter24Regular, NoteAdd24Regular } from '@fluentui/react-icons';
 import SearchBar from '@/components/global/search-bar';
 import { LabelText } from '@/lib/label-text';
@@ -9,28 +9,40 @@ import { v4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { currentItem, debounceEvent } from "@/lib/utils/helpers"
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
-import { RootState } from '@/lib/redux/store';
 import { useToast } from '@/lib/hooks/use-toast';
-import { createNewNotesThunk } from '@/lib/redux/slice/notes';
+import { addNewNote } from '@/lib/redux/slice/notes';
 import { NoteItem } from '@/lib/types';
 import HeaderSidebar from '@/components/global/header-sidebar';
 import NotesListItems from '@/components/notes/noteslist-item';
 import { MenuType } from '@/lib/enums';
+import { getApp, getNotes, selectFilteredNotes } from '@/lib/redux/selector';
 
 const NoteList = () => {
     const { toast } = useToast()
-    const searchRef = useRef() as React.MutableRefObject<HTMLInputElement>
     const navigate = useNavigate()
+    const searchRef = useRef() as React.MutableRefObject<HTMLInputElement>
+
     const dispatch = useAppDispatch()
 
-    const allNotes = useAppSelector((state) => state.notes.notes)
-    const _searchValues = useAppSelector((state: RootState) => state.notes.searchValue)
-    const activeMenu = useAppSelector((state) => state.app.activeMenu);
-    
+    // SELECTOR
+    const { searchValue } = useAppSelector(getNotes)
+    const allNotes = useAppSelector((state) => selectAllNotes(state))
+    const {activeMenu} = useAppSelector(getApp);
+
+    const _searchValues = searchValue
+    const filteredNotes = useAppSelector(selectFilteredNotes);
+
+    const filterNote = filteredNotes
+    ? allNotes.filter((note) => !note.trash && note.content)
+    .sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0))
+    : allNotes.filter((note) => !note.title)
+    .sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0));
+
     const createInitialNote = () : NoteItem => {
         return {
             id: v4(),
             content: '',
+            title: '',
             createdAt: currentItem,
             lastUpdated: currentItem,
             tags: [
@@ -55,17 +67,10 @@ const NoteList = () => {
         if (_searchValues && (activeMenu === MenuType.NOTES)) return
     }, [_searchNotes])
 
-    const filteredNotes = _searchValues
-    ? allNotes
-        ?.filter((note) => !note.trash && note.content?.toString().toLowerCase().includes(_searchValues))
-        .sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0))
-    : allNotes?.filter((note) => !note.trash)
-        .sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0));
-
     const handleNewNote = async () => {
         try {
             const newNote = { ...notes, id: v4() };
-            await dispatch(createNewNotesThunk(newNote as NoteItem));
+            await dispatch(addNewNote(newNote as NoteItem));
             toast({
                 title: "Success",
                 description: "New note created successfully",
@@ -101,7 +106,7 @@ const NoteList = () => {
                         <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>Not found</div>
                     ) : (
                         <>
-                            <NotesListItems index={filteredNotes} />
+                            <NotesListItems index={filterNote} />
                         </>
                     )}
                 </div>

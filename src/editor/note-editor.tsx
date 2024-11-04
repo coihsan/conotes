@@ -7,7 +7,6 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
-import { getNotesTitle } from '@/lib/utils/helpers'
 import StaticToolbar from './toolbar/static-toolbar'
 import { Folder24Regular, History24Regular, NumberSymbol24Regular, StarAdd24Regular, StarDismiss24Filled } from '@fluentui/react-icons'
 import { Badge } from '@/components/ui/badge'
@@ -19,11 +18,17 @@ import { Edit24Regular, Save24Regular } from "@fluentui/react-icons"
 import { Separator } from "@/components/ui/separator"
 import NotesListNoteOptions from "@/components/notes/noteslist-note-options"
 import { useParams } from 'react-router-dom'
-import { markAsFavoriteThunk } from '@/lib/redux/slice/notes'
+import { markAsFavoriteThunk, selectAllNotes } from '@/lib/redux/slice/notes'
 import Document from '@tiptap/extension-document'
+import { Input } from '@/components/ui/input'
+import { ReactMouseEvent } from '@/lib/types'
+import { getApp } from '@/lib/redux/selector'
+import { getNotesTitle } from '@/lib/utils/helpers'
 
 interface Props {
     contentNotes: Content;
+    title: string;
+    onChangeTitle: (event : ReactMouseEvent) => void
     onChange: (content: HTMLContent, title: string) => void;
 }
 
@@ -46,11 +51,11 @@ const createExtensions = [
     })
 ]
 
-const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
+const NoteEditor: React.FC<Props> = ({ contentNotes, onChange, title, onChangeTitle }) => {
     const { noteId } = useParams()
     const dispatch = useAppDispatch()
-    const editable = useAppSelector((state) => state.app.editable);
-    const notes = useAppSelector((state) => state.notes.notes)
+    const { editable } = useAppSelector(getApp);
+    const notes = useAppSelector((state) => selectAllNotes(state))
 
     const isFavorites = notes.find((note) => note.id === noteId)?.favorite
 
@@ -143,6 +148,18 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
                         03-31-2019
                     </Badge>
                 </div>
+                {editable ? (
+                    <form>
+                        <Input 
+                        onChange={(event) => onChangeTitle(event)}
+                        defaultValue={title}
+                        className='text-2xl mt-6 rounded-none border-none focus-visible:ring-transparent pl-0' 
+                        placeholder="Title it's here"
+                        />
+                    </form>
+                ) : (
+                    <h1 className='text-2xl mt-6'>{title}</h1>
+                )}
                 <EditorContent
                     className={cn(css.tiptap)}
                     editor={editor}

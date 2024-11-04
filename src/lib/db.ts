@@ -12,7 +12,7 @@ export class ConotesApp extends Dexie {
   constructor() {
     super('conotes');
     this.version(1).stores({
-      notes: '++id, content, createdAt, favorite, lastUpdated, trash, *folderId',
+      notes: '++id, content, title, createdAt, favorite, lastUpdated, trash, *folderId',
       folders: '++id, name, icon, createdAt, lastUpdated',
       folderNotes: '[folderId+noteId], folderId, noteId',
       tags: '++id, name, color',
