@@ -5,12 +5,14 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
+import { getFolder } from "@/lib/redux/selector"
+import { selectAllFolder } from "@/lib/redux/slice/folder"
 import { Delete24Regular, Edit24Regular, MoreHorizontal20Regular } from "@fluentui/react-icons"
 
 const FolderOptions = () => {
     const dispatch = useAppDispatch()
-    const folders = useAppSelector((folder) => folder.folder.folder)
-    const isEditing = useAppSelector((state) => state.folder.editingFolder)
+    const folders = useAppSelector((state) => selectAllFolder(state))
+    const { editingFolder } = useAppSelector(getFolder)
 
     return (
         <div onClick={(event) => event.stopPropagation()}>

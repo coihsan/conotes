@@ -1,21 +1,22 @@
 import { v4 } from "uuid";
-import { FolderItem, NoteItem } from "../types";
+import { NoteItem } from "../types";
 import { LabelText } from "../label-text";
 import { format } from "date-fns";
 import { Content } from "@tiptap/core";
 import { useAppSelector } from "../hooks/use-redux";
+import { selectAllNotes } from "../redux/slice/notes";
 
 export const currentItem = format(new Date(), 'dd-MM-yyyy');
 export const newNote = (): NoteItem => ({
   id: v4(),
   content: '',
+  title: '',
   createdAt: currentItem,
   lastUpdated: currentItem,
   trash: false,
   tags: [],
   favorite: false,
   folderId: v4(),
-  folder: 'Notes'
 })
 
 export const copyToClipboard = (noteId: string, content: string) => {
@@ -71,7 +72,7 @@ export const getTitleHead = (activeNoteId: string) => {
 }
 
 export const useNoteTitle = (noteId: string) => { 
-  const notes = useAppSelector((state) => state.notes.notes); 
+  const notes = useAppSelector((state) => selectAllNotes(state)); 
   const note = notes.find((note) => note.id === noteId); 
   return note ? note.content : ''; 
 };

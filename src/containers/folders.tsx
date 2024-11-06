@@ -9,7 +9,8 @@ import SearchBar from "@/components/global/search-bar"
 import { useRef } from "react"
 import { debounceEvent } from "@/lib/utils/helpers"
 import { searchQuery, selectAllNotes } from "@/lib/redux/slice/notes"
-import { getFolder, getNotes } from "@/lib/redux/selector"
+import { getNotes } from "@/lib/redux/selector"
+import { selectAllFolder } from "@/lib/redux/slice/folder"
 
 const Folders = () => {
     const dispatch = useAppDispatch()
@@ -19,7 +20,7 @@ const Folders = () => {
     const { activeFolderId } = useAppSelector(getNotes)
 
     const findNotesInFolder = notes.filter((note) => note.id === activeFolderId)
-    const { folder } = useAppSelector(getFolder)
+    const folder = useAppSelector((state) => selectAllFolder(state))
     const getFolderId = folder.find((folder) => folder.id === activeFolderId)
 
     const _searchNotes = debounceEvent(

@@ -33,7 +33,7 @@ const NoteList = () => {
     const filteredNotes = useAppSelector(selectFilteredNotes);
 
     const filterNote = filteredNotes
-    ? allNotes.filter((note) => !note.trash && note.content)
+    ? allNotes.filter((note) => !note.trash)
     .sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0))
     : allNotes.filter((note) => !note.title)
     .sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0));
@@ -45,16 +45,8 @@ const NoteList = () => {
             title: '',
             createdAt: currentItem,
             lastUpdated: currentItem,
-            tags: [
-                {
-                    id: v4(),
-                    name: "Design",
-                    color: 'bg-sky-600'
-                }
-            ],
             trash: false,
             favorite: false,
-            folder: "Notes"
         };
     };
     const [notes] = useState<NoteItem>(createInitialNote());
@@ -85,7 +77,7 @@ const NoteList = () => {
         <aside className='sidebarOption'>
             <HeaderSidebar 
             labelName={LabelText.NOTES}
-            countIndex={filteredNotes.length}
+            countIndex={filterNote.length}
                 buttonAction={
                     <ButtonMenu action={handleNewNote} side="bottom" variant={'ghost'} size={'icon'} label={LabelText.CREATE_NEW_NOTE}>
                         <NoteAdd24Regular />
@@ -102,7 +94,7 @@ const NoteList = () => {
             />
             <ScrollArea className='h-full pt-2 scroll-smooth touch-pan-y pb-24'>
                 <div className='grid grid-cols-1 gap-2 px-2 snap-end'>
-                    {filteredNotes?.length === 0 ? (
+                    {filterNote?.length === 0 ? (
                         <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>Not found</div>
                     ) : (
                         <>

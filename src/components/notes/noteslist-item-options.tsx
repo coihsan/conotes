@@ -17,6 +17,8 @@ import { MenuType } from '@/lib/enums';
 import { copyToClipboard } from '@/lib/utils/helpers';
 import { moveNoteToFolder } from '@/lib/redux/slice/folder';
 import { getApp } from '@/lib/redux/selector';
+import { toast } from "sonner"
+import { selectAllFolder } from '../../lib/redux/slice/folder';
 
 type SettingMenuProps = {
   className?: string;
@@ -27,7 +29,7 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
   const dispatch = useAppDispatch()
 
   const notes = useAppSelector((state) => selectAllNotes(state))
-  const findFolder = useAppSelector((state) => state.folder.folder)
+  const findFolder = useAppSelector((state) => selectAllFolder(state))
   const currentNote = notes.find((note) => note.id === noteId);
   const { activeMenu } = useAppSelector(getApp);
   const isFavorite = currentNote?.favorite || false;
@@ -52,31 +54,24 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
   }
 
   const handleCopyReferenceToNote = (noteId: string) => {
-    copyToClipboard(noteId, noteId)
-    console.log('bulk delete is succeessfully')
-  }
-
-  const handleMoveToFolder = () => {
     try {
-      const notes = useAppSelector((state) => selectAllNotes(state))
-      const noteId = notes.find((note) => note.id)?.folderId
-      const findFolder = useAppSelector((state) => state.folder.folder)
-      const folderId = findFolder.find((folder) => folder.id)?.id
-
-      const data = {
-        folderId: noteId as string,
-        noteId: folderId as string
-      }
-
-      if(data) {
-        dispatch(moveNoteToFolder(data))
-        console.log('success move to folder')
-      }
-      return data
+      copyToClipboard(noteId, noteId)
+      console.log('bulk delete is succeessfully')
+      toast(`Copy note ID sucessfuly`)
     } catch (error) {
-      
+      console.log(error)
     }
   }
+
+ const handleMoveToFolder = (selectedNoteId: string, targetFolderId: string) => { 
+    try {
+      dispatch(moveNoteToFolder({ noteId: selectedNoteId, folderId: targetFolderId }));
+      console.log('success move to folder');
+    } catch (error) {
+      console.error('Error moving note to folder:', error); 
+    }
+  };
+
 
   return (
     <div onClick={(event) => event.stopPropagation()}>
@@ -95,7 +90,7 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
           <DropdownMenuPortal>
             <DropdownMenuSubContent>
               {findFolder.map((folder) => (
-                <DropdownMenuItem onClick={() => handleMoveToFolder} key={folder.id}>
+                <DropdownMenuItem onClick={() => handleMoveToFolder(noteId, folder.id)} key={folder.id}>
                   <Folder24Regular />
                   <span>{folder.name}</span>
                 </DropdownMenuItem>

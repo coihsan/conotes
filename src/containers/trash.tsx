@@ -30,15 +30,15 @@ const TrashNotes = () => {
     return (
         <aside className='sidebarOption'>
             <HeaderSidebar labelName={LabelText.TRASH}
+            countIndex={trashNotes.length}
                 buttonAction={
                     <AlertDialog>
                         {trashNotes.length === 0 ? (
                             null
                         ) : (
                             <AlertDialogTrigger>
-                                <Button className='flex items-center gap-2' variant={'destructive'} size={'default'}>
+                                <Button variant={'destructive'} size={'icon'}>
                                     <Delete24Regular />
-                                    Empty trash
                                 </Button>
                             </AlertDialogTrigger>
                         ) 
@@ -47,12 +47,12 @@ const TrashNotes = () => {
                             <AlertDialogHeader>
                                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently remove your data from our app.
+                                    This action cannot be undone. This will permanently remove all your notes from our app.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={handleBulkDeletePermanent}>Continue</AlertDialogAction>
+                                <AlertDialogAction onClick={handleBulkDeletePermanent}>Delete all</AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>

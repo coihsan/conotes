@@ -9,6 +9,7 @@ import { setActiveMenu } from "@/lib/redux/slice/app"
 import { MenuType } from "@/lib/enums"
 import { getActiveFolderId } from "@/lib/redux/slice/notes"
 import { getFolder, getNotes } from "@/lib/redux/selector"
+import { selectAllFolder } from "@/lib/redux/slice/folder"
 
 interface Props {
     index: FolderItem[]
@@ -16,8 +17,9 @@ interface Props {
 
 const FolderListItem: React.FC<Props> = ({ index }) => {
     const dispatch = useAppDispatch()
-    const { folder, editingFolder } = useAppSelector(getFolder)
+    const { editingFolder } = useAppSelector(getFolder)
     const { activeFolderId } = useAppSelector(getNotes)
+    const folder = useAppSelector((state) => selectAllFolder(state))
 
     const hanldleGetFolderActive = (folderId: string) => {
         if (folderId) {

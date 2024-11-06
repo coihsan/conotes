@@ -5,6 +5,10 @@ import NotesListItemOptions from "@/components/notes/noteslist-item-options"
 import { NoteItem } from "@/lib/types"
 import React from "react"
 import clsx from "clsx"
+import { db } from "@/lib/db"
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
+import { selectAllNotes } from "@/lib/redux/slice/notes"
+import { selectAllFolder } from "@/lib/redux/slice/folder"
 
 interface NotesListItemsProps {
     index: NoteItem[]
@@ -12,12 +16,18 @@ interface NotesListItemsProps {
 
 const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
     let location = useLocation();
+    const dispatch = useAppDispatch()
+    const notes = useAppSelector(state => selectAllNotes(state))
+    const filterNoteFolderId = notes.find((item) => item.folderId)
+    const folder = useAppSelector(state => selectAllFolder(state))
+    const findFolder = folder.find((item) => item.id === filterNoteFolderId?.folderId)
 
     return (
         <>
             {index?.map((item) => (
                 <Link to={`/app/${item.id}`}
                     key={item.id}
+                    data-testid="notelist-item"
                     tabIndex={0}
                     className={clsx('snap-start relative rounded-xl px-2 h-24 flex items-center justify-between py-4 hover:bg-zinc-200 hover:dark:bg-zinc-800 border', (location.pathname == `/app/${item.id}` ? `bg-zinc-200 dark:bg-zinc-800` : `bg-white dark:bg-zinc-500/5`))} >
                     <div className='flex w-full items-center'>
@@ -32,13 +42,13 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                                 {getNotesTitle(item.content)}
                             </h3>
                             <div className='flex items-center gap-3'>
-                                {item?.folder &&
-                                    <div className='flex items-center gap-1 text-muted-foreground text-xs font-medium'>
+                                {findFolder &&
+                                    <div key={findFolder.id} className='flex items-center gap-1 text-muted-foreground text-xs font-medium'>
                                         <Folder20Regular className="size-4" />
-                                        {item.folder}
+                                        {findFolder.name}
                                     </div>
                                 }
-                                <div>
+                                {/* <div>
                                     {item.tags && (
                                         item.tags?.map((tag) => (
                                             <div
@@ -50,7 +60,7 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                                             </div>
                                         ))
                                     )}
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,4 @@
 import { MenuType, NotesSortKey } from "../enums"
-import { v4 } from "uuid";
 import { Content } from "@tiptap/react";
 import { EntityState } from "@reduxjs/toolkit";
 
@@ -9,16 +8,17 @@ export interface NoteItem {
   content: Content,
   createdAt: string,
   lastUpdated: string,
-  tags?: TagItem[],
+  tagsId?: string,
   trash: boolean,
   favorite: boolean,
-  folder?: string,
   folderId?: string,
 }
 
 export interface FolderItem {
   id: string,
   name: string,
+  createdAt: string,
+  lastUpdated: string,
 }
 
 export interface FolderNotes {
@@ -54,8 +54,7 @@ export interface NoteState extends EntityState<NoteItem, string> {
   status?: 'idle' | 'pending' | 'succeeded' | 'rejected'
 }
 
-export interface FolderState {
-  folder: FolderItem[]
+export interface FolderState extends EntityState<FolderItem, string> {
   editingFolder :boolean
   loading: boolean
   error: null | string | undefined

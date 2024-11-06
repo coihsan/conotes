@@ -33,7 +33,7 @@ export const updateContentThunk = createAppAsyncThunk<Update<NoteItem, string>, 
         await db.notes.update(data.noteId, updates);
         return { id: data.noteId, changes: updates };
       } else {
-        return rejectWithValue('Note not found');
+        return rejectWithValue('updateContentThunk Note not found');
       }
     } catch (error) {
       console.error('Failed to update note content', error);
@@ -69,14 +69,14 @@ export const fetchAllNote = createAppAsyncThunk<NoteItem[], void, { rejectValue:
 );
 
 export const getActiveNote = createAppAsyncThunk(
-  'notes/getNotesContentByID',
+  'notes/getActiveNote',
   async (noteId: string) => {
     try {
       const note = await db.notes.get(noteId);
       if (note) {
         return note.content;
       } else {
-        throw new Error('Note not found');
+        throw new Error('getActiveNote not found');
       }
     } catch (error) {
       console.error('Error fetching note content:', error);
@@ -145,7 +145,7 @@ export const deletePermanentAction = createAppAsyncThunk<Update<NoteItem, string
         await db.notes.delete(ids);
         return { id: ids, changes: {} };
       } else {
-        return rejectWithValue('Note not found');
+        return rejectWithValue('deletePermanentAction Note not found');
       }
     } catch (error) {
       return rejectWithValue(error as string);
@@ -260,7 +260,6 @@ export const {
 } = notesSlice.actions
 
 export default notesSlice.reducer
-
 
 export const {
   selectAll: selectAllNotes,

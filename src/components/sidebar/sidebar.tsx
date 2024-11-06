@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import FolderNotes from './folder-notes';
 import { ScrollArea } from '../ui/scroll-area';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
+import { getApp } from '@/lib/redux/selector';
 
 const Sidebar: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -14,7 +15,7 @@ const Sidebar: React.FC = () => {
         dispatch(setActiveMenu(menu));
     };
     const isActive = (menu: MenuType) => {
-        const activeMenu = useAppSelector((state) => state.app.activeMenu);
+        const {activeMenu} = useAppSelector(getApp);
         return activeMenu === menu;
     };
     

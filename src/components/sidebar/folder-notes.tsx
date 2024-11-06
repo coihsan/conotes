@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import { v4 } from "uuid"
 import { FolderItem, ReactSubmitEvent } from "@/lib/types"
 import React from "react";
-import { addNewFolderAction } from "@/lib/redux/slice/folder";
+import { addNewFolderAction, selectAllFolder } from "@/lib/redux/slice/folder";
 import FolderListItem from "../folder/folderlist-item";
 import { Input } from "../ui/input";
 import {
@@ -17,7 +17,7 @@ import { Add24Regular, Checkmark20Filled, ChevronDown20Regular, ChevronRight20Re
 
 const FolderNotes: React.FC = () => {
     const dispatch = useAppDispatch()
-    const folders = useAppSelector((folder) => folder.folder.folder)
+    const folders = useAppSelector((state) => selectAllFolder(state))
     const [isOpen, setIsOpen] = useState(true)
     const [isVisible, setIsVisible] = useState(false)
 
@@ -26,6 +26,8 @@ const FolderNotes: React.FC = () => {
         const initialState: FolderItem = {
             id: v4(),
             name: 'Hello 2',
+            createdAt: new Date().toISOString(),
+            lastUpdated: new Date().toISOString()
         }
         dispatch(addNewFolderAction(initialState))
     }
@@ -35,6 +37,7 @@ const FolderNotes: React.FC = () => {
 
     const handleAddNewFolder = () => {
         setIsVisible(true)
+        setIsOpen(true)
     }
 
     return (
