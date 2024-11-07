@@ -2,7 +2,7 @@ import css from '../styles/editor.module.scss'
 import { Content, EditorContent, HTMLContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { cn } from "@/lib/utils/cn"
-import React, { useEffect } from "react"
+import React, { useEffect, useMemo } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import Placeholder from '@tiptap/extension-placeholder'
@@ -55,7 +55,7 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange, title, onChangeTi
     const { noteId } = useParams()
     const dispatch = useAppDispatch()
     const { editable } = useAppSelector(getApp);
-    const notes = useAppSelector((state) => selectAllNotes(state))
+    const notes = useAppSelector(selectAllNotes)
 
     const isFavorites = notes.find((note) => note.id === noteId)?.favorite
 
@@ -64,6 +64,9 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange, title, onChangeTi
         content: contentNotes,
         editable: editable,
         autofocus: true,
+        onCreate: ({ editor }) => {
+            editor.isEmpty
+        },
         onUpdate: ({ editor }) => {
             const editorContent = editor.getHTML();
             const getFirst = editorContent[0]

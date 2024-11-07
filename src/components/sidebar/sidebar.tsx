@@ -15,16 +15,15 @@ const Sidebar: React.FC = () => {
         dispatch(setActiveMenu(menu));
     };
     const isActive = (menu: MenuType) => {
-        const {activeMenu} = useAppSelector(getApp);
+        const { activeMenu } = useAppSelector(getApp);
         return activeMenu === menu;
     };
     
     return (
         <aside className="w-80 py-4 border-[1px] rounded-2xl bg-zinc-800 dark:bg-zinc-950 text-white flex flex-col justify-between mr-1">
             <div className="flex flex-col w-full gap-2">
-                <Link to={'/app'} className='flex items-center pl-4 gap-2 w-full'>
-                    <Logo className="size-7 invert" />
-                    <span className='text-2xl font-semibold'>conotes</span>
+                <Link to={'/app'} className='flex items-center justify-start pl-4'>
+                    <Logo className='w-24' />
                 </Link>
                 <div className='border-b-[1px] border-zinc-700 dark:border-zinc-800 mb-5'>
                     <div className='grid gap-1 py-4 px-2'>

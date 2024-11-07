@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button"
 
 const TrashNotes = () => {
     const dispatch = useAppDispatch()
-    const notes = useAppSelector((state) => selectAllNotes(state))
+    const notes = useAppSelector(selectAllNotes)
     const trashNotes = notes.filter(note => note.trash)
 
     const handleBulkDeletePermanent = () => {

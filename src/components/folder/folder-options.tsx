@@ -4,24 +4,26 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
-import { getFolder } from "@/lib/redux/selector"
-import { selectAllFolder } from "@/lib/redux/slice/folder"
+import { useAppDispatch } from "@/lib/hooks/use-redux"
+import { setEditingFolder } from "@/lib/redux/slice/folder"
 import { Delete24Regular, Edit24Regular, MoreHorizontal20Regular } from "@fluentui/react-icons"
 
-const FolderOptions = () => {
+type Props = {
+    folderId: string
+}
+
+const FolderOptions : React.FC<Props> = ({ folderId }) => {
     const dispatch = useAppDispatch()
-    const folders = useAppSelector((state) => selectAllFolder(state))
-    const { editingFolder } = useAppSelector(getFolder)
 
     return (
-        <div onClick={(event) => event.stopPropagation()}>
+        <div>
             <DropdownMenu>
                 <DropdownMenuTrigger>
                     <MoreHorizontal20Regular />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                    onClick={()=> dispatch(setEditingFolder(true))}>
                         <Edit24Regular />
                         Rename folder
                     </DropdownMenuItem>

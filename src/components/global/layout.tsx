@@ -16,12 +16,13 @@ import { getTitleHead } from "@/lib/utils/helpers";
 import useLocalStorage from "@/lib/hooks/use-localstorage";
 import { useEffect } from "react";
 import { setActiveMenu } from "@/lib/redux/slice/app";
+import { getApp, getNotes } from "@/lib/redux/selector";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
 
-  const activeMenu = useAppSelector((state) => state.app.activeMenu);
-  const activeNoteId = useAppSelector((state) => state.notes.activeNoteId)
+  const { activeMenu } = useAppSelector(getApp);
+  const { activeNoteId } = useAppSelector(getNotes)
   const activeNotes = getTitleHead(activeNoteId)
 
   const [isActiveMenu, setIsActiveMenu] = useLocalStorage('activeMenu', MenuType.NOTES)

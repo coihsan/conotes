@@ -28,8 +28,8 @@ type SettingMenuProps = {
 const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId }) => {
   const dispatch = useAppDispatch()
 
-  const notes = useAppSelector((state) => selectAllNotes(state))
-  const findFolder = useAppSelector((state) => selectAllFolder(state))
+  const notes = useAppSelector(selectAllNotes)
+  const findFolder = useAppSelector(selectAllFolder)
   const currentNote = notes.find((note) => note.id === noteId);
   const { activeMenu } = useAppSelector(getApp);
   const isFavorite = currentNote?.favorite || false;
@@ -66,12 +66,11 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
  const handleMoveToFolder = (selectedNoteId: string, targetFolderId: string) => { 
     try {
       dispatch(moveNoteToFolder({ noteId: selectedNoteId, folderId: targetFolderId }));
-      console.log('success move to folder');
+      console.log(`success move to ${targetFolderId}`);
     } catch (error) {
       console.error('Error moving note to folder:', error); 
     }
   };
-
 
   return (
     <div onClick={(event) => event.stopPropagation()}>

@@ -16,12 +16,12 @@ const Folders = () => {
     const dispatch = useAppDispatch()
     const searchRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
-    const notes = useAppSelector((state) => selectAllNotes(state))
+    const notes = useAppSelector(selectAllNotes)
     const { activeFolderId } = useAppSelector(getNotes)
 
-    const findNotesInFolder = notes.filter((note) => note.id === activeFolderId)
-    const folder = useAppSelector((state) => selectAllFolder(state))
-    const getFolderId = folder.find((folder) => folder.id === activeFolderId)
+    const findNotesInFolder = notes.filter((note) => note.folderId === activeFolderId)
+    const folder = useAppSelector(selectAllFolder)
+    const getFolderName = folder.find((folder) => folder.id === activeFolderId)
 
     const _searchNotes = debounceEvent(
         (searchValue: string) => dispatch(searchQuery(searchValue)),
@@ -39,14 +39,16 @@ const Folders = () => {
                 searchAction={
                     <SearchBar searchRef={searchRef} searchQuery={_searchNotes} />
                 }
-                labelName={getFolderId?.name as string} 
+                labelName={getFolderName?.name as string} 
             />
-            <ScrollArea className='px-2'>
-                {findNotesInFolder.length === 0 ? (
-                    <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>Not found</div>
-                ) : (
-                    <NotesListItems index={findNotesInFolder} />
-                )}
+            <ScrollArea className='h-full pt-2 scroll-smooth touch-pan-y pb-24'>
+                <div className='grid grid-cols-1 gap-2 px-2 snap-end'>
+                    {findNotesInFolder.length === 0 ? (
+                        <div className='w-full p-4 flex items-center justify-center italic text-muted-foreground text-sm'>Not found</div>
+                    ) : (
+                        <NotesListItems index={findNotesInFolder} />
+                    )}
+                </div>
             </ScrollArea>
         </aside>
     )

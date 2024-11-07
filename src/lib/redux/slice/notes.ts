@@ -264,4 +264,5 @@ export default notesSlice.reducer
 export const {
   selectAll: selectAllNotes,
   selectById: selectNotesById,
+  selectIds: selectNoteIds
 } = notesAdapter.getSelectors((state: RootState) => state.notes)

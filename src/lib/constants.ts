@@ -140,44 +140,28 @@ export const TextEditorMenuBar = (editor: Editor): TextEditorMenuBarProps[] =>
 
 export const FEATURESAPP = [
     {
-        id: 0,
         title: "100% Open-source",
-        description: ""
+        description: "We are not making this app for any commercial use."
     },
     {
-        id: 0,
-        title: "No Ads / Advertising",
-        description: ""
+        title: "No Ads or Advertising",
+        description: "This makes your experience in our app as smooth as possible without any ads."
     },
     {
-        id: 0,
         title: "No tracking or analytics",
-        description: ""
+        description: "We do not collect any information from our users."
     },
     {
-        id: 0,
         title: "Support WYSIWYG",
-        description: "We are use tiptap editor as main library part of our app"
+        description: `We are using Tiptap Editor as main the library this is part of our app.`
     },
     {
-        id: 0,
         title: "No database",
-        description: "all notes are only stored in client-side storage (indexedDB)"
+        description: `All notes will be saved to client-side storage in indexedDB. But don't provide any data sensitive.`
     },
     {
-        id: 0,
         title: "No login",
-        description: "All notes are only stored in your browser (indexedDB)"
-    },
-    {
-        id: 0,
-        title: "Search notes",
-        description: "easely search all notes, or notes with specific tag"
-    },
-    {
-        id: 0,
-        title: "Drag-n-drop",
-        description: "for easy management of notes"
+        description: "Only available for demo user w/o login or signup action required."
     },
 ]
 

@@ -26,9 +26,9 @@ const NoteList = () => {
 
     // SELECTOR
     const { searchValue } = useAppSelector(getNotes)
-    const allNotes = useAppSelector((state) => selectAllNotes(state))
-    const {activeMenu} = useAppSelector(getApp);
-
+    const allNotes = useAppSelector(selectAllNotes)
+    const { activeMenu } = useAppSelector(getApp);
+    
     const _searchValues = searchValue
     const filteredNotes = useAppSelector(selectFilteredNotes);
 
@@ -47,6 +47,7 @@ const NoteList = () => {
             lastUpdated: currentItem,
             trash: false,
             favorite: false,
+            folderId: ''
         };
     };
     const [notes] = useState<NoteItem>(createInitialNote());

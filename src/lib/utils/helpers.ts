@@ -4,7 +4,9 @@ import { LabelText } from "../label-text";
 import { format } from "date-fns";
 import { Content } from "@tiptap/core";
 import { useAppSelector } from "../hooks/use-redux";
-import { selectAllNotes } from "../redux/slice/notes";
+import { selectAllNotes, selectNotesById } from "../redux/slice/notes";
+import { selectAllFolder } from "../redux/slice/folder";
+import { db } from "../db";
 
 export const currentItem = format(new Date(), 'dd-MM-yyyy');
 export const newNote = (): NoteItem => ({
@@ -14,7 +16,6 @@ export const newNote = (): NoteItem => ({
   createdAt: currentItem,
   lastUpdated: currentItem,
   trash: false,
-  tags: [],
   favorite: false,
   folderId: v4(),
 })
@@ -76,3 +77,8 @@ export const useNoteTitle = (noteId: string) => {
   const note = notes.find((note) => note.id === noteId); 
   return note ? note.content : ''; 
 };
+
+
+export const getTotalNotesInFolder = (notes: NoteItem[], folderId: string): number => {
+  return notes.filter((note) => note.folderId === folderId).length;
+}

@@ -14,7 +14,7 @@ import { Link, useParams } from "react-router-dom";
 
 const BreadcrumbNotes: React.FC = () => {
     const { noteId } = useParams()
-    const notes = useAppSelector((state ) => selectAllNotes(state));
+    const notes = useAppSelector(selectAllNotes);
     const activeNote = notes.find((note) => note.id === noteId)
     const getNotes = activeNote ? activeNote.content : ''
 

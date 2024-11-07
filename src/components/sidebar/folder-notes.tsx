@@ -13,19 +13,21 @@ import {
 import ButtonMenu from '@/components/primitive/button-menu';
 import { LabelText } from '@/lib/label-text';
 import { useState } from "react";
-import { Add24Regular, Checkmark20Filled, ChevronDown20Regular, ChevronRight20Regular, Dismiss20Filled } from "@fluentui/react-icons";
+import { Add24Regular, ChevronDown20Regular, ChevronRight20Regular, Dismiss20Filled } from "@fluentui/react-icons";
 
 const FolderNotes: React.FC = () => {
     const dispatch = useAppDispatch()
-    const folders = useAppSelector((state) => selectAllFolder(state))
     const [isOpen, setIsOpen] = useState(true)
     const [isVisible, setIsVisible] = useState(false)
+
+    const folders = useAppSelector(selectAllFolder)
+
 
     const onSubmitFolder = (event: ReactSubmitEvent): void => {
         event.preventDefault()
         const initialState: FolderItem = {
             id: v4(),
-            name: 'Hello 2',
+            name: 'Test',
             createdAt: new Date().toISOString(),
             lastUpdated: new Date().toISOString()
         }
@@ -67,14 +69,9 @@ const FolderNotes: React.FC = () => {
                                 onBlur={onBlur}
                             />
                         </form>
-                        <div className="flex items-center">
-                            <ButtonMenu label="Save" action={() => setIsVisible(true)} variant={'ghost'} size={'icon'}>
-                                <Checkmark20Filled />
-                            </ButtonMenu>
-                            <ButtonMenu label="Close" action={() => setIsVisible(false)} variant={'ghost'} size={'icon'}>
-                                <Dismiss20Filled />
-                            </ButtonMenu>
-                        </div>
+                        <ButtonMenu label="Close" action={() => setIsVisible(false)} variant={'ghost'} size={'icon'}>
+                            <Dismiss20Filled />
+                        </ButtonMenu>
                     </div>
                 }
             </CollapsibleContent>

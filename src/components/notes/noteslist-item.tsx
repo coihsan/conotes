@@ -1,13 +1,11 @@
-import { getContrastColor, getNotesTitle } from "@/lib/utils/helpers"
+import { getNotesTitle } from "@/lib/utils/helpers"
 import { Folder20Regular, Star20Filled } from "@fluentui/react-icons"
 import { Link, useLocation } from "react-router-dom"
 import NotesListItemOptions from "@/components/notes/noteslist-item-options"
 import { NoteItem } from "@/lib/types"
 import React from "react"
 import clsx from "clsx"
-import { db } from "@/lib/db"
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
-import { selectAllNotes } from "@/lib/redux/slice/notes"
+import { useAppSelector } from "@/lib/hooks/use-redux"
 import { selectAllFolder } from "@/lib/redux/slice/folder"
 
 interface NotesListItemsProps {
@@ -16,16 +14,14 @@ interface NotesListItemsProps {
 
 const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
     let location = useLocation();
-    const dispatch = useAppDispatch()
-    const notes = useAppSelector(state => selectAllNotes(state))
-    const filterNoteFolderId = notes.find((item) => item.folderId)
-    const folder = useAppSelector(state => selectAllFolder(state))
-    const findFolder = folder.find((item) => item.id === filterNoteFolderId?.folderId)
+    const folder = useAppSelector(selectAllFolder)
 
     return (
         <>
-            {index?.map((item) => (
-                <Link to={`/app/${item.id}`}
+            {index?.map((item) => {
+                const findFolder = folder.find((folderItem) => folderItem.id === item.folderId);
+                return(
+                    <Link to={`/app/${item.id}`}
                     key={item.id}
                     data-testid="notelist-item"
                     tabIndex={0}
@@ -42,23 +38,21 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                                 {getNotesTitle(item.content)}
                             </h3>
                             <div className='flex items-center gap-3'>
-                                {findFolder &&
-                                    <div key={findFolder.id} className='flex items-center gap-1 text-muted-foreground text-xs font-medium'>
+                                {findFolder?.id === item.folderId &&
+                                    <div key={findFolder?.id} className='flex items-center gap-1 text-muted-foreground text-xs font-medium'>
                                         <Folder20Regular className="size-4" />
-                                        {findFolder.name}
+                                        {findFolder?.name}
                                     </div>
                                 }
                                 {/* <div>
-                                    {item.tags && (
-                                        item.tags?.map((tag) => (
-                                            <div
-                                                key={tag.id}
-                                                className="flex items-center space-x-1 rounded-full px-3 py-1 text-sm"
-                                                style={{ backgroundColor: tag.color, color: getContrastColor(tag.color) }}
-                                            >
-                                                <span>{tag.name}</span>
-                                            </div>
-                                        ))
+                                    {item.tagsId && (
+                                        <div
+                                            key={tag.id}
+                                            className="flex items-center space-x-1 rounded-full px-3 py-1 text-sm"
+                                            style={{ backgroundColor: tag.color, color: getContrastColor(tag.color) }}
+                                        >
+                                            <span>{tag.name}</span>
+                                        </div>
                                     )}
                                 </div> */}
                             </div>
@@ -66,7 +60,8 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                     </div>
                     <NotesListItemOptions noteId={item.id} />
                 </Link>
-            ))}
+                )
+            })}
         </>
     )
 }

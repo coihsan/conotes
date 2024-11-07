@@ -1,7 +1,7 @@
 // Default Labels
 export enum LabelText {
     // NOTES
-    NOTES = 'Notes',
+    NOTES = 'All Notes',
     COPY_NOTES = 'Copy notes',
     EDIT_NOTE = 'Edit notes',
     SAVE_NOTES = 'Save notes',

@@ -12,6 +12,7 @@ import yawningEmoji from "../../assets/yawning_face_3d.png"
 import '../../App.css'
 import { ModeToggle } from "./mode-toggle";
 import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { FEATURESAPP } from "@/lib/constants";
 
 const LandingPage: React.FC = () => {
 
@@ -62,54 +63,14 @@ const LandingPage: React.FC = () => {
                     <span className="inline-block"><img className="size-12" src={yawningEmoji} alt="yawning emoji" /></span>
                 </div>
                 <div className="grid md:grid-cols-2 gap-2 pt-9">
-                    <Card>
+                    {FEATURESAPP.map((item, index) => (
+                        <Card key={index}>
                         <CardHeader>
-                            <CardTitle>100% Open-source</CardTitle>
-                            <CardDescription>We are not making this app for any commercial use.</CardDescription>
+                            <CardTitle>{item.title}</CardTitle>
+                            <CardDescription>{item.description}</CardDescription>
                         </CardHeader>
-                    </Card>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>No Ads or Advertising</CardTitle>
-                            <CardDescription>This makes your experience in our app as smooth as possible without any ads.</CardDescription>
-                        </CardHeader>
-                    </Card>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>No Tracking or Analytics</CardTitle>
-                            <CardDescription>We do not collect any information from our users.</CardDescription>
-                        </CardHeader>
-                    </Card>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Support <Link className="text-blue-500 underline" target='_blank' to={'https://en.wikipedia.org/wiki/WYSIWYG'}>WYSIWYG</Link></CardTitle>
-                            <CardDescription>We are using <Link to={'https://tiptap.dev/'} className="text-blue-500 underline" target='_blank'>Tiptap Editor</Link> as main the library this is part of our app.</CardDescription>
-                        </CardHeader>
-                    </Card>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>No Database</CardTitle>
-                            <CardDescription>All notes will be saved to client-side storage in <Link className="text-blue-500 underline" target='_blank' to={'https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API'}> (indexedDB)</Link> <em>but don't provide any data sensitive</em>.</CardDescription>
-                        </CardHeader>
-                    </Card>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>No Login</CardTitle>
-                            <CardDescription>Only available for demo user w/o login or signup action required.</CardDescription>
-                        </CardHeader>
-                    </Card>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Search Notes</CardTitle>
-                            <CardDescription>Easely search all notes, or notes with specific tag.</CardDescription>
-                        </CardHeader>
-                    </Card>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Drag-n-drop</CardTitle>
-                            <CardDescription>For easy management of notes.</CardDescription>
-                        </CardHeader>
-                    </Card>
+                        </Card>
+                    ))}
                 </div>
             </div>
             <GridPattern
