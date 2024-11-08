@@ -19,7 +19,7 @@ const Folders = () => {
     const notes = useAppSelector(selectAllNotes)
     const { activeFolderId } = useAppSelector(getNotes)
 
-    const findNotesInFolder = notes.filter((note) => note.folderId === activeFolderId)
+    const findNotesInFolder = notes.filter((note) => note.folderId === activeFolderId && !note.trash)
     const folder = useAppSelector(selectAllFolder)
     const getFolderName = folder.find((folder) => folder.id === activeFolderId)
 

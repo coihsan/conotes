@@ -1,5 +1,5 @@
 import { FolderItem, FolderState, NoteItem } from '@/lib/types'
-import { createSlice, createEntityAdapter, Update, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, createEntityAdapter, Update } from '@reduxjs/toolkit'
 import { createAppAsyncThunk } from '../thunk'
 import { db } from '@/lib/db'
 import { RootState } from '../store';
@@ -76,8 +76,8 @@ export const moveNoteToFolder = createAppAsyncThunk<Update<NoteItem, string>, { 
 const folderSlice = createSlice({
     name: 'folder',
     initialState: initialState,
-    reducers: {
-        setEditingFolder: (state, action) => {
+    reducers: { 
+        setEditingFolder: (state, action) =>{
             state.editingFolder = action.payload
         }
     },

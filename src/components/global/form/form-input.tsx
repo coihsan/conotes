@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Dismiss24Regular } from "@fluentui/react-icons";
+import { Checkmark24Regular, Dismiss24Regular } from "@fluentui/react-icons";
 
 type Props = {
     formValue: string;
@@ -19,6 +19,7 @@ type Props = {
     onSubmit: (values: z.infer<typeof formSchema>) => void;
     placeholder?: string;
     editingFormId: string;
+    onCancel?: () => void;
     changeHandler: (editingFormId: string, value: string) => void;
 };
 
@@ -30,10 +31,12 @@ const FormInput: React.FC<Props> = ({
     formValue,
     testId,
     onSubmit,
+    onCancel,
     placeholder = "Enter text",
     changeHandler,
     editingFormId,
 }) => {
+    const formRef = useRef<HTMLFormElement>(null);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -41,13 +44,32 @@ const FormInput: React.FC<Props> = ({
         },
     });
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+          if (formRef.current && !formRef.current.contains(event.target as Node)) {
+            if (form.getValues("formLabel").trim() !== "")
+     {
+              form.handleSubmit(onSubmit)(event as unknown as React.SyntheticEvent);
+            } else {
+              onCancel?.();
+            }
+          }
+        };
+    
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, [form, onSubmit, onCancel]);
+
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" data-testid={testId}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex" data-testid={testId} ref={formRef}>
                 <FormField control={form.control} name="formLabel" render={({ field }) => (
                     <FormItem>
                         <FormControl>
                             <Input
+                            className="h-7"
                                 aria-label={formValue}
                                 type="text"
                                 defaultValue={formValue}
@@ -63,6 +85,10 @@ const FormInput: React.FC<Props> = ({
                         <FormMessage />
                     </FormItem>
                 )} />
+                <div className="flex gap-2">
+                    <Button size={'icon'} type="submit"><Checkmark24Regular /></Button>
+                    {onCancel && <Button type="button" size={'icon'} variant="outline" onClick={onCancel}><Dismiss24Regular /></Button>}
+                </div>
             </form>
         </Form>
     );

@@ -22,7 +22,6 @@ const FolderNotes: React.FC = () => {
 
     const folders = useAppSelector(selectAllFolder)
 
-
     const onSubmitFolder = (event: ReactSubmitEvent): void => {
         event.preventDefault()
         const initialState: FolderItem = {
@@ -46,6 +45,7 @@ const FolderNotes: React.FC = () => {
         <Collapsible
             open={isOpen}
             onOpenChange={setIsOpen}
+            className="px-2"
         >
             <div className='flex items-center justify-between w-full relative px-2'>
                 <CollapsibleTrigger className="text-sm flex items-center gap-3">

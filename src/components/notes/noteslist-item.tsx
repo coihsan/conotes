@@ -38,7 +38,7 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                                 {getNotesTitle(item.content)}
                             </h3>
                             <div className='flex items-center gap-3'>
-                                {findFolder?.id === item.folderId &&
+                                {findFolder?.id === item.folderId && 
                                     <div key={findFolder?.id} className='flex items-center gap-1 text-muted-foreground text-xs font-medium'>
                                         <Folder20Regular className="size-4" />
                                         {findFolder?.name}

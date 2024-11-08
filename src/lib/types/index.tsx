@@ -55,7 +55,7 @@ export interface NoteState extends EntityState<NoteItem, string> {
 }
 
 export interface FolderState extends EntityState<FolderItem, string> {
-  editingFolder: boolean
+  editingFolder: boolean;
   loading: boolean
   error: null | string | undefined
   status?: 'idle' | 'pending' | 'succeeded' | 'rejected'

@@ -80,5 +80,5 @@ export const useNoteTitle = (noteId: string) => {
 
 
 export const getTotalNotesInFolder = (notes: NoteItem[], folderId: string): number => {
-  return notes.filter((note) => note.folderId === folderId).length;
+  return notes.filter((note) => note.folderId === folderId && !note.trash).length;
 }
