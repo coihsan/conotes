@@ -2,33 +2,23 @@ import css from '../styles/editor.module.scss'
 import { Content, EditorContent, HTMLContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { cn } from "@/lib/utils/cn"
-import React, { useEffect, useMemo } from "react"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import React, { useEffect } from "react"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
 import StaticToolbar from './toolbar/static-toolbar'
-import { Folder24Regular, History24Regular, NumberSymbol24Regular, StarAdd24Regular, StarDismiss24Filled } from '@fluentui/react-icons'
+import { Folder24Regular, History24Regular, NumberSymbol24Regular } from '@fluentui/react-icons'
 import { Badge } from '@/components/ui/badge'
 import { setEditableEditor } from "@/lib/redux/slice/app"
-import BreadcrumbNotes from "@/components/global/breadcrumb-notes"
-import ButtonMenu from "@/components/primitive/button-menu"
-import { LabelText } from "@/lib/label-text"
-import { Edit24Regular, Save24Regular } from "@fluentui/react-icons"
-import { Separator } from "@/components/ui/separator"
-import NotesListNoteOptions from "@/components/notes/noteslist-note-options"
 import { useParams } from 'react-router-dom'
-import { markAsFavoriteThunk, selectAllNotes } from '@/lib/redux/slice/notes'
+import { selectAllNotes } from '@/lib/redux/slice/notes'
 import Document from '@tiptap/extension-document'
-import { Input } from '@/components/ui/input'
-import { ReactMouseEvent } from '@/lib/types'
 import { getApp } from '@/lib/redux/selector'
 import { getNotesTitle } from '@/lib/utils/helpers'
 
 interface Props {
     contentNotes: Content;
-    title: string;
-    onChangeTitle: (event : ReactMouseEvent) => void
     onChange: (content: HTMLContent, title: string) => void;
 }
 
@@ -51,13 +41,11 @@ const createExtensions = [
     })
 ]
 
-const NoteEditor: React.FC<Props> = ({ contentNotes, onChange, title, onChangeTitle }) => {
+const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
     const { noteId } = useParams()
     const dispatch = useAppDispatch()
     const { editable } = useAppSelector(getApp);
     const notes = useAppSelector(selectAllNotes)
-
-    const isFavorites = notes.find((note) => note.id === noteId)?.favorite
 
     const editor = useEditor({
         extensions: createExtensions,
@@ -74,25 +62,21 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange, title, onChangeTi
         },
         editorProps: {
             attributes: {
-              autocomplete: 'off',
-              autocorrect: 'off',
-              autocapitalize: 'off',
-              class: cn('focus:outline-none', css.noteEditor)
+                autocomplete: 'off',
+                autocorrect: 'off',
+                autocapitalize: 'off',
+                class: cn('focus:outline-none', css.noteEditor)
             }
-          },
+        },
     }, [])
-
-    const handleToggleFavorite = (noteId: string, value: boolean) => {dispatch(markAsFavoriteThunk({noteId, value}))}
-    const handlePreview = () => {dispatch(setEditableEditor(false))}
-    const handleEditNote = () => {dispatch(setEditableEditor(true))}
 
     useEffect(() => {
         if (editor && contentNotes) {
-          editor.commands.setContent(contentNotes);
+            editor.commands.setContent(contentNotes);
         } else {
             editor?.commands.clearContent()
         }
-      }, [contentNotes, editor]);
+    }, [contentNotes, editor]);
 
     useEffect(() => {
         if (editable) {
@@ -102,39 +86,8 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange, title, onChangeTi
 
     return (
         <div className='h-full w-full'>
-            <div className="flex items-center justify-between w-full py-1 px-3 border-b-[1px]">
-                <BreadcrumbNotes />
-                <header className="flex items-center gap-px">
-                    <div className='text-xs text-muted-foreground pr-6'>Edit Oct 08</div>
-                    {editable ? (
-                        <ButtonMenu
-                            label={LabelText.PREVIEW_NOTE}
-                            action={handlePreview} variant={'ghost'} size={'icon'}>
-                            <Save24Regular className="size-5" />
-                        </ButtonMenu>
-                    ) : (
-                        <ButtonMenu
-                            label={LabelText.EDIT_NOTE}
-                            action={handleEditNote} 
-                            variant={'ghost'} size={'icon'}>
-                            <Edit24Regular className="size-5" />
-                        </ButtonMenu>
-                    )}
-                    <Separator orientation="vertical" />
-                    {isFavorites ? (
-                        <ButtonMenu action={() => handleToggleFavorite(noteId as string, false)} label={LabelText.FAVORITE} variant={'ghost'} size={'icon'}>
-                        <StarDismiss24Filled className="size-5 text-creek-600 dark:text-creek-400" />
-                    </ButtonMenu>
-                    ) : (
-                        <ButtonMenu action={() => handleToggleFavorite(noteId as string, true)} label={LabelText.FAVORITE} variant={'ghost'} size={'icon'}>
-                        <StarAdd24Regular className="size-5" />
-                    </ButtonMenu>
-                    )}
-                    <NotesListNoteOptions />
-                </header>
-            </div>
             {editable && <StaticToolbar editor={editor} />}
-            <ScrollArea className='h-full w-full p-12'>
+            <ScrollArea className='h-full w-full px-12 py-6'>
                 <div className='flex items-center justify-between w-full'>
                     <div className="flex items-center gap-3">
                         <Badge variant={'outline'} className='gap-1'>
@@ -151,22 +104,13 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange, title, onChangeTi
                         03-31-2019
                     </Badge>
                 </div>
-                {editable ? (
-                    <form>
-                        <Input 
-                        onChange={(event) => onChangeTitle(event)}
-                        defaultValue={title}
-                        className='text-2xl mt-6 rounded-none border-none focus-visible:ring-transparent pl-0' 
-                        placeholder="Title it's here"
-                        />
-                    </form>
-                ) : (
-                    <h1 className='text-2xl mt-6'>{title}</h1>
-                )}
-                <EditorContent
-                    className={cn(css.tiptap)}
-                    editor={editor}
-                />
+                <div className='h-full'>
+                    <EditorContent
+                        className={cn(css.tiptap)}
+                        editor={editor}
+                    />
+                </div>
+                <ScrollBar orientation='vertical' />
             </ScrollArea>
         </div>
     )

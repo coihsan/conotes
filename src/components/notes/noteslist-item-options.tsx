@@ -10,7 +10,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ClipboardLink24Regular, Delete24Regular, DeleteDismiss24Regular, Dismiss24Regular, Folder24Regular, MoreHorizontal16Regular, NumberRow20Filled, StarAdd24Regular, StarDismiss24Regular } from "@fluentui/react-icons";
+import { ClipboardLink24Regular, Delete24Regular, DeleteDismiss24Regular, Dismiss24Regular, Folder24Regular, MoreHorizontal16Regular, StarAdd24Regular, StarDismiss24Regular } from "@fluentui/react-icons";
 import { deletePermanentAction, markAsFavoriteThunk, selectAllNotes, toggleTrashAction } from '@/lib/redux//slice/notes';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
 import { MenuType } from '@/lib/enums';

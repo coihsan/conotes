@@ -17,23 +17,26 @@ import useLocalStorage from "@/lib/hooks/use-localstorage";
 import { useEffect } from "react";
 import { setActiveMenu } from "@/lib/redux/slice/app";
 import { getApp, getNotes } from "@/lib/redux/selector";
+import { selectFolderById, selectFolderId } from "@/lib/redux/slice/folder";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
 
   const { activeMenu } = useAppSelector(getApp);
-  const { activeNoteId } = useAppSelector(getNotes)
+  const { activeNoteId, activeFolderId } = useAppSelector(getNotes)
+  const folderId = useAppSelector(selectFolderId)
   const activeNotes = getTitleHead(activeNoteId)
-
   const [isActiveMenu, setIsActiveMenu] = useLocalStorage('activeMenu', MenuType.NOTES)
+  const [isActiveFolderId, setIsActiveFolderId] = useLocalStorage('folderId', folderId)
 
   useEffect(() => {
     setIsActiveMenu(activeMenu);
-  }, [activeMenu, setIsActiveMenu]);
+    // setIsActiveFolderId(activeFolderId)
+  }, [activeMenu, setIsActiveMenu, setIsActiveFolderId]);
 
   useEffect(() => {
     dispatch(setActiveMenu(isActiveMenu));
-  }, [isActiveMenu, dispatch]);
+  }, [isActiveMenu, dispatch, isActiveFolderId]);
 
   return (
     <HelmetProvider>

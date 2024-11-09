@@ -13,7 +13,7 @@ interface NotesListItemsProps {
 }
 
 const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
-    let location = useLocation();
+    const location = useLocation();
     const folder = useAppSelector(selectAllFolder)
 
     return (

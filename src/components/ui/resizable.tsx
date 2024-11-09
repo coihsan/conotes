@@ -1,7 +1,7 @@
-import { DragHandleDots2Icon } from "@radix-ui/react-icons"
 import * as ResizablePrimitive from "react-resizable-panels"
 
 import { cn } from "@/lib/utils/cn"
+import { ReOrderDotsVertical24Regular } from "@fluentui/react-icons"
 
 const ResizablePanelGroup = ({
   className,
@@ -34,7 +34,7 @@ const ResizableHandle = ({
   >
     {withHandle && (
       <div className="z-10 flex h-4 w-3 items-center justify-center rounded-sm border bg-border">
-        <DragHandleDots2Icon className="h-2.5 w-2.5" />
+        <ReOrderDotsVertical24Regular className="h-2.5 w-2.5" />
       </div>
     )}
   </ResizablePrimitive.PanelResizeHandle>

@@ -1,6 +1,6 @@
-import { FolderItem, ReactSubmitEvent } from "@/lib/types"
+import { FolderItem } from "@/lib/types"
 import { Folder24Regular, FolderOpen24Filled } from "@fluentui/react-icons"
-import React, { useState } from "react"
+import React, { FormEvent, useEffect, useRef } from "react"
 import { Badge } from "../ui/badge"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import { setActiveMenu } from "@/lib/redux/slice/app"
@@ -8,17 +8,10 @@ import { MenuType } from "@/lib/enums"
 import { getActiveFolderId, selectAllNotes } from "@/lib/redux/slice/notes"
 import { getFolder, getNotes } from "@/lib/redux/selector"
 import { getTotalNotesInFolder } from "@/lib/utils/helpers"
-import FormInput from "../global/form/form-input"
 import { setEditingFolder, updateFolderName } from "@/lib/redux/slice/folder"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Delete24Regular, Edit24Regular, MoreHorizontal20Regular } from "@fluentui/react-icons"
 import FolderOptions from "./folder-options"
 import { Input } from "../ui/input"
+import useLocalStorage from "@/lib/hooks/use-localstorage"
 
 interface Props {
     index: FolderItem[]
@@ -28,12 +21,12 @@ const FolderListItem: React.FC<Props> = ({ index }) => {
     const dispatch = useAppDispatch()
 
     // STATE
-    const [editingFolderId, setEditingFolderId] = useState('');
-    const [currentFolderName, setCurrentFolderName] = useState('');
     const { editingFolder } = useAppSelector(getFolder)
-
+    const ref = useRef<HTMLInputElement>(null)
+    
     // SELECTOR
     const { activeFolderId } = useAppSelector(getNotes)
+    const [isActiveFolderId, setIsActiveFolderId] = useLocalStorage('folderId', activeFolderId)
     const allNotes = useAppSelector(selectAllNotes)
 
     const hanldleGetFolderActive = (folderId: string) => {
@@ -46,32 +39,22 @@ const FolderListItem: React.FC<Props> = ({ index }) => {
     const handleEditFolderName = (folderId: string, folderName: string) => {
         dispatch(updateFolderName({
             folderId,
-            folderName: ""
+            folderName: folderName
         }))
-        setEditingFolderId(folderId);
-        setCurrentFolderName(folderName);
     };
 
-    const handleFolderNameChange = (editingFormId: string, value: string) => {
-        setCurrentFolderName(value);
-    };
-
-    const handleSubmitFolderNameChange = async (values: { formLabel: string }) => {
+    const handleSubmitFolderNameChange = async (event: FormEvent) => {
         try {
-            // ... logika untuk memperbarui nama folder di database, 
-            // misalnya menggunakan db.folders.update(editingFolderId, { name: values.formLabel }); ...
-
-            setEditingFolderId('');
-            setCurrentFolderName('');
+            event.preventDefault()
+            dispatch(setEditingFolder(false))
         } catch (error) {
             console.log(error)
         }
     };
 
-    const handleCancelFolderNameChange = () => {
-        setEditingFolderId('');
-        setCurrentFolderName('');
-    };
+    useEffect(() => {
+        setIsActiveFolderId(activeFolderId)
+    }, [setIsActiveFolderId])
 
     return (
         <div className="px-2">
@@ -94,11 +77,16 @@ const FolderListItem: React.FC<Props> = ({ index }) => {
                             </div>
                             <div>
                                 {item.id === activeFolderId && editingFolder ? (
-                                    <form>
+                                    <form onSubmit={handleSubmitFolderNameChange}>
                                         <Input
                                         aria-label="folder name" 
                                         value={item.name} 
+                                        ref={ref}
                                         className="h-7"
+                                        onChange={(event) => {
+                                            const newFolderName = event.target.value;
+                                            handleEditFolderName(item.id, newFolderName);
+                                        }}
                                         />
                                     </form>
                                 ) : (

@@ -1,15 +1,11 @@
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import { v4 } from "uuid"
 import { FolderItem, ReactSubmitEvent } from "@/lib/types"
-import React from "react";
-import { addNewFolderAction, selectAllFolder } from "@/lib/redux/slice/folder";
+import React, { useRef } from "react";
+import { addNewFolderAction, selectAllFolder, setEditingFolder } from "@/lib/redux/slice/folder";
 import FolderListItem from "../folder/folderlist-item";
 import { Input } from "../ui/input";
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger} from "@/components/ui/collapsible"
 import ButtonMenu from '@/components/primitive/button-menu';
 import { LabelText } from '@/lib/label-text';
 import { useState } from "react";
@@ -19,18 +15,20 @@ const FolderNotes: React.FC = () => {
     const dispatch = useAppDispatch()
     const [isOpen, setIsOpen] = useState(true)
     const [isVisible, setIsVisible] = useState(false)
+    const ref = useRef<HTMLInputElement>(null)
 
     const folders = useAppSelector(selectAllFolder)
 
-    const onSubmitFolder = (event: ReactSubmitEvent): void => {
+    const onSubmitNewFolder = (event: ReactSubmitEvent): void => {
         event.preventDefault()
         const initialState: FolderItem = {
             id: v4(),
-            name: 'Test',
+            name: '',
             createdAt: new Date().toISOString(),
             lastUpdated: new Date().toISOString()
         }
         dispatch(addNewFolderAction(initialState))
+        dispatch(setEditingFolder(false))
     }
     const resetFolder = () => { }
     const onKeyUp = () => { }
@@ -60,10 +58,12 @@ const FolderNotes: React.FC = () => {
                 <FolderListItem index={folders} />
                 {isVisible &&
                     <div className='px-2 flex items-center gap-1'>
-                        <form className="w-full" onSubmit={onSubmitFolder}>
+                        <form className="w-full" onSubmit={onSubmitNewFolder}>
                             <Input
-                                className="h-8"
+                                className="h-7"
+                                ref={ref}
                                 placeholder="New folder..."
+                                onChange={(event) => event.target.value}
                                 onReset={resetFolder}
                                 onKeyUp={onKeyUp}
                                 onBlur={onBlur}

@@ -1,4 +1,4 @@
-import { Node, mergeAttributes } from '@tiptap/core';
+import { Node, mergeAttributes } from '@tiptap/react';
 
 const LinkedNote = Node.create({
   name: 'linkedNote',

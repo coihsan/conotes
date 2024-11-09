@@ -2,11 +2,9 @@ import { v4 } from "uuid";
 import { NoteItem } from "../types";
 import { LabelText } from "../label-text";
 import { format } from "date-fns";
-import { Content } from "@tiptap/core";
+import { Content } from "@tiptap/react";
 import { useAppSelector } from "../hooks/use-redux";
-import { selectAllNotes, selectNotesById } from "../redux/slice/notes";
-import { selectAllFolder } from "../redux/slice/folder";
-import { db } from "../db";
+import { selectAllNotes } from "../redux/slice/notes";
 
 export const currentItem = format(new Date(), 'dd-MM-yyyy');
 export const newNote = (): NoteItem => ({

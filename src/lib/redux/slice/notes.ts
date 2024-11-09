@@ -2,7 +2,7 @@ import { createSlice, PayloadAction, createEntityAdapter, Update } from '@reduxj
 import { NoteItem, NoteState } from '@/lib/types'
 import { createAppAsyncThunk } from '../thunk';
 import { db } from '@/lib/db';
-import { Content } from '@tiptap/core';
+import { Content } from '@tiptap/react';
 import { RootState } from '../store';
 
 export const notesAdapter = createEntityAdapter<NoteItem>({
