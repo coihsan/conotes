@@ -4,6 +4,7 @@ import { createAppAsyncThunk } from '../thunk';
 import { db } from '@/lib/db';
 import { Content } from '@tiptap/react';
 import { RootState } from '../store';
+import { currentItem } from '@/lib/utils/helpers';
 
 export const notesAdapter = createEntityAdapter<NoteItem>({
   sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
@@ -28,7 +29,7 @@ export const updateContentThunk = createAppAsyncThunk<Update<NoteItem, string>, 
         const updates: Partial<NoteItem> = {
           content: data.content,
           title: data.title,
-          lastUpdated: new Date().toISOString(),
+          lastUpdated: currentItem,
         };
         await db.notes.update(data.noteId, updates);
         return { id: data.noteId, changes: updates };

@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { NoteItem } from "../types";
+import { FolderItem, NoteItem } from "../types";
 import { LabelText } from "../label-text";
 import { format } from "date-fns";
 import { Content } from "@tiptap/react";
@@ -64,9 +64,9 @@ export const getTitleHead = (activeNoteId: string) => {
   const getTitle = getNotesTitle(activeNoteId)
   
   if( getTitle ){
-    return `${getTitle} / Conotes`
+    return `${getTitle} / NulihApp`
   } else {
-    return 'Conotes'
+    return 'NulihApp'
   }
 }
 
@@ -79,4 +79,9 @@ export const useNoteTitle = (noteId: string) => {
 
 export const getTotalNotesInFolder = (notes: NoteItem[], folderId: string): number => {
   return notes.filter((note) => note.folderId === folderId && !note.trash).length;
+}
+
+export const getFolderName = (folder: FolderItem[], noteId: string) => {
+  const filter = folder.find((note) => note.id === noteId)
+  return filter?.name
 }

@@ -2,13 +2,13 @@ import Dexie, { Table } from 'dexie';
 import { FolderItem, NoteItem, TagItem } from './types';
 
 
-export class ConotesApp extends Dexie {
+export class NulihApp extends Dexie {
   notes!: Table<NoteItem, string>;
   tags!: Table<TagItem, string>;
   folders!: Table<FolderItem, string>; 
 
   constructor() {
-    super('conotes');
+    super('nulihapp');
     this.version(1).stores({
       notes: '++id, content, title, createdAt, favorite, lastUpdated, trash, folderId',
       folders: '++id, name, icon, createdAt, lastUpdated',
@@ -17,4 +17,4 @@ export class ConotesApp extends Dexie {
   };
 }
 
-export const db = new ConotesApp();
+export const db = new NulihApp();

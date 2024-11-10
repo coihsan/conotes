@@ -20,7 +20,7 @@ const Sidebar: React.FC = () => {
     };
     
     return (
-        <aside className="w-80 py-4 border-[1px] rounded-2xl bg-zinc-800 dark:bg-zinc-950 text-white flex flex-col justify-between mr-1">
+        <aside className="h-full py-4 border-[1px] rounded-2xl bg-zinc-800 dark:bg-zinc-950 text-white flex flex-col justify-between mr-1">
             <div className="flex flex-col w-full gap-2">
                 <Link to={'/app'} className='flex items-center justify-start pl-4'>
                     <Logo className='w-24' />

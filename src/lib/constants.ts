@@ -167,7 +167,7 @@ export const FEATURESAPP = [
 
 export const notePertama = `Hi there 👋🏻,
 
-This is an example of a Conotes.
+This is an example of a NulihApp.
 
 
 
@@ -175,7 +175,7 @@ To get started edit this notes, you can click icon pecil in top-right corner. An
 
 
 
-All notes you create are saved on your browser, we are using indexedDB to store all of notes. To see what is indexedDB looks like, you can right-click on the page and select "Inspect". Then, go to the "Application" tab. After following these instructions, you should see the IndexedDB and Conotes database. And You will see the database is no one notes is there, mybe you ask me why this notes is nothing indexedDB? this is because the note you are reading it is a bundle of the source code in this app. So, click new notes on the app and see what happen in indexedDB. That's it, each new note you create will be added to the IndexedDB.
+All notes you create are saved on your browser, we are using indexedDB to store all of notes. To see what is indexedDB looks like, you can right-click on the page and select "Inspect". Then, go to the "Application" tab. After following these instructions, you should see the IndexedDB and NulihApp database. And You will see the database is no one notes is there, mybe you ask me why this notes is nothing indexedDB? this is because the note you are reading it is a bundle of the source code in this app. So, click new notes on the app and see what happen in indexedDB. That's it, each new note you create will be added to the IndexedDB.
 
 
 
@@ -183,6 +183,6 @@ Important!
 
 
 
-conotes is available without authentication and authorization for permission. All notes you create can be accessed by anyone who has access to your device. Be careful with any data you have that could be sensitive.
+NulihApp is available without authentication and authorization for permission. All notes you create can be accessed by anyone who has access to your device. Be careful with any data you have that could be sensitive.
 
 Enjoy 👍🏻`

@@ -5,58 +5,46 @@ import { useAppDispatch, useAppSelector } from '@/lib/hooks/use-redux';
 import { deleteEmptyTrashThunk, selectAllNotes } from '@/lib/redux/slice/notes';
 import NotesListItems from '@/components/notes/noteslist-item';
 import { Delete24Regular } from '@fluentui/react-icons';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { useModal } from '@/providers/alert-provider';
+import UseAlertDialog from '@/components/primitive/alert-dialog';
 
 const TrashNotes = () => {
     const dispatch = useAppDispatch()
     const notes = useAppSelector(selectAllNotes)
     const trashNotes = notes.filter(note => note.trash)
+    const { setOpen, setClose } = useModal()
 
     const handleBulkDeletePermanent = () => {
         dispatch(deleteEmptyTrashThunk())
+        setClose()
     }
 
     return (
         <aside className='sidebarOption'>
             <HeaderSidebar labelName={LabelText.TRASH}
-            countIndex={trashNotes.length}
+                countIndex={trashNotes.length}
                 buttonAction={
-                    <AlertDialog>
-                        {trashNotes.length === 0 ? (
-                            null
-                        ) : (
-                            <AlertDialogTrigger>
-                                <Button variant={'destructive'} size={'icon'}>
+                    <>
+                        {trashNotes.length === 0 ?
+                            (
+                                null
+                            ) : (
+                                <Button variant={'destructive'} size={'icon'}
+                                    onClick={() => {
+                                        setOpen(
+                                            <UseAlertDialog
+                                                title="Are you absolutely sure?"
+                                                description="This action cannot be undone. This will permanently remove all your notes from our app."
+                                                onAction={() => handleBulkDeletePermanent()}
+                                            />
+                                        );
+                                    }}>
                                     <Delete24Regular />
                                 </Button>
-                            </AlertDialogTrigger>
-                        ) 
+                            )
                         }
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently remove all your notes from our app.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={handleBulkDeletePermanent}>Delete all</AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-
+                    </>
                 }
             />
             <ScrollArea className='h-full pt-2 scroll-smooth touch-pan-y pb-24'>

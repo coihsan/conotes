@@ -19,6 +19,8 @@ import { moveNoteToFolder } from '@/lib/redux/slice/folder';
 import { getApp } from '@/lib/redux/selector';
 import { toast } from "sonner"
 import { selectAllFolder } from '../../lib/redux/slice/folder';
+import { useModal } from '@/providers/alert-provider';
+import UseAlertDialog from '../primitive/alert-dialog';
 
 type SettingMenuProps = {
   className?: string;
@@ -27,6 +29,7 @@ type SettingMenuProps = {
 
 const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId }) => {
   const dispatch = useAppDispatch()
+  const { setOpen, setClose } = useModal()
 
   const notes = useAppSelector(selectAllNotes)
   const findFolder = useAppSelector(selectAllFolder)
@@ -41,7 +44,7 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
 
   const handleMoveToTrash = (noteId: string, value: boolean) => {
     try {
-      dispatch(toggleTrashAction({noteId, value}));
+      dispatch(toggleTrashAction({ noteId, value }));
       console.log('successfull move to trash')
     } catch (error) {
       console.log('error move to trash')
@@ -50,6 +53,7 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
 
   const handleSingleDeletePermanent = (noteId: string) => {
     dispatch(deletePermanentAction({ noteId }))
+    setClose()
     console.log('delete single is sucessfuly')
   }
 
@@ -63,86 +67,94 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
     }
   }
 
- const handleMoveToFolder = (selectedNoteId: string, targetFolderId: string) => { 
+  const handleMoveToFolder = (selectedNoteId: string, targetFolderId: string) => {
     try {
       dispatch(moveNoteToFolder({ noteId: selectedNoteId, folderId: targetFolderId }));
       console.log(`success move to ${targetFolderId}`);
     } catch (error) {
-      console.error('Error moving note to folder:', error); 
+      console.error('Error moving note to folder:', error);
     }
   };
 
   return (
     <div onClick={(event) => event.stopPropagation()}>
       <DropdownMenu>
-      <DropdownMenuTrigger asChild className={className}><MoreHorizontal16Regular /></DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuSub>
-          {activeMenu === MenuType.TRASH || findFolder.length === 0 ? (
+        <DropdownMenuTrigger asChild className={className}><MoreHorizontal16Regular /></DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuSub>
+            {activeMenu === MenuType.TRASH || findFolder.length === 0 ? (
+              null
+            ) : (
+              <DropdownMenuSubTrigger>
+                <Folder24Regular className='size-5' />
+                <span>Move to folder</span>
+              </DropdownMenuSubTrigger>
+            )}
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                {findFolder.map((folder) => (
+                  <DropdownMenuItem onClick={() => handleMoveToFolder(noteId, folder.id)} key={folder.id}>
+                    <Folder24Regular />
+                    <span>{folder.name}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+          {activeMenu === MenuType.TRASH ? (
             null
           ) : (
-            <DropdownMenuSubTrigger>
-              <Folder24Regular className='size-5' />
-              <span>Move to folder</span>
-            </DropdownMenuSubTrigger>
+            isFavorite ? (
+              <DropdownMenuItem onClick={() => handleMarkAsFavorite(noteId, false)}>
+                <StarDismiss24Regular />
+                Remove from favorite
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem onClick={() => handleMarkAsFavorite(noteId, true)}>
+                <StarAdd24Regular />
+                Mark as favorite
+              </DropdownMenuItem>
+            )
           )}
-          <DropdownMenuPortal>
-            <DropdownMenuSubContent>
-              {findFolder.map((folder) => (
-                <DropdownMenuItem onClick={() => handleMoveToFolder(noteId, folder.id)} key={folder.id}>
-                  <Folder24Regular />
-                  <span>{folder.name}</span>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuSubContent>
-          </DropdownMenuPortal>
-        </DropdownMenuSub>
-        {activeMenu === MenuType.TRASH ? (
-          null
-        ) : (
-          isFavorite ? (
-            <DropdownMenuItem onClick={() => handleMarkAsFavorite(noteId, false)}>
-              <StarDismiss24Regular />
-              Remove from favorite
-            </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem onClick={() => handleMarkAsFavorite(noteId, true)}>
-              <StarAdd24Regular />
-              Mark as favorite
-            </DropdownMenuItem>
-          )
-        )}
-        {activeMenu === MenuType.TRASH &&
-          <DropdownMenuItem
-            onClick={() => handleMoveToTrash(noteId, false)}>
-            <DeleteDismiss24Regular />
-            Restore from trash
-          </DropdownMenuItem>
-        }
-        <DropdownMenuItem onClick={() => handleCopyReferenceToNote(noteId)}>
-          <ClipboardLink24Regular />
-          Copy note ID
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        {activeMenu === MenuType.TRASH ? (
-          <>
+          {activeMenu === MenuType.TRASH &&
             <DropdownMenuItem
-              onClick={() => handleSingleDeletePermanent(noteId)}
-              className='text-red-500'>
-              <Dismiss24Regular />
-              Delete permanent
+              onClick={() => handleMoveToTrash(noteId, false)}>
+              <DeleteDismiss24Regular />
+              Restore from trash
             </DropdownMenuItem>
-          </>
-        ) : (
-          <DropdownMenuItem
-            onClick={() => handleMoveToTrash(noteId, true)}
-            className='text-red-500'>
-            <Delete24Regular />
-            Move to trash
+          }
+          <DropdownMenuItem onClick={() => handleCopyReferenceToNote(noteId)}>
+            <ClipboardLink24Regular />
+            Copy note ID
           </DropdownMenuItem>
-        )}
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <DropdownMenuSeparator />
+          {activeMenu === MenuType.TRASH ? (
+            <>
+              <DropdownMenuItem
+                onClick={() => {
+                  setOpen(
+                    <UseAlertDialog
+                      title="Are you absolutely sure?"
+                      description="This action cannot be undone. This will permanently remove this notes from our app."
+                      onAction={() => handleSingleDeletePermanent(noteId)}
+                    />
+                  );
+                }}
+                className='text-red-500'>
+                <Dismiss24Regular />
+                Delete permanent
+              </DropdownMenuItem>
+            </>
+          ) : (
+            <DropdownMenuItem
+              onClick={() => handleMoveToTrash(noteId, true)}
+              className='text-red-500'>
+              <Delete24Regular />
+              Move to trash
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   )
 }

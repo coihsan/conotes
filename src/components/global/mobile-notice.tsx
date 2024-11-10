@@ -15,7 +15,7 @@ const MobileNotice: React.FC = () => {
     const [isCopied, setIsCopied] = React.useState(false)
 
     const handleCopy = () => {
-        navigator.clipboard.writeText('https://conotes.vercel.app').then(() => {
+        navigator.clipboard.writeText('https://nulihapp.vercel.app').then(() => {
             setIsCopied(true)
             setTimeout(() => {
                 setIsCopied(false)
@@ -44,7 +44,7 @@ const MobileNotice: React.FC = () => {
                 <div>
                     <div className="text-sm text-muted-foreground text-center">Copy this link</div>
                     <div className="flex items-center gap-1 max-w-72 w-full mx-auto pt-3">
-                        <Input placeholder="https://conotes.vercel.app" readOnly />
+                        <Input placeholder="https://nulihapp.vercel.app" readOnly />
                         <Button className="w-28" onClick={handleCopy} variant={'default'} size={'default'}>
                             {isCopied ? (
                                 "Copied!"

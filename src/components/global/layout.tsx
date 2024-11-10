@@ -17,7 +17,7 @@ import useLocalStorage from "@/lib/hooks/use-localstorage";
 import { useEffect } from "react";
 import { setActiveMenu } from "@/lib/redux/slice/app";
 import { getApp, getNotes } from "@/lib/redux/selector";
-import { selectFolderById, selectFolderId } from "@/lib/redux/slice/folder";
+import { selectFolderId } from "@/lib/redux/slice/folder";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
@@ -31,7 +31,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     setIsActiveMenu(activeMenu);
-    // setIsActiveFolderId(activeFolderId)
+    setIsActiveFolderId(isActiveFolderId)
   }, [activeMenu, setIsActiveMenu, setIsActiveFolderId]);
 
   useEffect(() => {
@@ -45,12 +45,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <meta name="description" content="A web-based notes app for everyone" />
         <link rel="icon" href="/favicon.ico" />
       </Helmet>
-      <div className='w-screen h-screen flex p-1'>
-        <Sidebar />
+      <div className='w-screen h-screen p-1'>
         <ResizablePanelGroup
           direction="horizontal"
         >
-          <ResizablePanel className="min-w-[280px] max-w-[500px]" defaultSize={25}>
+          <ResizablePanel className="min-w-[280px]" defaultSize={10}>
+            <Sidebar />
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel className="min-w-[280px]" defaultSize={25}>
             {activeMenu === MenuType.NOTES && <NoteList />}
             {activeMenu === MenuType.FAVORITE && <Favorites />}
             {activeMenu === MenuType.TRASH && <TrashNotes />}
@@ -58,10 +61,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             {activeMenu === MenuType.FOLDER && <Folders /> }
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={75}>
-            <div className="flex h-full items-center justify-center">
-              {children}
-            </div>
+          <ResizablePanel defaultSize={65}>
+            {children}
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>

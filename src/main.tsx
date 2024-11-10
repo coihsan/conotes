@@ -13,6 +13,7 @@ import { Toaster as ToasterSonner } from 'sonner'
 import PreviewEditor from './editor/preview-editor.tsx';
 import { fetchAllNote } from './lib/redux/slice/notes.ts';
 import { fetchFolder } from './lib/redux/slice/folder.ts';
+import AlertProvider from './providers/alert-provider.tsx';
 
 store.dispatch(fetchAllNote())
 store.dispatch(fetchFolder())
@@ -20,7 +21,8 @@ store.dispatch(fetchFolder())
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Provider store={store}>
+      <AlertProvider>
+        <Provider store={store}>
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<LandingPage />} />
@@ -30,7 +32,8 @@ createRoot(document.getElementById('root')!).render(
           </BrowserRouter>
           <Toaster />
           <ToasterSonner position="top-center" />
-      </Provider>
+        </Provider>
+      </AlertProvider>
     </ThemeProvider>
   </StrictMode>
 )

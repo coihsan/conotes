@@ -8,7 +8,7 @@ const initialState : AppState = {
   loading: false,
   menuToolbar: true,
   activeFolderId: '',
-  activeTagsId: ''
+  activeTagsId: '',
 };
 
 const appSlice = createSlice({
@@ -23,13 +23,13 @@ const appSlice = createSlice({
     },
     setToggleEditor: (state, action) => {
       state.menuToolbar = action.payload;
-    }
+    },
   },
 });
 
 export const { 
   setEditableEditor, 
   setActiveMenu,
-  setToggleEditor
+  setToggleEditor,
  } = appSlice.actions;
 export default appSlice.reducer;

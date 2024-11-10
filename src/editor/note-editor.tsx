@@ -42,10 +42,8 @@ const createExtensions = [
 ]
 
 const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
-    const { noteId } = useParams()
     const dispatch = useAppDispatch()
     const { editable } = useAppSelector(getApp);
-    const notes = useAppSelector(selectAllNotes)
 
     const editor = useEditor({
         extensions: createExtensions,
@@ -57,8 +55,8 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
         },
         onUpdate: ({ editor }) => {
             const editorContent = editor.getHTML();
-            const getFirst = editorContent[0]
-            onChange(editorContent, getNotesTitle(getFirst))
+            const getFirst = getNotesTitle(editorContent[0])
+            onChange(editorContent, getFirst)
         },
         editorProps: {
             attributes: {

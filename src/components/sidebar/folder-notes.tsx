@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import { v4 } from "uuid"
-import { FolderItem, ReactSubmitEvent } from "@/lib/types"
-import React, { useRef } from "react";
+import { FolderItem } from "@/lib/types"
+import React, { FormEvent, useRef } from "react";
 import { addNewFolderAction, selectAllFolder, setEditingFolder } from "@/lib/redux/slice/folder";
 import FolderListItem from "../folder/folderlist-item";
 import { Input } from "../ui/input";
@@ -10,6 +10,7 @@ import ButtonMenu from '@/components/primitive/button-menu';
 import { LabelText } from '@/lib/label-text';
 import { useState } from "react";
 import { Add24Regular, ChevronDown20Regular, ChevronRight20Regular, Dismiss20Filled } from "@fluentui/react-icons";
+import { currentItem } from "@/lib/utils/helpers";
 
 const FolderNotes: React.FC = () => {
     const dispatch = useAppDispatch()
@@ -19,20 +20,25 @@ const FolderNotes: React.FC = () => {
 
     const folders = useAppSelector(selectAllFolder)
 
-    const onSubmitNewFolder = (event: ReactSubmitEvent): void => {
-        event.preventDefault()
-        const initialState: FolderItem = {
+    const onSubmitNewFolder = (event: FormEvent): void => {
+        event.preventDefault();
+        dispatch(setEditingFolder(false));
+        setIsVisible(false)
+      
+        const newFolderName = ref.current?.value;
+      
+        if (newFolderName) {
+          const initialState: FolderItem = {
             id: v4(),
-            name: '',
-            createdAt: new Date().toISOString(),
-            lastUpdated: new Date().toISOString()
+            name: newFolderName,
+            createdAt: currentItem,
+            lastUpdated: currentItem,
+          };
+          dispatch(addNewFolderAction(initialState));
+        
+          ref.current!.value = ''; 
         }
-        dispatch(addNewFolderAction(initialState))
-        dispatch(setEditingFolder(false))
-    }
-    const resetFolder = () => { }
-    const onKeyUp = () => { }
-    const onBlur = () => { }
+      }
 
     const handleAddNewFolder = () => {
         setIsVisible(true)
@@ -61,12 +67,11 @@ const FolderNotes: React.FC = () => {
                         <form className="w-full" onSubmit={onSubmitNewFolder}>
                             <Input
                                 className="h-7"
+                                type="text"
+                                autoFocus
                                 ref={ref}
+                                maxLength={20}
                                 placeholder="New folder..."
-                                onChange={(event) => event.target.value}
-                                onReset={resetFolder}
-                                onKeyUp={onKeyUp}
-                                onBlur={onBlur}
                             />
                         </form>
                         <ButtonMenu label="Close" action={() => setIsVisible(false)} variant={'ghost'} size={'icon'}>

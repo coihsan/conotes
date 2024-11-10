@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area';
 import ButtonMenu from '@/components/primitive/button-menu';
 import { searchQuery, selectAllNotes } from '@/lib/redux/slice/notes';
-import { Filter24Regular, NoteAdd24Regular } from '@fluentui/react-icons';
+import { NoteAdd24Regular } from '@fluentui/react-icons';
 import SearchBar from '@/components/global/search-bar';
 import { LabelText } from '@/lib/label-text';
 import { v4 } from 'uuid';
@@ -82,11 +82,6 @@ const NoteList = () => {
                 buttonAction={
                     <ButtonMenu action={handleNewNote} side="bottom" variant={'ghost'} size={'icon'} label={LabelText.CREATE_NEW_NOTE}>
                         <NoteAdd24Regular />
-                    </ButtonMenu>
-                }
-                filterAction={
-                    <ButtonMenu side="bottom" variant={'ghost'} size={'icon'} label={LabelText.FILTER}>
-                        <Filter24Regular />
                     </ButtonMenu>
                 }
                 searchAction={

@@ -1,6 +1,6 @@
 import { FolderItem } from "@/lib/types"
 import { Folder24Regular, FolderOpen24Filled } from "@fluentui/react-icons"
-import React, { FormEvent, useEffect, useRef } from "react"
+import React, { FormEvent, useRef } from "react"
 import { Badge } from "../ui/badge"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import { setActiveMenu } from "@/lib/redux/slice/app"
@@ -11,7 +11,6 @@ import { getTotalNotesInFolder } from "@/lib/utils/helpers"
 import { setEditingFolder, updateFolderName } from "@/lib/redux/slice/folder"
 import FolderOptions from "./folder-options"
 import { Input } from "../ui/input"
-import useLocalStorage from "@/lib/hooks/use-localstorage"
 
 interface Props {
     index: FolderItem[]
@@ -20,13 +19,11 @@ interface Props {
 const FolderListItem: React.FC<Props> = ({ index }) => {
     const dispatch = useAppDispatch()
 
-    // STATE
-    const { editingFolder } = useAppSelector(getFolder)
     const ref = useRef<HTMLInputElement>(null)
     
     // SELECTOR
+    const { editingFolder } = useAppSelector(getFolder)
     const { activeFolderId } = useAppSelector(getNotes)
-    const [isActiveFolderId, setIsActiveFolderId] = useLocalStorage('folderId', activeFolderId)
     const allNotes = useAppSelector(selectAllNotes)
 
     const hanldleGetFolderActive = (folderId: string) => {
@@ -52,10 +49,6 @@ const FolderListItem: React.FC<Props> = ({ index }) => {
         }
     };
 
-    useEffect(() => {
-        setIsActiveFolderId(activeFolderId)
-    }, [setIsActiveFolderId])
-
     return (
         <div className="px-2">
             {index.map((item) => {
@@ -72,7 +65,7 @@ const FolderListItem: React.FC<Props> = ({ index }) => {
                                 {activeFolderId === item.id ? (
                                     <FolderOpen24Filled className='size-5' />
                                 ) : (
-                                    <Folder24Regular className='size-5' />
+                                    <Folder24Regular className='size-5 text-muted-foreground' />
                                 )}
                             </div>
                             <div>
@@ -82,7 +75,10 @@ const FolderListItem: React.FC<Props> = ({ index }) => {
                                         aria-label="folder name" 
                                         value={item.name} 
                                         ref={ref}
+                                        autoFocus
+                                        type="text"
                                         className="h-7"
+                                        maxLength={20}
                                         onChange={(event) => {
                                             const newFolderName = event.target.value;
                                             handleEditFolderName(item.id, newFolderName);

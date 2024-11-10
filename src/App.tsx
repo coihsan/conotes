@@ -7,7 +7,7 @@ function App() {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>conotes</title>
+        <title>NulihApp</title>
         <meta name="description" content="A web-based notes app for everyone" />
         <link rel="icon" href="/favicon.ico" />
       </Helmet>
