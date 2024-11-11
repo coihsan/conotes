@@ -9,7 +9,6 @@ import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { MenuType } from '@/lib/enums';
 import Favorites from "@/containers/favorites";
 import TrashNotes from "@/containers/trash";
-import Settings from "@/containers/settings";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux";
 import Folders from "@/containers/folders";
 import { getTitleHead } from "@/lib/utils/helpers";
@@ -54,7 +53,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             {activeMenu === MenuType.NOTES && <NoteList />}
             {activeMenu === MenuType.FAVORITE && <Favorites />}
             {activeMenu === MenuType.TRASH && <TrashNotes />}
-            {activeMenu === MenuType.SETTINGS && <Settings />}
             {activeMenu === MenuType.FOLDER && <Folders /> }
           </ResizablePanel>
           <ResizableHandle className="bg-transparent" withHandle />

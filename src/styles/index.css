@@ -60,23 +60,6 @@
   }
 }
 
-@font-face {
-  font-family: chilax;
-  src: url('/public/font/Chillax-Variable.ttf');
-}
-
-@font-face {
-  font-family: sora;
-  src: url('/public/font/Sora-Variable.woff2');
-}
-
-.fontSora{
-  font-family: sora;
-}
-.fontChilax{
-  font-family: chilax;
-}
-
 @layer base {
   * {
     @apply border-border;

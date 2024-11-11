@@ -11,6 +11,7 @@ export enum NotesSortKey {
 }
 
 export enum MenuType {
+  QUICK_NOTES = "Quick Notes",
   NOTES = 'Notes',
   TAGS = 'Tags',
   FAVORITE = 'Favorites',

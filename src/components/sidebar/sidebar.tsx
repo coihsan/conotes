@@ -1,4 +1,4 @@
-import { Notepad24Regular, Delete24Regular, Settings24Regular, Star24Regular, Notepad24Filled, Star24Filled, Delete24Filled, Settings24Filled } from '@fluentui/react-icons';
+import { Notepad24Regular, Delete24Regular, Star24Regular, Notepad24Filled, Star24Filled, Delete24Filled } from '@fluentui/react-icons';
 import React from "react";
 import { Logo } from '@/components/global/logo';
 import { MenuType } from '@/lib/enums';
@@ -18,16 +18,17 @@ const Sidebar: React.FC = () => {
         const { activeMenu } = useAppSelector(getApp);
         return activeMenu === menu;
     };
-    
+
     return (
         <aside className="h-full py-4 border-[1px] rounded-2xl bg-zinc-800 dark:bg-zinc-950 text-white flex flex-col justify-between mr-1">
             <div className="flex flex-col w-full gap-2">
-                <Link to={'/app'} className='flex items-center justify-start pl-4'>
-                    <Logo className='w-24' />
-                </Link>
+                <div className='w-36 pl-4'>
+                    <Link to={'/app'} className='flex items-center justify-center'>
+                        <Logo />
+                    </Link>
+                </div>
                 <div className='border-b-[1px] border-zinc-700 dark:border-zinc-800 mb-5'>
                     <div className='grid gap-1 py-4 px-2'>
-                        <div className='text-muted-foreground text-xs pl-4 pb-5 uppercase'>menu</div>
                         <div className='grid gap-1'>
                             <button onClick={() => handleMenuClick(MenuType.NOTES)} className='sidebarMenu'>
                                 {isActive(MenuType.NOTES) ? (
@@ -52,14 +53,6 @@ const Sidebar: React.FC = () => {
                                     <Delete24Regular className='text-muted-foreground' />
                                 )}
                                 {MenuType.TRASH}
-                            </button>
-                            <button onClick={() => handleMenuClick(MenuType.SETTINGS)} className='sidebarMenu'>
-                                {isActive(MenuType.SETTINGS) ? (
-                                    <Settings24Filled />
-                                ) : (
-                                    <Settings24Regular className='text-muted-foreground' />
-                                )}
-                                {MenuType.SETTINGS}
                             </button>
                         </div>
                     </div>

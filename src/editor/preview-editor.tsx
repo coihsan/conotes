@@ -14,6 +14,7 @@ import { CopyAdd24Regular, Edit24Regular, Save24Regular, StarAdd24Regular, StarD
 import { Separator } from "@/components/ui/separator"
 import { setEditableEditor } from "@/lib/redux/slice/app"
 import { toast } from "sonner"
+import { ModeToggle } from "@/components/global/mode-toggle"
 
 const PreviewEditor: React.FC = () => {
   const { noteId } = useParams()
@@ -91,6 +92,7 @@ const PreviewEditor: React.FC = () => {
           <ButtonMenu action={() => handleCopyClipboard(noteId as string, activeNoteId)} label={LabelText.COPY_NOTES} variant={'ghost'} size={'icon'}>
             <CopyAdd24Regular className="size-5" />
           </ButtonMenu>
+          <ModeToggle />
         </header>
       </div>
       <NoteEditor

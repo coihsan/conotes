@@ -7,19 +7,23 @@ import { GitHub } from "@/assets/github";
 import { ChevronRight12Filled } from "@fluentui/react-icons";
 import { cn } from "@/lib/utils/cn";
 import GridPattern from "@/components/ui/grid-pattern";
-import heroimage from '../../assets/Board.png'
-import yawningEmoji from "../../assets/yawning_face_3d.png"
+import previewDark from '../../assets/preview-dark.png'
+import previewLight from '../../assets/preview-light.png'
+import yawningEmoji from "../../assets/thinking_face_3d.png"
 import '../../App.css'
 import { ModeToggle } from "./mode-toggle";
 import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { FEATURESAPP } from "@/lib/constants";
+import { useTheme } from "@/providers/theme-provider";
+import { Logo } from "./logo";
 
 const LandingPage: React.FC = () => {
+    const { theme } = useTheme()
 
     return (
         <section className="h-full relative w-full max-w-screen-lg mx-auto px-6 md:px-0">
             <header className="py-4 flex items-center justify-between w-full">
-                <div className="text-2xl font-semibold fontChilax">NulihApp</div>
+                <Logo className="max-w-[150px]" />
                 <div className="flex items-center gap-2">
                     <ModeToggle />
                     <Link className="w-full" target="_blank" to="https://github.com/coihsan/nulihapp">
@@ -31,7 +35,7 @@ const LandingPage: React.FC = () => {
             </header>
             <div className="flex flex-col mb-9 pt-9 max-w-screen-sm mx-auto">
                 <div className="uppercase px-2 py-1 rounded-full bg-zinc-200 dark:bg-zinc-900 border text-zinc-800 dark:text-zinc-200 border-zinc-500 text-xs font-semibold w-max mx-auto inline-flex rotate-3">100% Open-source</div>
-                <h1 className="text-5xl md:text-6xl font-[600] text-center pt-4 pb-8 md:pt-8 fontChilax">Minimalistic<br /> Note Taking App</h1>
+                <h1 className="text-5xl md:text-6xl font-[600] text-center pt-4 pb-8 md:pt-8">Minimalistic<br /> Note Taking App</h1>
                 <p className="text-center text-md md:text-xl">NulihApp is only available as a demo version.  All notes you create are stored in client-side storage and not persisted in any database or cloud.</p>
             </div>
                 <div className="w-full md:w-72 mx-auto flex flex-col md:flex-row justify-center items-center gap-2">
@@ -40,7 +44,7 @@ const LandingPage: React.FC = () => {
                         ) : (
                             <Link className="w-full" to="/app">
                                 <Button size={'lg'} className="w-full flex items-center gap-2" variant={'default'}>
-                                    Get Started
+                                    Launch App
                                     <ChevronRight12Filled />
                                 </Button>
                             </Link>
@@ -53,11 +57,11 @@ const LandingPage: React.FC = () => {
                     </Link>
                 </div>
             <div className="py-9">
-                <img className="rounded-2xl shadow-lg border" src={heroimage} alt="screenshot" />
+                <img loading="lazy" className="rounded-2xl shadow-lg border" src={theme === "light" ? previewLight : previewDark} alt="screenshot" />
             </div>
             <div className="py-9">
                 <div>
-                    <h1 className="text-4xl md:text-6xl font-semibold inline fontChilax">
+                    <h1 className="text-4xl md:text-6xl font-semibold inline">
                     Some features <em>but</em><span className="text-zinc-500 dark:text-zinc-400"> that doesn't really matter!</span>
                     </h1>
                     <span className="inline-block"><img className="size-12" src={yawningEmoji} alt="yawning emoji" /></span>
