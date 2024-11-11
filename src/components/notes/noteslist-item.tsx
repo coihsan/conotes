@@ -25,7 +25,7 @@ const NotesListItems: React.FC<NotesListItemsProps> = ({ index }) => {
                     key={item.id}
                     data-testid="notelist-item"
                     tabIndex={0}
-                    className={clsx('snap-start relative rounded-xl px-2 h-24 flex items-center justify-between py-4 hover:bg-zinc-200 hover:dark:bg-zinc-800 border', (location.pathname == `/app/${item.id}` ? `bg-zinc-200 dark:bg-zinc-800` : `bg-white dark:bg-zinc-500/5`))} >
+                    className={clsx('snap-start relative rounded-xl px-2 h-24 flex items-center justify-between py-4 hover:bg-zinc-200 hover:dark:bg-zinc-800 border', (location.pathname == `/app/${item.id}` ? `bg-zinc-200 dark:bg-zinc-800 border-black/20 dark:border-white/30` : `bg-white dark:bg-zinc-500/5`))} >
                     <div className='flex w-full items-center'>
                         <div className="size-6">
                             {item.favorite ?

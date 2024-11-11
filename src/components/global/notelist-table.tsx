@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import {
     Table,
     TableBody,
@@ -9,20 +8,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { MoreHorizontal24Regular } from '@fluentui/react-icons'
 import { useAppSelector } from '@/lib/hooks/use-redux'
 import { selectAllNotes } from '@/lib/redux/slice/notes'
 import { getFolderName, getNotesTitle } from '@/lib/utils/helpers'
 import { selectAllFolder } from '@/lib/redux/slice/folder'
 import { Link } from 'react-router-dom'
+import { ScrollArea } from '../ui/scroll-area'
+import NotesListItemOptions from '../notes/noteslist-item-options'
 
 const NoteListTable = () => {
     const [searchTerm, setSearchTerm] = useState('')
@@ -34,7 +26,7 @@ const NoteListTable = () => {
     )
 
     return (
-        <div className="container mx-auto">
+        <ScrollArea className="container mx-auto border h-full rounded-r-2xl">
             <div className='p-10'>
                 <div className="mb-4">
                     <Input
@@ -55,7 +47,7 @@ const NoteListTable = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filteredDocuments.slice(0, 10).map((doc) => (
+                        {filteredDocuments.map((doc) => (
                             <TableRow key={doc.id}>
                                 <TableCell className="font-medium">
                                     <Link className='hover:underline' to={`/app/${doc.id}`}>{getNotesTitle(doc.content)}</Link>
@@ -65,28 +57,14 @@ const NoteListTable = () => {
                                     {getFolderName(folder, doc.folderId as string)}
                                 </TableCell>
                                 <TableCell className="text-right">
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                                <span className="sr-only">Open menu</span>
-                                                <MoreHorizontal24Regular className="h-4 w-4" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                            <DropdownMenuItem>View</DropdownMenuItem>
-                                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                                            <DropdownMenuSeparator />
-                                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    <NotesListItemOptions noteId={doc.id} />
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </div>
-        </div>
+        </ScrollArea>
     )
 }
 export default NoteListTable

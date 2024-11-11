@@ -6,17 +6,17 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { useAppSelector } from "@/lib/hooks/use-redux";
-import { selectAllNotes } from "@/lib/redux/slice/notes";
 import { getNotesTitle } from "@/lib/utils/helpers";
 import { Home24Regular } from "@fluentui/react-icons";
 import React from "react";
 import { Link, useParams } from "react-router-dom";
+import { selectAllNotes } from "@/lib/redux/slice/notes";
 
 const BreadcrumbNotes: React.FC = () => {
-    const { noteId } = useParams()
+    const { noteId } = useParams();
     const notes = useAppSelector(selectAllNotes);
     const activeNote = notes.find((note) => note.id === noteId)
-    const getNotes = activeNote ? activeNote.content : ''
+    const noteTitle = activeNote ? activeNote.content : '';
 
     return (
         <Breadcrumb>
@@ -26,7 +26,7 @@ const BreadcrumbNotes: React.FC = () => {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                    <BreadcrumbPage>{getNotesTitle(getNotes)}</BreadcrumbPage>
+                    <BreadcrumbPage>{getNotesTitle(noteTitle)}</BreadcrumbPage>
                 </BreadcrumbItem>
             </BreadcrumbList>
         </Breadcrumb>

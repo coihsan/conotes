@@ -72,14 +72,14 @@ const NotesListItemOptions: React.FC<SettingMenuProps> = ({ className, noteId })
       dispatch(moveNoteToFolder({ noteId: selectedNoteId, folderId: targetFolderId }));
       console.log(`success move to ${targetFolderId}`);
     } catch (error) {
-      console.error('Error moving note to folder:', error);
+      console.log(error);
     }
   };
 
   return (
     <div onClick={(event) => event.stopPropagation()}>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild className={className}><MoreHorizontal16Regular /></DropdownMenuTrigger>
+        <DropdownMenuTrigger className={className}><MoreHorizontal16Regular /></DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuSub>
             {activeMenu === MenuType.TRASH || findFolder.length === 0 ? (

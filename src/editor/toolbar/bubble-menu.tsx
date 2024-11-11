@@ -12,10 +12,6 @@ const BubbleToolbar: React.FC<Props> = ({ editor }) => {
 
     const menuItems = TextEditorMenuBar(editor);
 
-    React.useEffect(() => {
-        editor
-    }, [editor])
-
     return (
         <>
             {editor &&

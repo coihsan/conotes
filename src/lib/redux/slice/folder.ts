@@ -95,14 +95,13 @@ export const deleteFolder = createAppAsyncThunk<Update<FolderItem, string>, { fo
 );
 
 
-
 const folderSlice = createSlice({
     name: 'folder',
     initialState: initialState,
     reducers: {
         setEditingFolder: (state, action) => {
             state.editingFolder = action.payload
-        }
+        },
     },
     extraReducers(builder) {
         builder

@@ -8,11 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
 import StaticToolbar from './toolbar/static-toolbar'
-import { Folder24Regular, History24Regular, NumberSymbol24Regular } from '@fluentui/react-icons'
-import { Badge } from '@/components/ui/badge'
 import { setEditableEditor } from "@/lib/redux/slice/app"
-import { useParams } from 'react-router-dom'
-import { selectAllNotes } from '@/lib/redux/slice/notes'
 import Document from '@tiptap/extension-document'
 import { getApp } from '@/lib/redux/selector'
 import { getNotesTitle } from '@/lib/utils/helpers'
@@ -83,34 +79,16 @@ const NoteEditor: React.FC<Props> = ({ contentNotes, onChange }) => {
     }, [editable, dispatch]);
 
     return (
-        <div className='h-full w-full'>
+        <>
             {editable && <StaticToolbar editor={editor} />}
-            <ScrollArea className='h-full w-full px-12 py-6'>
-                <div className='flex items-center justify-between w-full'>
-                    <div className="flex items-center gap-3">
-                        <Badge variant={'outline'} className='gap-1'>
-                            <NumberSymbol24Regular className='size-4' />
-                            <span>firstnotes</span>
-                        </Badge>
-                        <Badge variant={'outline'} className='gap-1'>
-                            <Folder24Regular className='size-4' />
-                            <span>UI/UX</span>
-                        </Badge>
-                    </div>
-                    <Badge variant={'ghost'} className='gap-1'>
-                        <History24Regular className='size-4' />
-                        03-31-2019
-                    </Badge>
-                </div>
-                <div className='h-full'>
-                    <EditorContent
-                        className={cn(css.tiptap)}
-                        editor={editor}
-                    />
-                </div>
+            <ScrollArea className='px-12'>
+                <EditorContent
+                    className={cn(css.tiptap)}
+                    editor={editor}
+                />
                 <ScrollBar orientation='vertical' />
             </ScrollArea>
-        </div>
+        </>
     )
 }
 

@@ -5,15 +5,15 @@ import React, { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-redux"
 import { getActiveNote, markAsFavoriteThunk, selectAllNotes, updateContentThunk } from "@/lib/redux/slice/notes"
 import { Content } from "@tiptap/react"
-import { debounceEvent } from "@/lib/utils/helpers"
+import { copyToClipboard, debounceEvent, getLastUpdated } from "@/lib/utils/helpers"
 import { getApp, getNotes } from "@/lib/redux/selector"
 import BreadcrumbNotes from "@/components/global/breadcrumb-notes"
 import ButtonMenu from "@/components/primitive/button-menu"
 import { LabelText } from "@/lib/label-text"
-import { Edit24Regular, Save24Regular, StarAdd24Regular, StarDismiss24Filled } from "@fluentui/react-icons"
+import { CopyAdd24Regular, Edit24Regular, Save24Regular, StarAdd24Regular, StarDismiss24Filled } from "@fluentui/react-icons"
 import { Separator } from "@/components/ui/separator"
-import NotesListNoteOptions from "@/components/notes/noteslist-note-options"
 import { setEditableEditor } from "@/lib/redux/slice/app"
+import { toast } from "sonner"
 
 const PreviewEditor: React.FC = () => {
   const { noteId } = useParams()
@@ -41,6 +41,11 @@ const PreviewEditor: React.FC = () => {
     }
   }, 500)
 
+  const handleCopyClipboard = (noteId: string, content: Content) => {
+    copyToClipboard(noteId, content as string)
+    toast('Success copy note')
+  }
+
   useEffect(() => {
     setNoteContent(activeNoteId);
   }, [activeNoteId]);
@@ -54,11 +59,11 @@ const PreviewEditor: React.FC = () => {
   }, [noteId, dispatch]);
 
   return (
-    <div className="h-full w-full border rounded-r-2xl">
-      <div className="flex items-center justify-between w-full py-1 px-3 border-b-[1px]">
+    <div className="h-full border rounded-r-2xl flex flex-col">
+      <div className="sticky w-full z-50 flex items-center justify-between py-1 px-3 border-b-[1px]">
         <BreadcrumbNotes />
         <header className="flex items-center gap-px">
-          <div className='text-xs text-muted-foreground pr-6'>Edit Oct 08</div>
+          <div className='text-xs text-muted-foreground pr-6'>Edit {getLastUpdated(noteId as string)}</div>
           {editable ? (
             <ButtonMenu
               label={LabelText.PREVIEW_NOTE}
@@ -83,7 +88,9 @@ const PreviewEditor: React.FC = () => {
               <StarAdd24Regular className="size-5" />
             </ButtonMenu>
           )}
-          <NotesListNoteOptions />
+          <ButtonMenu action={() => handleCopyClipboard(noteId as string, activeNoteId)} label={LabelText.COPY_NOTES} variant={'ghost'} size={'icon'}>
+            <CopyAdd24Regular className="size-5" />
+          </ButtonMenu>
         </header>
       </div>
       <NoteEditor

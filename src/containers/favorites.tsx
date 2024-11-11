@@ -28,7 +28,7 @@ const Favorites = () => {
 
     useEffect(() => {
         if (searchValue) return
-    }, [_searchNotes])
+    }, [_searchNotes, searchValue])
 
     return (
         <aside className='sidebarOption'>

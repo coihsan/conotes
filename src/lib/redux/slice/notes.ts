@@ -166,6 +166,9 @@ const notesSlice = createSlice({
     searchQuery: (state, action: PayloadAction<string>) => {
       state.searchValue = action.payload
     },
+    setActiveNoteId: (state, action: PayloadAction<string>) => {
+      state.activeFolderId = action.payload
+    }
   },
   // =============================== extraReducers ====================================
   extraReducers(builder) {
@@ -257,7 +260,8 @@ const notesSlice = createSlice({
 })
 export const {
   searchQuery,
-  getActiveFolderId
+  getActiveFolderId,
+  setActiveNoteId
 } = notesSlice.actions
 
 export default notesSlice.reducer

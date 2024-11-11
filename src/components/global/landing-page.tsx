@@ -83,8 +83,8 @@ const LandingPage: React.FC = () => {
                     "[mask-image:radial-gradient(600px_circle_at_top,white,transparent)] -z-50",
                 )}
             />
-            <footer className="py-9 text-center">
-                Develop by <Link className="underline text-zinc-500" target="_blank" to={'https://github.com/coihsan'}>coihsan</Link>
+            <footer className="py-9 text-center text-sm">
+                Author by <Link className="underline text-zinc-500" target="_blank" to={'https://github.com/coihsan'}>coihsan</Link>
             </footer>
         </section>
     )

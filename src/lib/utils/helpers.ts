@@ -76,7 +76,6 @@ export const useNoteTitle = (noteId: string) => {
   return note ? note.content : ''; 
 };
 
-
 export const getTotalNotesInFolder = (notes: NoteItem[], folderId: string): number => {
   return notes.filter((note) => note.folderId === folderId && !note.trash).length;
 }
@@ -85,3 +84,9 @@ export const getFolderName = (folder: FolderItem[], noteId: string) => {
   const filter = folder.find((note) => note.id === noteId)
   return filter?.name
 }
+
+export const getLastUpdated = (noteId: string) => { 
+  const notes = useAppSelector((state) => selectAllNotes(state)); 
+  const note = notes.find((note) => note.id === noteId); 
+  return note ? note.lastUpdated : ''; 
+};

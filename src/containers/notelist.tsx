@@ -58,7 +58,7 @@ const NoteList = () => {
     )
     useEffect(() => {
         if (_searchValues && (activeMenu === MenuType.NOTES)) return
-    }, [_searchNotes])
+    }, [_searchNotes, activeMenu])
 
     const handleNewNote = async () => {
         try {

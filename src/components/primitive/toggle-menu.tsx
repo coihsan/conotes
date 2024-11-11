@@ -14,10 +14,10 @@ interface ButtonMenuProps {
     children: React.ReactNode
     className?: string
     onClick?: () => void
-    size?:  "default" | "sm" | "lg" | null | undefined
+    size?:  "default" | "sm" | "lg" 
     label: string
     disabled?: any
-    side?: "bottom" | "top" | "right" | "left" | undefined
+    side?: "bottom" | "top" | "right" | "left" 
   }
 
 const ToggleMenu : React.FC<ButtonMenuProps> = ({

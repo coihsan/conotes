@@ -17,26 +17,23 @@ import useLocalStorage from "@/lib/hooks/use-localstorage";
 import { useEffect } from "react";
 import { setActiveMenu } from "@/lib/redux/slice/app";
 import { getApp, getNotes } from "@/lib/redux/selector";
-import { selectFolderId } from "@/lib/redux/slice/folder";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
 
   const { activeMenu } = useAppSelector(getApp);
   const { activeNoteId, activeFolderId } = useAppSelector(getNotes)
-  const folderId = useAppSelector(selectFolderId)
   const activeNotes = getTitleHead(activeNoteId)
   const [isActiveMenu, setIsActiveMenu] = useLocalStorage('activeMenu', MenuType.NOTES)
-  const [isActiveFolderId, setIsActiveFolderId] = useLocalStorage('folderId', folderId)
 
   useEffect(() => {
     setIsActiveMenu(activeMenu);
-    setIsActiveFolderId(isActiveFolderId)
-  }, [activeMenu, setIsActiveMenu, setIsActiveFolderId]);
+  }, [activeMenu, setIsActiveMenu, activeFolderId]);
 
   useEffect(() => {
     dispatch(setActiveMenu(isActiveMenu));
-  }, [isActiveMenu, dispatch, isActiveFolderId]);
+    console.log(isActiveMenu)
+  }, [isActiveMenu, dispatch]);
 
   return (
     <HelmetProvider>
@@ -45,14 +42,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <meta name="description" content="A web-based notes app for everyone" />
         <link rel="icon" href="/favicon.ico" />
       </Helmet>
-      <div className='w-screen h-screen p-1'>
+      <div className='w-screen h-screen p-1 fixed'>
         <ResizablePanelGroup
           direction="horizontal"
         >
           <ResizablePanel className="min-w-[280px]" defaultSize={10}>
             <Sidebar />
           </ResizablePanel>
-          <ResizableHandle withHandle />
+          <ResizableHandle className="bg-transparent" withHandle />
           <ResizablePanel className="min-w-[280px]" defaultSize={25}>
             {activeMenu === MenuType.NOTES && <NoteList />}
             {activeMenu === MenuType.FAVORITE && <Favorites />}
@@ -60,7 +57,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             {activeMenu === MenuType.SETTINGS && <Settings />}
             {activeMenu === MenuType.FOLDER && <Folders /> }
           </ResizablePanel>
-          <ResizableHandle withHandle />
+          <ResizableHandle className="bg-transparent" withHandle />
           <ResizablePanel defaultSize={65}>
             {children}
           </ResizablePanel>

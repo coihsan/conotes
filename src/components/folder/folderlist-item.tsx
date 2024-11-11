@@ -30,6 +30,7 @@ const FolderListItem: React.FC<Props> = ({ index }) => {
         if (folderId) {
             dispatch(getActiveFolderId(folderId))
             dispatch(setActiveMenu(MenuType.FOLDER))
+            console.log(folderId)
         }
     }
 

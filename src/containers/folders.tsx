@@ -6,20 +6,40 @@ import ButtonMenu from "@/components/primitive/button-menu"
 import { NoteAdd24Regular } from "@fluentui/react-icons"
 import { LabelText } from "@/lib/label-text"
 import SearchBar from "@/components/global/search-bar"
-import { useRef } from "react"
-import { debounceEvent } from "@/lib/utils/helpers"
-import { searchQuery, selectAllNotes } from "@/lib/redux/slice/notes"
+import { MutableRefObject, useRef, useState } from "react"
+import { currentItem, debounceEvent } from "@/lib/utils/helpers"
+import { addNewNote, searchQuery, selectAllNotes } from "@/lib/redux/slice/notes"
 import { getNotes } from "@/lib/redux/selector"
 import { selectAllFolder } from "@/lib/redux/slice/folder"
+import { NoteItem } from "@/lib/types"
+import { v4 } from "uuid"
+import { useNavigate } from "react-router-dom"
+import { useToast } from "@/lib/hooks/use-toast"
 
 const Folders = () => {
     const dispatch = useAppDispatch()
-    const searchRef = useRef() as React.MutableRefObject<HTMLInputElement>
+    const { toast } = useToast()
+    const navigate = useNavigate()
+    const searchRef = useRef() as MutableRefObject<HTMLInputElement>
 
-    const notes = useAppSelector(selectAllNotes)
+    const allNotes = useAppSelector(selectAllNotes)
     const { activeFolderId } = useAppSelector(getNotes)
 
-    const findNotesInFolder = notes.filter((note) => note.folderId === activeFolderId && !note.trash)
+    const createInitialNote = () : NoteItem => {
+        return {
+            id: v4(),
+            content: '',
+            title: '',
+            createdAt: currentItem,
+            lastUpdated: currentItem,
+            trash: false,
+            favorite: false,
+            folderId: activeFolderId
+        };
+    };
+    const [notes] = useState<NoteItem>(createInitialNote());
+
+    const findNotesInFolder = allNotes.filter((note) => note.folderId === activeFolderId && !note.trash)
     const folder = useAppSelector(selectAllFolder)
     const getFolderName = folder.find((folder) => folder.id === activeFolderId)
 
@@ -28,11 +48,25 @@ const Folders = () => {
         100
     )
 
+    const handleNewNote = async () => {
+        try {
+            const newNote = { ...notes, id: v4() };
+            await dispatch(addNewNote(newNote));
+            toast({
+                title: "Success",
+                description: "New note created successfully",
+            });
+            navigate(`/app/${newNote.id}`);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return(
         <aside className='sidebarOption'>
             <HeaderSidebar 
                 buttonAction={
-                    <ButtonMenu side="bottom" variant={'ghost'} size={'icon'} label={LabelText.CREATE_NEW_NOTE}>
+                    <ButtonMenu action={handleNewNote} side="bottom" variant={'ghost'} size={'icon'} label={LabelText.CREATE_NEW_NOTE}>
                         <NoteAdd24Regular />
                     </ButtonMenu>
                 }

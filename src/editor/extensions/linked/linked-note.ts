@@ -15,16 +15,16 @@ const LinkedNote = Node.create({
   parseHTML() {
     return [
       {
-        tag: 'span[data-note-id]',
+        tag: 'a[data-note-id]',
       },
     ];
   },
   renderHTML({ HTMLAttributes }) {
-    return ['span', mergeAttributes(HTMLAttributes, { 'data-note-id': HTMLAttributes.noteId }), 0];
+    return ['a', mergeAttributes(HTMLAttributes, { 'data-note-id': HTMLAttributes.noteId }), 0];
   },
   // addCommands() {
   //   return {
-  //     setLinkedNote: (noteId: any) => (commands: any ) => {
+  //     setLinkedNote: (noteId: string) => (commands: any ) => {
   //       return commands.insertContent({
   //         type: this.name,
   //         content: { noteId },
