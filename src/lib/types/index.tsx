@@ -86,9 +86,8 @@ export interface AppState {
 
 export interface RootState {
   appState: AppState;
-  noteState: NoteState;
-  folderState: FolderState;
-  settingsState: SettingsState;
+  notesState: NoteState;
+  foldersState: FolderState;
 }
 
 export const SET_ACTIVE_MENU = 'SET_ACTIVE_MENU';

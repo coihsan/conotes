@@ -7,8 +7,8 @@ import { GitHub } from "@/assets/github";
 import { ChevronRight12Filled } from "@fluentui/react-icons";
 import { cn } from "@/lib/utils/cn";
 import GridPattern from "@/components/ui/grid-pattern";
-import previewDark from '../../assets/preview-dark.png'
-import previewLight from '../../assets/preview-light.png'
+import previewDark from '../../assets/preview-dark.webp'
+import previewLight from '../../assets/preview-light.webp'
 import yawningEmoji from "../../assets/thinking_face_3d.png"
 import '../../App.css'
 import { ModeToggle } from "./mode-toggle";
@@ -23,11 +23,11 @@ const LandingPage: React.FC = () => {
     return (
         <section className="h-full relative w-full max-w-screen-lg mx-auto px-6 md:px-0">
             <header className="py-4 flex items-center justify-between w-full">
-                <Logo className="max-w-[150px]" />
+                <Logo className="w-32 md:max-w-[150px]" />
                 <div className="flex items-center gap-2">
                     <ModeToggle />
-                    <Link className="w-full" target="_blank" to="https://github.com/coihsan/nulihapp">
-                        <Button size={'icon'} variant={'outline'}>
+                    <Link aria-label="github" className="w-full" target="_blank" to="https://github.com/coihsan/nulihapp">
+                        <Button aria-label="github" size={'icon'} variant={'outline'}>
                             <GitHub />
                         </Button>
                     </Link>
@@ -57,7 +57,7 @@ const LandingPage: React.FC = () => {
                     </Link>
                 </div>
             <div className="py-9">
-                <img loading="lazy" className="rounded-2xl shadow-lg border" src={theme === "light" ? previewLight : previewDark} alt="screenshot" />
+                <img loading="lazy" className="rounded-md md:rounded-2xl shadow-lg border" src={theme === "light" ? previewLight : previewDark} alt="screenshot" />
             </div>
             <div className="py-9">
                 <div>

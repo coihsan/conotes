@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction, createEntityAdapter, Update } from '@reduxjs/toolkit'
-import { NoteItem, NoteState } from '@/lib/types'
+import { NoteItem, NoteState, RootState } from '@/lib/types'
 import { createAppAsyncThunk } from '../thunk';
 import { db } from '@/lib/db';
 import { Content } from '@tiptap/react';
-import { RootState } from '../store';
 import { currentItem } from '@/lib/utils/helpers';
 
 export const notesAdapter = createEntityAdapter<NoteItem>({
   sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
 });
 
-const initialState: NoteState = notesAdapter.getInitialState({
+
+export const initialState: NoteState = notesAdapter.getInitialState({
   activeTagsId: '',
   activeFolderId: '',
   activeNoteId: '',
@@ -270,4 +270,4 @@ export const {
   selectAll: selectAllNotes,
   selectById: selectNotesById,
   selectIds: selectNoteIds
-} = notesAdapter.getSelectors((state: RootState) => state.notes)
+} = notesAdapter.getSelectors((state: RootState) => state.notesState)

@@ -1,4 +1,3 @@
-// Default Labels
 export enum LabelText {
     // NOTES
     NOTES = 'All Notes',

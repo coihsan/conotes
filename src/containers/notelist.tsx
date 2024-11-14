@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { ScrollArea } from '@/components/ui/scroll-area';
 import ButtonMenu from '@/components/primitive/button-menu';
 import { searchQuery, selectAllNotes } from '@/lib/redux/slice/notes';
 import { NoteAdd24Regular } from '@fluentui/react-icons';
@@ -16,6 +15,7 @@ import HeaderSidebar from '@/components/global/header-sidebar';
 import NotesListItems from '@/components/notes/noteslist-item';
 import { MenuType } from '@/lib/enums';
 import { getApp, getNotes, selectFilteredNotes } from '@/lib/redux/selector';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const NoteList = () => {
     const { toast } = useToast()
@@ -58,7 +58,7 @@ const NoteList = () => {
     )
     useEffect(() => {
         if (_searchValues && (activeMenu === MenuType.NOTES)) return
-    }, [_searchNotes, activeMenu])
+    }, [_searchNotes, activeMenu, _searchValues])
 
     const handleNewNote = async () => {
         try {
@@ -76,7 +76,7 @@ const NoteList = () => {
 
     return (
         <aside className='sidebarOption'>
-            <HeaderSidebar 
+            <HeaderSidebar
             labelName={LabelText.NOTES}
             countIndex={filterNote.length}
                 buttonAction={

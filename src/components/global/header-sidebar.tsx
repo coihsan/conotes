@@ -14,7 +14,7 @@ const HeaderSidebar: React.FC<Props> = ({
     countIndex,
     buttonAction,
     filterAction,
-    searchAction
+    searchAction,
 }) => {
     return (
         <>

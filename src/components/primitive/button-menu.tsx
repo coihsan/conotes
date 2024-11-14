@@ -24,7 +24,7 @@ const ButtonMenu : React.FC<ButtonMenuProps> = ({
     variant,
     size,
     label,
-    side
+    side,
   }) => {
     return (
         <TooltipProvider>

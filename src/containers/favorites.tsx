@@ -12,7 +12,7 @@ import { getNotes } from '@/lib/redux/selector';
 const Favorites = () => {
     const dispatch = useAppDispatch()
     const searchRef = useRef() as React.MutableRefObject<HTMLInputElement>
-    const notes = useAppSelector((state) => selectAllNotes(state))
+    const notes = useAppSelector(selectAllNotes)
     const allFavoriteNotes = notes.filter(note => note.favorite)
 
     const { searchValue } = useAppSelector(getNotes)

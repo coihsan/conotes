@@ -2,7 +2,7 @@ import { MenuType } from '@/lib/enums';
 import { AppState } from '@/lib/types';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-const initialState : AppState = {
+export const initialState : AppState = {
   editable: false,
   activeMenu: MenuType.NOTES,
   loading: false,
@@ -32,4 +32,5 @@ export const {
   setActiveMenu,
   setToggleEditor,
  } = appSlice.actions;
+
 export default appSlice.reducer;

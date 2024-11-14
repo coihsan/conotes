@@ -20,13 +20,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    // shadcn
+    // alias
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
+      "@/*": ["./src/*"],
+      "@/components": ["./src/components/*"]
+    }
   },
-  "include": ["./src/**/*",]
+  "include": ["./src/**/*", "tests/setupTests.ts",]
 }

@@ -144,16 +144,8 @@ export const FEATURESAPP = [
         description: "We are not making this app for any commercial use."
     },
     {
-        title: "No Ads or Advertising",
-        description: "This makes your experience in our app as smooth as possible without any ads."
-    },
-    {
         title: "No tracking or analytics",
         description: "We do not collect any information from our users."
-    },
-    {
-        title: "Support WYSIWYG",
-        description: `We are using Tiptap Editor as main the library this is part of our app.`
     },
     {
         title: "No database",

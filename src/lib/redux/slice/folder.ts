@@ -1,8 +1,7 @@
-import { FolderItem, FolderState, NoteItem } from '@/lib/types'
+import { FolderItem, FolderState, NoteItem, RootState } from '@/lib/types'
 import { createSlice, createEntityAdapter, Update } from '@reduxjs/toolkit'
 import { createAppAsyncThunk } from '../thunk'
 import { db } from '@/lib/db'
-import { RootState } from '../store';
 
 export const folderAdapter = createEntityAdapter<FolderItem>({
     sortComparer: (a, b) => {
@@ -12,7 +11,7 @@ export const folderAdapter = createEntityAdapter<FolderItem>({
     },
 });
 
-const initialState: FolderState = folderAdapter.getInitialState({
+export const initialState: FolderState = folderAdapter.getInitialState({
     editingFolder: false,
     error: '',
     loading: true,
@@ -151,4 +150,4 @@ export const {
     selectAll: selectAllFolder,
     selectById: selectFolderById,
     selectIds: selectFolderId
-} = folderAdapter.getSelectors((state: RootState) => state.folder)
+} = folderAdapter.getSelectors((state: RootState) => state.foldersState)
